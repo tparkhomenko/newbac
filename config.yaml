@@ -1,0 +1,131 @@
+# Project Configuration
+
+# Data Paths
+data:
+  root_dir: "/home/parkhomenko/Documents/new_project/data"
+  datasets:
+    isic2020:
+      train_dir: "isic2020/ISIC_2020_Training_JPEG"
+      test_dir: "isic2020/ISIC_2020_Test_JPEG"
+      metadata:
+        train_labels: "metadata/ISIC_2020_Training_GroundTruth_v2.csv"
+        test_labels: "metadata/ISIC_2020_Test_Metadata.csv"
+        duplicates: "metadata/ISIC_2020_Training_Duplicates.csv"
+    dtd:
+      root_dir: "dtd/images"
+  processed:
+    root_dir: "/home/parkhomenko/Documents/new_project/data/processed"
+    features_dir: "features"
+
+# SAM Configuration
+sam:
+  encoder:
+    type: "vit_h"  # SAM2 ViT encoder
+    pretrained: true
+    freeze: true  # As per protocol, encoder must be frozen
+    checkpoint_dir: "saved_models/sam"
+    checkpoint_urls:
+      vit_h: "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
+      vit_l: "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth"
+      vit_b: "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth"
+    image_size: 1024  # SAM's expected input size
+  prompting:
+    points_per_image: 2  # For extremum grayscale points
+  mask_filtering:
+    max_area_ratio: 0.8  # Remove masks covering >80% of image
+    overlap_threshold: 0.95  # Discard overlaps >95%
+    prefer_fewer_blobs: true
+
+# Model Configuration
+models:
+  mlp1:  # Skin/Not Skin Classifier
+    name: "skin_not_skin_head"
+    input_dim: 256  # SAM feature dimension
+    hidden_dims: [512, 256]
+    output_dim: 2
+    dropout: 0.3
+
+  mlp2:  # Lesion Type Classifier
+    name: "lesion_type_head"
+    input_dim: 256
+    hidden_dims: [512, 256]
+    output_dim: 5  # 5 lesion groups
+    dropout: 0.3
+
+  mlp3:  # Benign/Malignant Classifier
+    name: "benign_malignant_head"
+    input_dim: 256
+    hidden_dims: [512, 256]
+    output_dim: 2
+    dropout: 0.3
+
+# Training Configuration
+training:
+  # General settings
+  seed: 42
+  device: cuda
+  num_workers: 0
+  pin_memory: true
+  
+  # Data settings
+  data_fraction: 1  # Use 10% of available data
+  class_names:
+    - melanocytic
+    - "non-melanocytic carcinoma"
+    - keratosis
+    - fibrous
+    - vascular
+  
+  # Model settings
+  model:
+    hidden_dims: [512, 256]
+    dropout: 0.3
+    
+  # Training settings
+  batch_size: 16
+  num_epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.01
+  
+  # Paths
+  train_features_dir: "data/processed/features/train_skinonly"
+  val_features_dir: "data/processed/features/val_skinonly"
+  metadata_path: "datasets/metadata/unified_augmented.csv"
+  model_save_dir: "saved_models/lesion_type"
+  
+  # Logging
+  wandb:
+    project: "skin_lesion_classification"
+    name: "lesion_type_5percent"
+    tags: ["lesion_type", "small_subset"]
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - accuracy
+    - f1_score
+    - auroc
+  save_results:
+    confusion_matrices: true
+    auc_curves: true
+    mask_visualizations: true
+    tsne_umap: true
+
+# Visualization Configuration
+visualization:
+  save_dir: "results"
+  subdirs:
+    confusion_matrices: "confusion_matrices"
+    auc_curves: "auc_curves"
+    mask_visualizations: "mask_visualizations"
+    tsne_umap_embeddings: "tsne_umap_embeddings"
+
+data_preprocessing:
+  image_size: 512
+  augmentations:
+    flip_horizontal: true
+    rotations: [90, 180, 270]
+  
+paths:
+  isic_train: "data/isic2020/ISIC_2020_Training_JPEG/train"
+  processed: "data/processed/isic2020"

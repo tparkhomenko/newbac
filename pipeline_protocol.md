@@ -25,6 +25,18 @@ For common errors and their solutions, see [Common Errors](common_errors.md)
    - Progress monitoring with tqdm
    - Error handling with fallback to zero features
 
+4. **Advanced Augmentation Techniques**:
+   - CutMix: Combines random crops from two images
+   - MixUp: Linear interpolation of feature vectors between samples
+   - Both help regularize the model and improve generalization
+
+5. **Class Imbalance Handling**:
+   - Early attempts with full ISIC dataset (original distribution) failed due to extreme imbalance
+   - Example: 21,000+ melanocytic samples vs. ~300 fibrous samples
+   - Standard CrossEntropyLoss with class weights was insufficient
+   - Model collapsed to predicting only majority classes (~20% train accuracy, ~1% validation)
+   - Solution: Balanced dataset + FocalLoss + proper validation metrics
+
 ## 🚀 Project TODOs and Progress Tracker
 
 - [x] **Prepare Folder Structure**: Create all necessary folders as per protocol
@@ -128,43 +140,139 @@ For common errors and their solutions, see [Common Errors](common_errors.md)
     * Final training loss: 0.0124
     * Best model saved: `saved_models/skin_not_skin/skin_not_skin_10k_best.pth`
     * Training converged successfully with no overfitting
-- [ ] **Train Lesion Type Classifier (MLP2)**
+- [x] **Train Lesion Type Classifier (MLP2)**
   - Architecture:
     * Input: 256-dim SAM features (same as MLP1)
-    * Output: Multi-class classification for lesion groups
-  - Training Strategy:
-    * Train only on skin images (filtered by MLP1)
-    * Using 30% of available data for faster iteration
-    * Memory optimizations:
-      - Mixed precision training
-      - Batch size: 16
-      - Periodic GPU memory cleanup
-      - Feature caching with error handling
-    * Class distribution in full dataset:
-      - Melanocytic: 106,095 samples (use 30%)
-      - Non-melanocytic carcinoma: 25,455 samples (use 30%)
-      - Keratosis: 22,625 samples (use 30%)
-      - Fibrous: 1,650 samples (use all)
-      - Vascular: 1,785 samples (use all)
-    * Class imbalance: ~64x difference between largest and smallest classes (recalculated after unknown removal)
-  - ✅ Dataset Implementation:
-    * Added skin-only filtering
-    * Added lesion type target support
-    * Added dynamic class weight computation
-    * Implemented proper feature caching for different configurations
-    * Verified correct feature shape [256] and label mapping
-    * Confirmed working data loading and preprocessing pipeline
-    * Added robust error handling with zero feature fallback
-    * Implemented memory-efficient feature extraction
-    * 🆕 Now supports training on only original images (no augmentations) via `original_only=True` in `SkinLesionDataset`. This is now used in `train_lesion_type.py`.
-    * 🆕 Weighted loss approach implemented: CrossEntropyLoss uses class weights computed from the training set to address class imbalance. Tested with 5% and 10% of all original, skin-only images. Validation accuracy improved to ~55% with 10% data, showing benefit of weighting and more data.
+    * Hidden layers: [512, 256] with ReLU activation and Dropout(0.3)
+    * Output: 5 neurons (one per lesion class) with Softmax activation
+  - Initial Training Challenges:
+    * ❌ First attempt used full ISIC dataset with original class distribution
+    * ❌ Extreme imbalance: 21,000+ melanocytic samples vs. only ~300 fibrous samples
+    * ❌ Standard CrossEntropyLoss with class weights failed to handle imbalance
+    * ❌ Model collapsed to predicting only majority classes (~20% train accuracy, ~1% validation)
+    * ❌ Zero F1 scores for most classes, confusion matrix showed single-class predictions
+  - Successful Training Strategy:
+    * ✅ Balanced training set created with max 2,000 samples per majority class
+    * ✅ Used all available samples for minority classes (fibrous: 1,220, vascular: 1,205)
+    * ✅ Switched to FocalLoss with moderate class weights [1.5, 1.5, 1.5, 1.2, 1.2]
+    * ✅ Created balanced validation set for accurate performance metrics
+    * ✅ Implemented mixed precision training for efficiency
+    * ✅ Added proper class index mapping to handle all classes correctly
+  - Training Results:
+    * Best validation accuracy: 65.8% (Epoch 43)
+    * Per-class F1 scores ranging from 0.59 to 0.72
+    * Balanced performance across all classes
+    * Confusion matrix showed distributed predictions with reasonable clinical confusions
+    * Model checkpoint: `saved_models/lesion_type/lesion_type_max2000_best.pth`
+    * Training logs: `wandb/run-20250505_165108-jvnir41k/`
+  - Dataset Statistics:
+    * See detailed table in implementation details
+  - ✅ Production Status:
+    * Model considered production-ready baseline
+    * Achieves balanced prediction across all classes with good overall accuracy
+    * Errors align with clinically expected confusion patterns
 - [ ] **Train Benign/Malignant Classifier (MLP3)**
-  - Optional: Apply class weight correction for benign (96,705) vs malignant (60,905)
+  - Implementation completed with `training/train_benign_malignant.py`
+  - Created dedicated dataset: `datasets/benign_malignant_dataset.py`
+  - Proposed configurations for experiments:
+    * **Configuration A - Original Images Only**:
+      - Uses only non-augmented original images (~31.5k total)
+      - Train split: ~22k images (13.6k benign / 8.5k malignant)
+      - Class ratio: ~60% benign / 40% malignant
+      - Higher image quality, no augmentation artifacts
+      - Command: `python -m training.train_benign_malignant --config original`
+      - Model path: `saved_models/benign_malignant/benign_malignant_original_best.pth`
+    
+    * **Configuration B - Full Augmented Set**:
+      - Uses all augmented images (~157.6k total)
+      - Train split: ~110k images (68k benign / 42.5k malignant)
+      - Class ratio: ~60% benign / 40% malignant
+      - More data but includes augmented variants
+      - Command: `python -m training.train_benign_malignant --config augmented`
+      - Model path: `saved_models/benign_malignant/benign_malignant_augmented_best.pth`
+    
+    * **Configuration C - Balanced Subset (2k per class)**:
+      - Fixed size dataset like MLP2 (4k total)
+      - Perfect 50/50 class balance (2k benign / 2k malignant)
+      - Balanced training for better performance on minority class
+      - Command: `python -m training.train_benign_malignant --config balanced`
+      - Model path: `saved_models/benign_malignant/benign_malignant_balanced_best.pth`
+  
+  - Common training parameters:
+    * Architecture: `[Input: 256] → [512, ReLU, Dropout(0.3)] → [256, ReLU, Dropout(0.3)] → [2, Softmax]`
+    * FocalLoss with gamma=2.0 and class weights
+    * Mixed precision training for efficiency
+    * Batch size: 16 for training, 32 for validation
+    * Early stopping after 5 epochs without improvement
+    * Learning rate: 0.001 with ReduceLROnPlateau scheduler
+    * Optimizer: AdamW with weight_decay=0.01
+    * Wandb logging for all metrics and visualizations
 - [ ] **Evaluate all classifiers** (accuracy, F1, AUROC)
 - [ ] **Generate Segmentation Masks (for Visualization Only)**
 - [ ] **Generate Prompt Points**: Find and save extremum grayscale points
 - [ ] **Plot Heuristic Statistics** for SAM mask filtering
 - [ ] **Write Final Results and Analysis**
+- [x] **Balance the Validation Set**:
+  - Created `datasets/metadata/val_balanced_500.csv` with up to 500 samples per lesion group (melanocytic, non-melanocytic carcinoma, keratosis, fibrous, vascular)
+  - Used for validation during training for fairer per-class evaluation
+- [x] **Verify Class-to-Index Mapping**:
+  - Documented and printed class-to-index mapping in training logs and evaluation output
+- [x] **Log Per-Class Metrics During Training**:
+  - Added F1, precision, recall per class to each epoch's log output and wandb logs
+- [x] **Replace or Augment Loss Function**:
+  - FocalLoss implemented and used with class weights; fallback to CrossEntropyLoss possible
+- [x] **Add Class Weights for Loss**:
+  - Class frequency-based weights computed and passed to loss function
+- [x] **Add WeightedRandomSampler**:
+  - Option to use WeightedRandomSampler for class-balanced minibatches in training
+- [x] **Early Stopping or Collapse Detection**:
+  - Early stopping implemented: stops if validation loss does not improve after N epochs
+- [x] **Reduce Training Epochs During Debugging**:
+  - Configurable debug_epochs option for quick testing (default 10)
+- [x] **Visualize Confusion Matrix Per Epoch**:
+  - Confusion matrix printed and logged for each validation epoch
+- [x] **Fix Weights & Biases Logging**:
+  - ✅ Added model parameter and gradient tracking with wandb.watch()
+  - ✅ Implemented comprehensive metric logging:
+    * Batch-level: loss, accuracy, learning rate
+    * Epoch-level training: loss, accuracy, per-class metrics
+    * Epoch-level validation: loss, accuracy, per-class metrics, confusion matrix
+    * Per-class metrics include: accuracy, precision, recall, F1 score, sample counts
+  - ✅ Fixed metric synchronization to ensure proper dashboard visualization
+  - ✅ Added confusion matrix visualization for validation epochs
+  - ✅ Fixed class mapping issue to ensure proper metrics tracking when some classes have zero samples
+- [x] **Implement Class-Specific Performance Analysis**:
+  - ✅ Created `evaluation/analyze_class_performance.py` to identify problematic classes
+  - ✅ Analysis includes:
+    * Class distribution visualization
+    * Per-class metrics (precision, recall, F1-score, accuracy)
+    * Raw and normalized confusion matrices
+    * Detailed classification reports
+  - ✅ Results saved to `results/confusion_matrices/` directory
+- [x] **Implement Visual Prediction Analysis**:
+  - ✅ Created `evaluation/visualize_predictions.py` for visual sanity checks
+  - ✅ Features:
+    * Randomly samples validation images
+    * Shows true vs. predicted labels
+    * Color-codes correct/incorrect predictions
+    * Displays prediction confidence
+    * Shows full probability distribution across classes
+  - ✅ Helps identify patterns in misclassifications
+    * Identifies classes commonly confused with each other
+    * Reveals potential biases in the model's predictions
+  - ✅ Results saved to `results/predictions_visualization.png`
+  - 🆕 Enhanced with t-SNE visualizations of feature space
+  - 🆕 Added saliency maps to visualize feature importance
+- [x] **Fix Class Index Mapping Issue**:
+  - ✅ Implemented class index remapping function:
+    * Maps original indices to consecutive new indices (0-N)
+    * Creates a mapping dictionary: `{original_idx: new_idx}`
+    * Updates model output layer to match only active classes
+    * Applies target remapping in training/validation loops
+    * Saves mapping information with checkpoints for inference
+  - ✅ Fixed class weight filtering to match new indices
+  - ✅ Added proper documentation in `common_errors.md`
+  - ✅ Verified correct operation with test cases
 
 ## 🎯 Project Goal
 
@@ -230,28 +338,26 @@ Segmentation masks are only for visualization, not training, therefore are appli
   * Validation: 25,175 skin / 4,224 non-skin
   * Test: 25,180 skin / 4,344 non-skin
 
-- Lesion group distribution:
-  * Train set:
-    - Melanocytic: 74,530
-    - Non-melanocytic carcinoma: 17,670
-    - Keratosis: 15,845
-    - Fibrous: 1,220
-    - Vascular: 1,205
-    - Not skin texture: 19,632
-  * Validation set:
-    - Melanocytic: 15,850
-    - Non-melanocytic carcinoma: 3,835
-    - Keratosis: 3,405
-    - Fibrous: 245
-    - Vascular: 280
-    - Not skin texture: 4,224
-  * Test set:
-    - Melanocytic: 15,715
-    - Non-melanocytic carcinoma: 3,950
-    - Keratosis: 3,375
-    - Fibrous: 185
-    - Vascular: 300
-    - Not skin texture: 4,344
+- Latest Balanced Dataset Configuration:
+  * Training set (8,425 total):
+    - melanocytic: 2,000
+    - non-melanocytic carcinoma: 2,000
+    - keratosis: 2,000
+    - fibrous: 1,220 (all available in train split)
+    - vascular: 1,205 (all available in train split)
+  * Validation set (1,425 total):
+    - melanocytic: 300
+    - non-melanocytic carcinoma: 300
+    - keratosis: 300
+    - fibrous: 245
+    - vascular: 280
+
+- Class Weights (FocalLoss):
+  * melanocytic: 1.5
+  * keratosis: 1.5
+  * non-melanocytic carcinoma: 1.5
+  * vascular: 1.2
+  * fibrous: 1.2
 
 ## 🏗️ Encoder/Decoder Structure
 
@@ -268,17 +374,17 @@ Segmentation masks are only for visualization, not training, therefore are appli
 Input Image  
 → SAM2 Encoder (frozen)  
 → MLP1: Skin/Not Skin  
-  ├─ If Not Skin → STOP  
-  └─ If Skin →  
-    → MLP2: Lesion Type (ISIC only)  
-    → MLP3: Benign/Malignant (ISIC only)
+  ├─ If Not Skin → STOP  
+  └─ If Skin →  
+    → MLP2: Lesion Type (ISIC only)  
+    → MLP3: Benign/Malignant (ISIC only)
 
 After classification:  
 → Generate 3 SAM2 masks 
 → Apply heuristics:  
- - Remove masks covering >80% of image  
- - Prefer masks with fewer blobs  
- - Discard overlaps >95%  
+ - Remove masks covering >80% of image  
+ - Prefer masks with fewer blobs  
+ - Discard overlaps >95%  
 → Keep a many as passed the heuristics, do an overview (graph) on masks left after heuristics
 
 ## 🏛️ Project Folder Structure
@@ -302,26 +408,33 @@ skin_classification_pipeline/
 │   └── benign_malignant_head.py  
 ├── training/  
 │   ├── train_skin_not_skin.py  
-│   └── train_lesion_malignancy.py  
+│   ├── train_lesion_type.py  
+│   ├── train_lesion_type_balanced.py  
+│   └── train_benign_malignant.py  
 ├── evaluation/  
 │   ├── evaluate_heads.py  
+│   ├── visualize_predictions.py  
 │   ├── visualize_masks.py  
+│   ├── analyze_class_performance.py  
 │   └── plot_metrics.py  
 ├── configs/  
 │   └── config.yaml  
+├── utils/  
+│   ├── metrics.py  
+│   ├── feature_extraction.py  
+│   └── augmentation.py  
 ├── saved_models/  
 ├── results/  
 │   ├── confusion_matrices/  
 │   ├── auc_curves/  
 │   ├── mask_visualizations/  
-│   └── tsne_umap_embeddings/  
-├── utils/  
-│   ├── metrics.py  
-│   └── feature_extraction.py  
+│   ├── tsne_umap_embeddings/  
+│   └── experiment_logs.md  
 ├── run_pipeline.py  
 ├── requirements.txt  
 ├── .gitignore  
 ├── README.md  
+├── common_errors.md  
 └── pipeline_protocol.md  
 
 ## ⚙️ Development Rules
@@ -333,6 +446,11 @@ skin_classification_pipeline/
 - Commit all code changes with clear messages (e.g., `"feat: train MLP1"`, `"fix: mask filtering"`).
 - Keep `README.md` and `pipeline_protocol.md` aligned with current code and structure.
 - Exclude unnecessary files in `.gitignore` (e.g., datasets, checkpoints, logs, `.ipynb_checkpoints/`)
+- 📊 Document all major changes in the training pipeline in `results/experiment_logs.md`:
+  - Create a new experiment entry for each significant architecture or methodology change
+  - Include detailed information about model architecture, training configuration, results, and analysis
+  - Add references to full training logs in the `/logs/` directory
+  - Format the experiment ID with date for easy tracking (e.g., "Experiment #2: ResNet Features - May 10, 2025")
 
 ## ⚡ Implementation Notes
 
@@ -345,5 +463,68 @@ skin_classification_pipeline/
   - Skin/Not Skin (MLP1)
   - Lesion Type (MLP2, 5 classes)
   - Benign/Malignant (MLP3)
+- Class index mapping is crucial for correct model training:
+  - When using a subset of classes, create a proper mapping from original to consecutive indices
+  - Update model output layer to match only active classes
+  - Remap targets in training/validation loops
+  - Save mapping information with checkpoints for inference
+- Class imbalance handling is critical for successful model training:
+  - Original class distribution (21,000+ melanocytic vs. 300 fibrous) led to model collapse
+  - Standard CrossEntropyLoss failed even with class weights
+  - Success achieved with balanced dataset (max 2,000 per class) + FocalLoss
+
+## 📍 Model Locations
+
+### Production Models
+
+| Model | Description | Path | Performance |
+|-------|-------------|------|-------------|
+| SAM Encoder | Feature extractor (frozen) | `saved_models/sam/sam_vit_h.pth` | N/A (pre-trained) |
+| MLP1 | Skin/Not Skin classifier | `saved_models/skin_not_skin/skin_not_skin_10k_best.pth` | 99.38% validation accuracy |
+| MLP2 | Lesion Type classifier | `saved_models/lesion_type/lesion_type_max2000_best.pth` | 65.8% validation accuracy |
+| MLP3 | Benign/Malignant classifier | Not yet implemented | - |
+
+### Model Loading Code Examples
+
+```python
+# Load MLP1 (Skin/Not Skin Classifier)
+import torch
+from models.skin_not_skin_head import SkinNotSkinHead
+
+# Initialize model with same architecture as during training
+model_mlp1 = SkinNotSkinHead(input_dim=256, hidden_dims=[512, 256], output_dim=2)
+checkpoint = torch.load('saved_models/skin_not_skin/skin_not_skin_10k_best.pth')
+model_mlp1.load_state_dict(checkpoint['model_state_dict'])
+model_mlp1.eval()  # Set to evaluation mode
+
+# Load MLP2 (Lesion Type Classifier)
+from models.lesion_type_head import LesionTypeHead
+
+# Initialize model with same architecture as during training
+model_mlp2 = LesionTypeHead(input_dim=256, hidden_dims=[512, 256], output_dim=5)
+checkpoint = torch.load('saved_models/lesion_type/lesion_type_max2000_best.pth')
+model_mlp2.load_state_dict(checkpoint['model_state_dict'])
+# Get class mapping information (important for correct class indices)
+class_mapping = checkpoint.get('class_mapping', None)
+model_mlp2.eval()  # Set to evaluation mode
+
+# Load MLP3 (Benign/Malignant Classifier)
+from models.benign_malignant_head import BenignMalignantHead
+
+# Initialize model with same architecture as during training
+model_mlp3 = BenignMalignantHead(input_dim=256, hidden_dims=[512, 256], output_dim=2)
+checkpoint = torch.load('saved_models/benign_malignant/benign_malignant_best.pth')
+model_mlp3.load_state_dict(checkpoint['model_state_dict'])
+# Get class mapping information
+class_mapping = checkpoint.get('class_mapping', None)  # Should be {0: 'benign', 1: 'malignant'}
+model_mlp3.eval()  # Set to evaluation mode
+```
+
+### Training Logs
+
+| Model | Log Directory | Run ID |
+|-------|---------------|--------|
+| MLP1 | `wandb/run-20250430_164542-6scfn1g6/` | `6scfn1g6` |
+| MLP2 | `wandb/run-20250505_165108-jvnir41k/` | `jvnir41k` |
 
 ✅ End of Protocol

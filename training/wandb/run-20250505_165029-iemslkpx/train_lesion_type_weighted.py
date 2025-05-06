@@ -11,6 +11,8 @@ from tqdm import tqdm
 import sys
 import gc
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Set environment variables for better GPU memory management
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:512,expandable_segments:True'
@@ -63,6 +65,28 @@ def compute_class_weights(dataset):
     
     return weights
 
+def create_class_index_mapping(class_weights):
+    """
+    Create a mapping from original class indices to new consecutive indices.
+    
+    Args:
+        class_weights: Tensor of class weights with zeros for missing classes
+        
+    Returns:
+        original_to_new: Dictionary mapping original indices to new indices
+        new_to_original: Dictionary mapping new indices to original indices
+    """
+    # Find indices of active classes (non-zero weights)
+    active_classes = torch.nonzero(class_weights).squeeze().tolist()
+    if not isinstance(active_classes, list):
+        active_classes = [active_classes]
+    
+    # Create mappings
+    original_to_new = {orig_idx: new_idx for new_idx, orig_idx in enumerate(active_classes)}
+    new_to_original = {new_idx: orig_idx for new_idx, orig_idx in enumerate(active_classes)}
+    
+    return original_to_new, new_to_original
+
 def log_class_metrics(outputs, targets, class_names, prefix=''):
     """Log per-class accuracy and other metrics."""
     with torch.no_grad():
@@ -70,6 +94,23 @@ def log_class_metrics(outputs, targets, class_names, prefix=''):
         
         # Compute per-class metrics
         metrics = {}
+        
+        # Create confusion matrix
+        conf_matrix = torch.zeros(len(class_names), len(class_names))
+        for t, p in zip(targets.view(-1), predicted.view(-1)):
+            conf_matrix[t.long(), p.long()] += 1
+            
+        # Log confusion matrix
+        if prefix.startswith('val_'):
+            fig = plt.figure(figsize=(10, 10))
+            sns.heatmap(conf_matrix.cpu().numpy(), 
+                       xticklabels=class_names,
+                       yticklabels=class_names,
+                       annot=True, fmt='g')
+            plt.title('Confusion Matrix')
+            metrics[f'{prefix}confusion_matrix'] = wandb.Image(fig)
+            plt.close()
+        
         for i, class_name in enumerate(class_names):
             mask = targets == i
             if mask.sum() > 0:  # Only compute metrics if class exists
@@ -77,7 +118,19 @@ def log_class_metrics(outputs, targets, class_names, prefix=''):
                 class_total = mask.sum().item()
                 class_acc = 100. * class_correct / class_total
                 
+                # Calculate precision and recall
+                true_positives = conf_matrix[i, i].item()
+                false_positives = conf_matrix[:, i].sum().item() - true_positives
+                false_negatives = conf_matrix[i, :].sum().item() - true_positives
+                
+                precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
+                recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
+                f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+                
                 metrics[f'{prefix}acc_class_{class_name}'] = class_acc
+                metrics[f'{prefix}precision_class_{class_name}'] = precision * 100
+                metrics[f'{prefix}recall_class_{class_name}'] = recall * 100
+                metrics[f'{prefix}f1_class_{class_name}'] = f1 * 100
                 metrics[f'{prefix}samples_class_{class_name}'] = class_total
         
         return metrics
@@ -149,6 +202,9 @@ def main():
     # Create model
     model = LesionTypeClassifier().to(device)
     
+    # Enable wandb model tracking
+    wandb.watch(model, log='all', log_freq=100)
+    
     # Setup mixed precision training
     scaler = torch.amp.GradScaler()
     
@@ -159,6 +215,15 @@ def main():
         class_name = list(train_dataset.LESION_GROUP_MAP.keys())[i]
         logger.info(f"{class_name}: {weight:.4f}")
     
+    # Create mapping from original class indices to new consecutive indices
+    original_to_new_idx, new_to_original_idx = create_class_index_mapping(class_weights)
+    
+    # Log the index mapping
+    logger.info("Class index mapping (original → new):")
+    for orig_idx, new_idx in original_to_new_idx.items():
+        class_name = list(train_dataset.LESION_GROUP_MAP.keys())[orig_idx]
+        logger.info(f"Original index {orig_idx} ({class_name}) → New index {new_idx}")
+    
     # Remove classes with zero weight from the model's output
     active_classes = torch.nonzero(class_weights).squeeze().tolist()
     if not isinstance(active_classes, list):
@@ -168,10 +233,14 @@ def main():
     
     # Modify model's output layer for active classes only
     model.fc2 = nn.Linear(model.fc2.in_features, len(active_classes)).to(device)
-    class_weights = class_weights[class_weights > 0]
+    
+    # Extract weights for active classes only (in the new order)
+    filtered_weights = torch.zeros(len(active_classes), device=device)
+    for orig_idx, new_idx in original_to_new_idx.items():
+        filtered_weights[new_idx] = class_weights[orig_idx]
     
     # Setup loss and optimizer
-    criterion = nn.CrossEntropyLoss(weight=class_weights)
+    criterion = nn.CrossEntropyLoss(weight=filtered_weights)
     optimizer = optim.AdamW(
         model.parameters(),
         lr=train_config['learning_rate'],
@@ -187,9 +256,12 @@ def main():
         pct_start=0.1
     )
     
-    # Get class names for logging (only active classes)
-    class_names = [name for i, name in enumerate(train_dataset.LESION_GROUP_MAP.keys()) 
-                  if i in active_classes]
+    # Get class names for logging (only active classes in the new order)
+    class_names = []
+    for new_idx in range(len(active_classes)):
+        orig_idx = new_to_original_idx[new_idx]
+        class_name = list(train_dataset.LESION_GROUP_MAP.keys())[orig_idx]
+        class_names.append(class_name)
     
     # Training loop
     best_val_acc = 0
@@ -202,6 +274,10 @@ def main():
         correct = 0
         total = 0
         
+        # Track epoch-level metrics
+        train_outputs = []
+        train_targets = []
+        
         progress_bar = tqdm(train_loader, desc=f'Epoch {epoch}')
         for batch_idx, (features, targets) in enumerate(progress_bar):
             try:
@@ -209,10 +285,14 @@ def main():
                 features = features.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
                 
+                # Remap targets to new consecutive indices
+                remapped_targets = torch.tensor([original_to_new_idx.get(t.item(), 0) for t in targets], 
+                                             device=device, dtype=torch.long)
+                
                 # Mixed precision forward pass
                 with torch.amp.autocast('cuda'):
                     outputs = model(features)
-                    loss = criterion(outputs, targets)
+                    loss = criterion(outputs, remapped_targets)
                 
                 # Mixed precision backward pass
                 optimizer.zero_grad()
@@ -223,11 +303,15 @@ def main():
                 # Update learning rate
                 scheduler.step()
                 
+                # Track outputs and targets for epoch-level metrics
+                train_outputs.append(outputs.detach())
+                train_targets.append(remapped_targets.detach())
+                
                 # Calculate accuracy
                 with torch.no_grad():
                     _, predicted = outputs.max(1)
-                    total += targets.size(0)
-                    correct += predicted.eq(targets).sum().item()
+                    total += remapped_targets.size(0)
+                    correct += predicted.eq(remapped_targets).sum().item()
                 
                 # Update total loss
                 total_loss += loss.item()
@@ -238,8 +322,7 @@ def main():
                     'train_batch_acc': 100.*correct/total,
                     'learning_rate': optimizer.param_groups[0]['lr']
                 }
-                metrics.update(log_class_metrics(outputs, targets, class_names, prefix='train_batch_'))
-                wandb.log(metrics)
+                wandb.log(metrics, commit=False)  # Don't commit yet, wait for class metrics
                 
                 # Update progress bar
                 progress_bar.set_postfix({
@@ -248,12 +331,27 @@ def main():
                 })
                 
                 # Clean up GPU memory
-                del features, targets, outputs, loss
+                del features, outputs, loss
                 torch.cuda.empty_cache()
                 
             except Exception as e:
                 logger.error(f"Error in training batch {batch_idx}: {str(e)}")
                 continue
+        
+        # Compute and log epoch-level training metrics
+        train_outputs = torch.cat(train_outputs)
+        train_targets = torch.cat(train_targets)
+        train_metrics = {
+            'train_epoch_loss': total_loss/len(train_loader),
+            'train_epoch_acc': 100.*correct/total,
+            'epoch': epoch
+        }
+        train_metrics.update(log_class_metrics(train_outputs, train_targets, class_names, prefix='train_epoch_'))
+        wandb.log(train_metrics, commit=False)  # Don't commit yet, wait for validation metrics
+        
+        # Clean up train metrics
+        del train_outputs, train_targets
+        torch.cuda.empty_cache()
         
         # Validate
         model.eval()
@@ -270,19 +368,23 @@ def main():
                 features = features.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
                 
+                # Remap targets to new consecutive indices
+                remapped_targets = torch.tensor([original_to_new_idx.get(t.item(), 0) for t in targets], 
+                                             device=device, dtype=torch.long)
+                
                 with torch.amp.autocast('cuda'):
                     outputs = model(features)
-                    loss = criterion(outputs, targets)
+                    loss = criterion(outputs, remapped_targets)
                 
                 val_outputs.append(outputs)
-                val_targets.append(targets)
+                val_targets.append(remapped_targets)
                 
                 _, predicted = outputs.max(1)
-                val_total += targets.size(0)
-                val_correct += predicted.eq(targets).sum().item()
+                val_total += remapped_targets.size(0)
+                val_correct += predicted.eq(remapped_targets).sum().item()
                 val_loss += loss.item()
                 
-                del features, targets, outputs, loss
+                del features, outputs, loss
                 torch.cuda.empty_cache()
         
         # Compute validation metrics
@@ -292,13 +394,13 @@ def main():
         val_acc = 100. * val_correct / val_total
         
         # Log validation metrics
-        metrics = {
-            'val_loss': val_loss,
-            'val_acc': val_acc,
+        val_metrics = {
+            'val_epoch_loss': val_loss,
+            'val_epoch_acc': val_acc,
             'epoch': epoch
         }
-        metrics.update(log_class_metrics(val_outputs, val_targets, class_names, prefix='val_'))
-        wandb.log(metrics)
+        val_metrics.update(log_class_metrics(val_outputs, val_targets, class_names, prefix='val_epoch_'))
+        wandb.log({**train_metrics, **val_metrics}, commit=True)  # Now commit all metrics
         
         # Save checkpoint if best validation accuracy
         if val_acc > best_val_acc:
@@ -313,7 +415,12 @@ def main():
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_acc': val_acc,
-                'class_metrics': metrics,
+                'class_metrics': val_metrics,
+                'class_mapping': {
+                    'original_to_new': original_to_new_idx,
+                    'new_to_original': new_to_original_idx,
+                    'class_names': class_names
+                }
             }, checkpoint_path)
             logger.info(f'Saved best model checkpoint to {checkpoint_path}')
         else:
@@ -334,8 +441,8 @@ def main():
         # Log per-class metrics
         logger.info('Per-class validation accuracy:')
         for i, class_name in enumerate(class_names):
-            acc = metrics.get(f'val_acc_class_{class_name}', float('nan'))
-            samples = metrics.get(f'val_samples_class_{class_name}', 0)
+            acc = val_metrics.get(f'val_epoch_acc_class_{class_name}', float('nan'))
+            samples = val_metrics.get(f'val_epoch_samples_class_{class_name}', 0)
             logger.info(f"{class_name}: {acc:.2f}% ({samples} samples)")
         
         # Clear memory after each epoch

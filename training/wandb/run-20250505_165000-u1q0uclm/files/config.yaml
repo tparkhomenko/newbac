@@ -1,0 +1,94 @@
+_wandb:
+    value:
+        cli_version: 0.19.10
+        m: []
+        python_version: 3.12.3
+        t:
+            "1":
+                - 1
+                - 5
+                - 41
+                - 51
+                - 53
+                - 55
+            "2":
+                - 1
+                - 5
+                - 41
+                - 51
+                - 53
+                - 55
+            "3":
+                - 13
+                - 15
+                - 16
+                - 23
+                - 55
+            "4": 3.12.3
+            "5": 0.19.10
+            "8":
+                - 2
+                - 5
+            "12": 0.19.10
+            "13": linux-x86_64
+batch_size:
+    value: 16
+class_names:
+    value:
+        - melanocytic
+        - non-melanocytic carcinoma
+        - keratosis
+        - fibrous
+        - vascular
+class_weights:
+    value:
+        - 1.5
+        - 1.5
+        - 1.5
+        - 1.2
+        - 1.2
+data_fraction:
+    value: 1
+debug_epochs:
+    value: 10
+device:
+    value: cuda
+early_stopping_patience:
+    value: 5
+learning_rate:
+    value: 0.001
+max_samples_per_class:
+    value: 2000
+metadata_path:
+    value: datasets/metadata/unified_augmented.csv
+model:
+    value:
+        dropout: 0.3
+        hidden_dims:
+            - 512
+            - 256
+model_save_dir:
+    value: saved_models/lesion_type
+num_epochs:
+    value: 50
+num_workers:
+    value: 0
+pin_memory:
+    value: true
+seed:
+    value: 42
+train_features_dir:
+    value: data/processed/features/train_skinonly
+val_features_dir:
+    value: data/processed/features/val_skinonly
+val_metadata_path:
+    value: datasets/metadata/unified_augmented.csv
+wandb:
+    value:
+        name: lesion_type_5percent
+        project: skin_lesion_classification
+        tags:
+            - lesion_type
+            - small_subset
+weight_decay:
+    value: 0.01

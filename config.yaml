@@ -69,6 +69,8 @@ training:
   
   # Data settings
   data_fraction: 1  # Use 10% of available data
+  max_samples_per_class: 2000  # Maximum number of samples per class
+  class_weights: [1.5, 1.5, 1.5, 1.2, 1.2]  # Weights for [melanocytic, non-melanocytic carcinoma, keratosis, fibrous, vascular]
   class_names:
     - melanocytic
     - "non-melanocytic carcinoma"
@@ -90,7 +92,8 @@ training:
   # Paths
   train_features_dir: "data/processed/features/train_skinonly"
   val_features_dir: "data/processed/features/val_skinonly"
-  metadata_path: "datasets/metadata/unified_augmented.csv"
+  metadata_path: "/home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv"
+  val_metadata_path: "/home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv"
   model_save_dir: "saved_models/lesion_type"
   
   # Logging
@@ -98,6 +101,8 @@ training:
     project: "skin_lesion_classification"
     name: "lesion_type_5percent"
     tags: ["lesion_type", "small_subset"]
+  debug_epochs: 10  # For quick debugging runs
+  early_stopping_patience: 5  # Stop if no improvement after N epochs
 
 # Evaluation Configuration
 evaluation:

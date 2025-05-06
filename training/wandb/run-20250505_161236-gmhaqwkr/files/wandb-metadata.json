@@ -1,0 +1,42 @@
+{
+  "os": "Linux-6.8.0-58-generic-x86_64-with-glibc2.39",
+  "python": "CPython 3.12.3",
+  "startedAt": "2025-05-05T14:12:36.802608Z",
+  "program": "/home/parkhomenko/Documents/new_project/training/train_lesion_type.py",
+  "codePath": "training/train_lesion_type.py",
+  "git": {
+    "remote": "git@github.com:tparkhomenko/newbac.git",
+    "commit": "7cb7e8b98892dac285fb0135acfec00fe6a46dbf"
+  },
+  "email": "taisiyaparkhomenko@gmail.com",
+  "root": "/home/parkhomenko/Documents/new_project/training",
+  "host": "fcggpc0389",
+  "executable": "/home/parkhomenko/Documents/new_project/venv/bin/python",
+  "codePathLocal": "train_lesion_type.py",
+  "cpu_count": 12,
+  "cpu_count_logical": 20,
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "491521720320",
+      "used": "259520929792"
+    }
+  },
+  "memory": {
+    "total": "33380978688"
+  },
+  "cpu": {
+    "count": 12,
+    "countLogical": 20
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 3080 Ti",
+      "memoryTotal": "12884901888",
+      "cudaCores": 10240,
+      "architecture": "Ampere"
+    }
+  ],
+  "cudaVersion": "12.8"
+}

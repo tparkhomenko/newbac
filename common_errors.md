@@ -33,6 +33,50 @@ RuntimeError: CUDA out of memory
 - Use smaller batch sizes or gradient accumulation
 - Enable mixed precision training with `torch.cuda.amp`
 
+### 3. Class Index Mapping Mismatch
+**Error**: Incorrect loss calculation or index errors during training when some classes have zero samples
+```
+IndexError: index out of range in self
+```
+or sometimes silent training issues with poor convergence due to incorrect gradients.
+
+**Symptoms**:
+- Loss function receiving target indices that don't match model output dimensions
+- Training appears to work but produces nonsensical results
+- Random index errors during training
+
+**Solution**:
+- Create a bidirectional mapping between original class indices and consecutive indices (0 to N-1) for active classes:
+  ```python
+  def create_class_index_mapping(class_weights):
+      active_classes = torch.nonzero(class_weights).squeeze().tolist()
+      original_to_new = {orig_idx: new_idx for new_idx, orig_idx in enumerate(active_classes)}
+      new_to_original = {new_idx: orig_idx for new_idx, orig_idx in enumerate(active_classes)}
+      return original_to_new, new_to_original
+  ```
+- Modify model output layer to match only active classes:
+  ```python
+  model.fc = nn.Linear(model.fc.in_features, len(active_classes))
+  ```
+- Remap target indices in training/validation loops:
+  ```python
+  remapped_targets = torch.tensor([original_to_new.get(t.item(), 0) for t in targets], 
+                                 device=device)
+  ```
+- Filter class weights for loss function to match new indices:
+  ```python
+  filtered_weights = torch.zeros(len(active_classes), device=device)
+  for orig_idx, new_idx in original_to_new.items():
+      filtered_weights[new_idx] = class_weights[orig_idx]
+  ```
+- Always save the class mapping with model checkpoints for proper inference:
+  ```python
+  checkpoint = {
+      'model_state_dict': model.state_dict(),
+      'class_mapping': {'original_to_new': original_to_new, 'new_to_original': new_to_original}
+  }
+  ```
+
 ## Dataset Pipeline Errors
 
 ### 1. Feature Cache Access

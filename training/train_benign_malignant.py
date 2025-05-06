@@ -16,6 +16,9 @@ from tqdm import tqdm
 from sklearn.metrics import f1_score, confusion_matrix, precision_score, recall_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+import csv
+import time
+from datetime import datetime
 
 # Set environment variables for better GPU memory management
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:512,expandable_segments:True'
@@ -106,17 +109,63 @@ def plot_confusion_matrix(cm, class_names, epoch, save_dir):
     plt.savefig(f'{save_dir}/confusion_matrix_epoch_{epoch}.png', bbox_inches='tight')
     plt.close()
 
+def setup_logging(config, model_name="benign_malignant"):
+    """Setup logging directories and files."""
+    # Create timestamp for unique run identification
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Create log directories if they don't exist
+    log_dir = project_root / 'logs' / model_name / timestamp
+    log_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Setup logging to file
+    log_file = log_dir / 'training.log'
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler(sys.stdout)
+        ]
+    )
+    
+    # Create CSV file for metrics
+    metrics_file = log_dir / 'metrics.csv'
+    with open(metrics_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            'epoch', 'batch', 'train_loss', 'train_acc',
+            'val_loss', 'val_acc', 'learning_rate',
+            'f1_score', 'precision', 'recall'
+        ])
+    
+    return log_dir, metrics_file
+
+def log_metrics(metrics_file, epoch, batch, train_loss, train_acc, 
+                val_loss=None, val_acc=None, learning_rate=None,
+                f1=None, precision=None, recall=None):
+    """Log metrics to CSV file."""
+    with open(metrics_file, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            epoch, batch, train_loss, train_acc,
+            val_loss if val_loss is not None else '',
+            val_acc if val_acc is not None else '',
+            learning_rate if learning_rate is not None else '',
+            f1 if f1 is not None else '',
+            precision if precision is not None else '',
+            recall if recall is not None else ''
+        ])
+
 def train(config_name="balanced"):
     # Clear GPU memory
     torch.cuda.empty_cache()
     gc.collect()
     
     # Setup logging
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-    
-    # Load config
     config = load_config()
+    log_dir, metrics_file = setup_logging(config)
+    logger = logging.getLogger(__name__)
     
     # Get experiment configuration
     experiment_config = get_config(config_name)
@@ -245,62 +294,69 @@ def train(config_name="balanced"):
     os.makedirs(confusion_matrix_dir, exist_ok=True)
     
     # Training loop
-    for epoch in range(50):  # 50 epochs
-        # Train
+    best_val_acc = 0
+    start_time = time.time()
+    
+    for epoch in range(wandb.config.epochs):
+        epoch_start_time = time.time()
+        
+        # Train phase
         model.train()
         train_loss = 0
         train_correct = 0
         train_total = 0
-        all_targets = []
-        all_predictions = []
+        all_train_preds = []
+        all_train_targets = []
         
-        progress_bar = tqdm(train_loader, desc=f'Epoch {epoch+1}/50')
+        # Training loop with progress bar
+        progress_bar = tqdm(train_loader, desc=f'Epoch {epoch}')
         for batch_idx, (features, targets) in enumerate(progress_bar):
             try:
                 # Move data to device
                 features = features.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
                 
-                # Ensure data types are correct
-                features = features.float()
-                targets = targets.long()
-                
-                # Mixed precision forward pass
-                with torch.amp.autocast('cuda'):
+                # Forward pass
+                with torch.cuda.amp.autocast():
                     outputs = model(features)
                     loss = criterion(outputs, targets)
                 
-                # Mixed precision backward pass
+                # Backward pass
                 optimizer.zero_grad()
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
                 
                 # Calculate accuracy
-                _, predicted = outputs.max(1)
-                train_total += targets.size(0)
-                train_correct += predicted.eq(targets).sum().item()
+                with torch.no_grad():
+                    _, predicted = outputs.max(1)
+                    train_total += targets.size(0)
+                    train_correct += predicted.eq(targets).sum().item()
+                
+                # Store predictions and targets for metrics
+                all_train_preds.extend(predicted.cpu().numpy())
+                all_train_targets.extend(targets.cpu().numpy())
                 
                 # Update total loss
                 train_loss += loss.item()
                 
-                # Log to wandb only every log_interval batches
-                if batch_idx % log_interval == 0:
-                    wandb.log({
-                        'train_batch_loss': loss.item(),
-                        'train_batch_acc': 100.*train_correct/train_total,
-                        'learning_rate': optimizer.param_groups[0]['lr']
-                    })
+                # Calculate batch metrics
+                batch_loss = loss.item()
+                batch_acc = 100. * train_correct / train_total
+                current_lr = optimizer.param_groups[0]['lr']
+                
+                # Log metrics
+                log_metrics(
+                    metrics_file, epoch, batch_idx,
+                    batch_loss, batch_acc,
+                    learning_rate=current_lr
+                )
                 
                 # Update progress bar
                 progress_bar.set_postfix({
                     'Loss': train_loss/(batch_idx+1),
-                    'Acc': 100.*train_correct/train_total
+                    'Acc': batch_acc
                 })
-                
-                # Collect targets and predictions for metrics
-                all_targets.extend(targets.cpu().numpy())
-                all_predictions.extend(predicted.cpu().numpy())
                 
                 # Clean up GPU memory
                 del features, targets, outputs, loss
@@ -310,37 +366,27 @@ def train(config_name="balanced"):
                 logger.error(f"Error in training batch {batch_idx}: {str(e)}")
                 continue
         
-        # Calculate train metrics
+        # Calculate training metrics
         train_loss = train_loss / len(train_loader)
         train_acc = 100. * train_correct / train_total
-        train_f1 = f1_score(all_targets, all_predictions, average='weighted')
-        train_precision = precision_score(all_targets, all_predictions, average='weighted')
-        train_recall = recall_score(all_targets, all_predictions, average='weighted')
+        train_f1 = f1_score(all_train_targets, all_train_preds, average='weighted')
+        train_precision = precision_score(all_train_targets, all_train_preds, average='weighted')
+        train_recall = recall_score(all_train_targets, all_train_preds, average='weighted')
         
-        # Log train metrics
-        wandb.log({
-            'train_loss': train_loss,
-            'train_acc': train_acc,
-            'train_f1': train_f1,
-            'train_precision': train_precision,
-            'train_recall': train_recall,
-            'epoch': epoch+1
-        })
-        
-        # Validate
+        # Validation phase
         model.eval()
         val_loss = 0
         val_correct = 0
         val_total = 0
+        all_val_preds = []
         all_val_targets = []
-        all_val_predictions = []
         
         with torch.no_grad():
             for features, targets in tqdm(val_loader, desc='Validation'):
                 features = features.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
                 
-                with torch.amp.autocast('cuda'):
+                with torch.cuda.amp.autocast():
                     outputs = model(features)
                     loss = criterion(outputs, targets)
                 
@@ -349,9 +395,8 @@ def train(config_name="balanced"):
                 val_correct += predicted.eq(targets).sum().item()
                 val_loss += loss.item()
                 
-                # Collect targets and predictions for metrics
+                all_val_preds.extend(predicted.cpu().numpy())
                 all_val_targets.extend(targets.cpu().numpy())
-                all_val_predictions.extend(predicted.cpu().numpy())
                 
                 del features, targets, outputs, loss
                 torch.cuda.empty_cache()
@@ -359,86 +404,85 @@ def train(config_name="balanced"):
         # Calculate validation metrics
         val_loss = val_loss / len(val_loader)
         val_acc = 100. * val_correct / val_total
-        val_f1 = f1_score(all_val_targets, all_val_predictions, average='weighted')
-        val_precision = precision_score(all_val_targets, all_val_predictions, average='weighted')
-        val_recall = recall_score(all_val_targets, all_val_predictions, average='weighted')
+        val_f1 = f1_score(all_val_targets, all_val_preds, average='weighted')
+        val_precision = precision_score(all_val_targets, all_val_preds, average='weighted')
+        val_recall = recall_score(all_val_targets, all_val_preds, average='weighted')
         
-        # Generate and log confusion matrix
-        cm = confusion_matrix(all_val_targets, all_val_predictions)
-        wandb.log({
-            "confusion_matrix": wandb.plot.confusion_matrix(
-                probs=None,
-                y_true=all_val_targets,
-                preds=all_val_predictions,
-                class_names=class_names
-            )
-        })
+        # Log epoch metrics
+        log_metrics(
+            metrics_file, epoch, 'end',
+            train_loss, train_acc,
+            val_loss, val_acc,
+            optimizer.param_groups[0]['lr'],
+            val_f1, val_precision, val_recall
+        )
         
-        # Save confusion matrix
-        plot_confusion_matrix(cm, class_names, epoch+1, confusion_matrix_dir)
+        # Calculate epoch time
+        epoch_time = time.time() - epoch_start_time
         
-        # Log validation metrics
-        wandb.log({
-            'val_loss': val_loss,
-            'val_acc': val_acc,
-            'val_f1': val_f1,
-            'val_precision': val_precision,
-            'val_recall': val_recall,
-            'epoch': epoch+1
-        })
+        # Log epoch summary
+        logger.info(
+            f'Epoch {epoch} Summary:\n'
+            f'Time: {epoch_time:.2f}s\n'
+            f'Train Loss: {train_loss:.4f}\n'
+            f'Train Acc: {train_acc:.2f}%\n'
+            f'Train F1: {train_f1:.4f}\n'
+            f'Val Loss: {val_loss:.4f}\n'
+            f'Val Acc: {val_acc:.2f}%\n'
+            f'Val F1: {val_f1:.4f}\n'
+            f'Val Precision: {val_precision:.4f}\n'
+            f'Val Recall: {val_recall:.4f}\n'
+            f'Learning Rate: {optimizer.param_groups[0]["lr"]:.6f}'
+        )
         
-        # Print metrics
-        logger.info(f'Epoch {epoch+1}: '
-                   f'Train Loss: {train_loss:.4f} '
-                   f'Train Acc: {train_acc:.2f}% '
-                   f'Train F1: {train_f1:.4f} '
-                   f'Val Loss: {val_loss:.4f} '
-                   f'Val Acc: {val_acc:.2f}% '
-                   f'Val F1: {val_f1:.4f}')
+        # Save confusion matrix plot
+        cm = confusion_matrix(all_val_targets, all_val_preds)
+        plot_confusion_matrix(cm, ['benign', 'malignant'], epoch, log_dir / 'confusion_matrices')
         
-        # Update learning rate
-        scheduler.step(val_loss)
-        
-        # Check if best model and save
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            patience_counter = 0
-            
-            # Save checkpoint
-            checkpoint_dir = os.path.join(project_root, 'saved_models', 'benign_malignant')
-            os.makedirs(checkpoint_dir, exist_ok=True)
-            checkpoint_path = os.path.join(checkpoint_dir, experiment_config["model_path"])
-            
-            # Convert class_weights to CPU before saving
-            weights_cpu = class_weights.cpu().numpy().astype(np.float32)
-            
+        # Save checkpoint if best validation accuracy
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            checkpoint_path = log_dir / experiment_config["model_path"]
             torch.save({
-                'epoch': epoch+1,
+                'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
-                'val_loss': val_loss,
                 'val_acc': val_acc,
+                'train_acc': train_acc,
+                'val_loss': val_loss,
+                'train_loss': train_loss,
                 'val_f1': val_f1,
-                'class_mapping': {0: 'benign', 1: 'malignant'},
-                'class_weights': weights_cpu,
-                'original_only': original_only,
-                'balanced_sampling': balanced_sampling,
-                'max_samples_per_class': max_samples_per_class,
-                'experiment': experiment_config["description"]
+                'val_precision': val_precision,
+                'val_recall': val_recall,
+                'learning_rate': optimizer.param_groups[0]['lr']
             }, checkpoint_path)
-            
             logger.info(f'Saved best model checkpoint to {checkpoint_path}')
-        else:
-            patience_counter += 1
-            
-        # Early stopping
-        if patience_counter >= early_stopping_patience:
-            logger.info(f'Early stopping triggered after {epoch+1} epochs')
-            break
         
         # Clear memory after each epoch
         gc.collect()
         torch.cuda.empty_cache()
+    
+    # Log total training time
+    total_time = time.time() - start_time
+    logger.info(f'\nTotal training time: {total_time/3600:.2f} hours')
+    logger.info(f'Best validation accuracy: {best_val_acc:.2f}%')
+    
+    # Save final model
+    final_checkpoint_path = log_dir / f'benign_malignant_final.pth'
+    torch.save({
+        'epoch': wandb.config.epochs - 1,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'val_acc': val_acc,
+        'train_acc': train_acc,
+        'val_loss': val_loss,
+        'train_loss': train_loss,
+        'val_f1': val_f1,
+        'val_precision': val_precision,
+        'val_recall': val_recall,
+        'learning_rate': optimizer.param_groups[0]['lr']
+    }, final_checkpoint_path)
+    logger.info(f'Saved final model checkpoint to {final_checkpoint_path}')
     
     wandb.finish()
     logger.info("Training completed!")

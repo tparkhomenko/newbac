@@ -85,7 +85,7 @@ logs/
 *.swp
 
 # Ignore Writing and LaTeX temp files
-Writing/
+# Writing/
 *.aux
 *.out
 *.toc

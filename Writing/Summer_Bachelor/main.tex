@@ -1,0 +1,113 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\geometry{left=2.5cm, right=2.5cm, top=4cm, bottom=2.5cm}
+\usepackage{fancyhdr}
+\usepackage{sectsty}
+\usepackage{enumitem}
+
+% Hyperref setup for clickable links
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    filecolor=darkblue,
+    urlcolor=darkblue,
+}
+
+% Define dark blue color
+\definecolor{darkblue}{RGB}{0,0,139}
+\definecolor{black}{RGB}{0,0,0}
+% Header styling with dark blue
+\sectionfont{\color{darkblue}\bfseries\Large}
+\subsectionfont{\color{darkblue}\bfseries}
+\pagestyle{fancy}
+\fancyhf{}
+% Left header: Application information
+\lhead{\textcolor{black}{Application for:\\
+Summer Bachelor Project at the IVC Institute\\
+Graz University of Technology\\
+May 7, 2025}}
+% Right header: Name and contact information
+\rhead{\textcolor{darkblue}{Taisiya Parkhomenko\\
+\href{tel:+43-664-156-0-160}{+43 664 156 0 160}\\
+\href{mailto:taisiyparkhomenko@gmail.com}{taisiyparkhomenko@gmail.com}\\
+\href{https://www.linkedin.com/in/taisiya-parkhomenko-937336167/}{LinkedIn}}}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\headheight}{46.27916pt}
+\addtolength{\topmargin}{-34.27916pt}
+
+\begin{document}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+\vspace{4em}
+\section*{\textcolor{darkblue}{\textbf{Motivation Letter}}}
+\vspace{1em}
+
+\noindent Dear selection committee, dear Prof. Plopski,
+
+\vspace{1.5em}
+
+I would love to participate in the summer Bachelor program at the IVC institute. I'm currently finishing my Bachelor's degree in \textbf{Biomedical Engineering} at TU Graz and have already started working on my thesis under the supervision of \textbf{Marc Masana}.
+
+The project is still in its early stages, but I've soft-started the implementation. My current idea focuses on \textbf{skin lesion classification} using \textbf{machine learning}. The pipeline would be structured with multi-step decisions: First, I use a \textit{frozen encoder} to extract features from images, then a small neural network classifies them as \textbf{skin} or \textbf{non-skin}. If the image is classified as skin, I apply two additional classifiers – one for \textbf{lesion type} and one for benign vs. malignant prediction.
+
+I've also been experimenting with \textbf{segmentation masks} to support the visual analysis and better localize relevant features. The plan is to integrate these steps into a pipeline that could be adapted or extended later on.
+
+A few years ago, I worked at a company where we used ML in image processing – I really enjoyed that experience, comparing different models and exploring what works best. Since then, I've been programming regularly and looking forward to applying my skills in a \textit{medical context}.
+
+I'm very motivated to better my knowledge in \textbf{Computer Vision} area and would be excited to work on it during this summer program.
+
+\vspace{1.5em}
+
+\noindent Thank you and best regards,\\
+Taisiya Parkhomenko
+
+\vspace{2em}
+\hrule
+\vspace{2em}
+
+\section*{\textcolor{darkblue}{Commitment of Supervision}}
+\vspace{1em}
+
+\textit{Commitment of supervision of the corresponding advisor will be input here.}
+
+\vspace{2em}
+\hrule
+\vspace{2em}
+
+\newpage
+\section*{\textcolor{darkblue}{Thesis Idea – Skin Lesion Classification with Multi-Stage ML Pipeline}}
+
+I am currently working on my \textbf{Bachelor's thesis} under the supervision of \textbf{Marc Masana}. The goal is to build a \textbf{multi-stage pipeline} for automatic \textbf{skin lesion classification}.
+
+\subsection*{\textbf{Pipeline Structure}}
+\begin{enumerate}
+    \item Use a \textbf{SAM2 encoder} to extract feature embeddings from input \textbf{skin images}.
+    \item Classify images as \textbf{skin} vs. \textbf{non-skin} using a lightweight \textbf{MLP (MLP1)}.
+    \item If classified as skin:
+    \begin{itemize}
+        \item Predict \textbf{lesion type} (e.g., keratosis, carcinoma) using \textbf{MLP2}.
+        \item Predict \textbf{malignancy} (benign vs. malignant) using \textbf{MLP3}.
+    \end{itemize}
+    \item Apply \textbf{segmentation masks} to support visual interpretability and localize relevant regions.
+\end{enumerate}
+
+\vspace{2em}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pipeline.png}
+    \caption{\textbf{System Architecture Diagram}}
+\end{figure}
+
+
+\includepdf[pages=-]{Transcript_de_UF 033 253_01650051.pdf}
+
+\end{document}

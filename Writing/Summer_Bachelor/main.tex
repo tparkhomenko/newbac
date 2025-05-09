@@ -1,113 +1,84 @@
-\documentclass[10pt,a4paper]{article}
-\usepackage[utf8]{inputenc} 
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[english]{babel}
-\usepackage{lmodern}
-\usepackage{graphicx}
-\usepackage{xcolor}
 \usepackage{geometry}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref}
-\usepackage{pdfpages}
-\geometry{left=2.5cm, right=2.5cm, top=4cm, bottom=2.5cm}
-\usepackage{fancyhdr}
-\usepackage{sectsty}
-\usepackage{enumitem}
-
-% Hyperref setup for clickable links
 \hypersetup{
     colorlinks=true,
-    linkcolor=darkblue,
-    filecolor=darkblue,
-    urlcolor=darkblue,
+    linkcolor=BlueViolet,
+    urlcolor=BlueViolet
 }
+\usepackage{enumitem}
+\usepackage{pdfpages}
 
-% Define dark blue color
-\definecolor{darkblue}{RGB}{0,0,139}
-\definecolor{black}{RGB}{0,0,0}
-% Header styling with dark blue
-\sectionfont{\color{darkblue}\bfseries\Large}
-\subsectionfont{\color{darkblue}\bfseries}
-\pagestyle{fancy}
-\fancyhf{}
-% Left header: Application information
-\lhead{\textcolor{black}{Application for:\\
-Summer Bachelor Project at the IVC Institute\\
-Graz University of Technology\\
-May 7, 2025}}
-% Right header: Name and contact information
-\rhead{\textcolor{darkblue}{Taisiya Parkhomenko\\
-\href{tel:+43-664-156-0-160}{+43 664 156 0 160}\\
-\href{mailto:taisiyparkhomenko@gmail.com}{taisiyparkhomenko@gmail.com}\\
-\href{https://www.linkedin.com/in/taisiya-parkhomenko-937336167/}{LinkedIn}}}
-\renewcommand{\headrulewidth}{0pt}
-\setlength{\headheight}{46.27916pt}
-\addtolength{\topmargin}{-34.27916pt}
+\geometry{a4paper, margin=2.5cm}
 
 \begin{document}
-\fancyfoot[C]{\thepage}
-\pagestyle{fancy}
+\pagenumbering{gobble}
 
-\vspace{4em}
-\section*{\textcolor{darkblue}{\textbf{Motivation Letter}}}
-\vspace{1em}
+% Header blocks
+\noindent
+\begin{minipage}[t]{0.6\textwidth}
+    \raggedright
+    %\textbf{Application for:}\\
+    Summer Bachelor Project at the IVC Institute\\
+    Graz University of Technology\\
+    \today
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.3\textwidth}
+    \raggedleft
+    \textcolor{BlueViolet}{Taisiya Parkhomenko\\
+    Matr. Nr. 01650051\\
+    +43 664 156 0 160}
+\end{minipage}
 
-\noindent Dear selection committee, dear Prof. Plopski,
+\vspace{0.5cm}
+\hrule
 
-\vspace{1.5em}
+\section*{\textcolor{BlueViolet}{Motivation Letter}}
+\vspace{0.7cm}
+Dear Prof. Plopski, dear selection committee,
 
-I would love to participate in the summer Bachelor program at the IVC institute. I'm currently finishing my Bachelor's degree in \textbf{Biomedical Engineering} at TU Graz and have already started working on my thesis under the supervision of \textbf{Marc Masana}.
+\vspace{0.5cm}
+I would love to participate in the summer Bachelor program at the IVC institute. A couple of years ago, I worked at a company where we used ML in \textbf{image processing} – I really enjoyed that experience, especially comparing different models and exploring what works best. Since then, I've been programming regularly and looking forward to applying my skills in a medical context.
 
-The project is still in its early stages, but I've soft-started the implementation. My current idea focuses on \textbf{skin lesion classification} using \textbf{machine learning}. The pipeline would be structured with multi-step decisions: First, I use a \textit{frozen encoder} to extract features from images, then a small neural network classifies them as \textbf{skin} or \textbf{non-skin}. If the image is classified as skin, I apply two additional classifiers – one for \textbf{lesion type} and one for benign vs. malignant prediction.
+I'm currently finishing my Bachelor's degree in Biomedical Engineering and have already started working on my thesis under the supervision of Marc Masana.
+The project is still in its early stages, but I began with the implementation. My current idea focuses on \textbf{skin lesion classification} using \textbf{machine learning}. The pipeline structure is described bellow.
 
-I've also been experimenting with \textbf{segmentation masks} to support the visual analysis and better localize relevant features. The plan is to integrate these steps into a pipeline that could be adapted or extended later on.
+I'm very motivated to better my knowledge in \textbf{Computer Vision} area and would be excited to work on it during the summer program. 
 
-A few years ago, I worked at a company where we used ML in image processing – I really enjoyed that experience, comparing different models and exploring what works best. Since then, I've been programming regularly and looking forward to applying my skills in a \textit{medical context}.
+In case other details are needed, here is my \href{https://www.linkedin.com/in/taisiya-parkhomenko-937336167/}{LinkedIn} profile. 
+The \hyperlink{commitment}{commitment of supervision} and the \hyperlink{transcript}{transcript of records} are attached.
 
-I'm very motivated to better my knowledge in \textbf{Computer Vision} area and would be excited to work on it during this summer program.
-
-\vspace{1.5em}
-
-\noindent Thank you and best regards,\\
+\vspace{0.5cm}
+\raggedright
+Thank you and best regards!\\
 Taisiya Parkhomenko
 
-\vspace{2em}
+\vspace{2cm}
 \hrule
-\vspace{2em}
+\section*{\textcolor{BlueViolet}{Thesis: Skin Lesion Classification with ML Pipeline}}
+\vspace{0.7cm}
+The idea is to build a multi-step pipeline for automatic skin lesion classification.\\
+Structure:
 
-\section*{\textcolor{darkblue}{Commitment of Supervision}}
-\vspace{1em}
-
-\textit{Commitment of supervision of the corresponding advisor will be input here.}
-
-\vspace{2em}
-\hrule
-\vspace{2em}
-
-\newpage
-\section*{\textcolor{darkblue}{Thesis Idea – Skin Lesion Classification with Multi-Stage ML Pipeline}}
-
-I am currently working on my \textbf{Bachelor's thesis} under the supervision of \textbf{Marc Masana}. The goal is to build a \textbf{multi-stage pipeline} for automatic \textbf{skin lesion classification}.
-
-\subsection*{\textbf{Pipeline Structure}}
-\begin{enumerate}
-    \item Use a \textbf{SAM2 encoder} to extract feature embeddings from input \textbf{skin images}.
-    \item Classify images as \textbf{skin} vs. \textbf{non-skin} using a lightweight \textbf{MLP (MLP1)}.
-    \item If classified as skin:
+\begin{enumerate}[leftmargin=*]
+    \item Use SAM2 encoder to extract features from skin images
+    \item Classify images as skin vs. non-skin
+    \item If skin:
     \begin{itemize}
-        \item Predict \textbf{lesion type} (e.g., keratosis, carcinoma) using \textbf{MLP2}.
-        \item Predict \textbf{malignancy} (benign vs. malignant) using \textbf{MLP3}.
+        \item[-] Classify lesion type (e.g., keratosis, carcinoma)
+        \item[-] Predict benign vs. malignant
     \end{itemize}
-    \item Apply \textbf{segmentation masks} to support visual interpretability and localize relevant regions.
+    \item Use segmentation masks for interpretability and better localization
 \end{enumerate}
 
-\vspace{2em}
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{pipeline.png}
-    \caption{\textbf{System Architecture Diagram}}
-\end{figure}
 
-
+\hypertarget{commitment}{}
+\includepdf[pages=-]{Summer-Bachelor-Program-2025-Taisiya-Parkhomenko.pdf}
+\hypertarget{transcript}{}
 \includepdf[pages=-]{Transcript_de_UF 033 253_01650051.pdf}
-
 \end{document}

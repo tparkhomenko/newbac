@@ -1,0 +1,273 @@
+\documentclass[aspectratio=169]{beamer}
+%% Choose aspect ratio and other standard options:
+% [aspectratio=169] % 16:9 (default)
+% [aspectratio=43]  % 4:3 
+
+\usetheme[minimal]{tugraz2018}
+%% Choose main theme variant:
+% [standard]        % standard (default)
+% [institute]       % with institute's graphical acronym on the left
+% [minimal]         % with reduced visuals
+
+%% Choose your font style:
+%                   % Helvetica (default for Corporate Design)
+% [webfont]         % Source Sans Pro (as used on tugraz.at)
+% [nofont]          % no font loaded - Computer Modern Sans
+
+%% For more options, see README.pdf
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{todonotes}  % Add todonotes package
+%% Choose your main language:
+% [ngerman]   % German
+% [english]   % English
+
+
+%% Add your own packages, macros, etc.
+% ...
+
+
+%% Enter presentation metadata
+\title[Skin Image Classification]{Skin Image Classification Pipeline:\\Using SAM2 Encoder Features}
+\author{Taisiya Parkhomenko (01650051)}
+\date{Bachelor Thesis}
+\institute{Institute of Visual Computing (IVC)}
+\instituteurl{www.ivc.tugraz.at}
+
+%% Logos
+\institutelogo{beamerthemetugraz/institute/kurz}  % IVC logo
+% \additionallogo{figures/logo}  % additional logo if needed
+% \logobar{Supported by: ...}  % sponsors (titlepage; optional)
+
+
+\begin{document}
+
+\begin{frame}[plain]
+  \maketitle
+\end{frame}
+
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+
+\section{Introduction}
+
+\begin{frame}{Introduction}
+  \begin{itemize}
+    \item Two-stage classification pipeline using frozen SAM2 encoder features:
+      \begin{itemize}
+        \item Stage 1: Skin vs Not Skin Classification
+        \item Stage 2: Lesion Group and Malignancy Classification
+      \end{itemize}
+    \item Large-scale dataset combination:
+      \begin{itemize}
+        \item ISIC 2019: 157,610 skin lesion images (augmented from 33,569 original)
+        \item DTD: 28,200 texture images (augmented from 5,640 original)
+      \end{itemize}
+    \item Focus on feature extraction using SAM2's powerful vision encoder
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Objectives}
+  \begin{itemize}
+    \item Implement a skin lesion detection pipeline using foundation models
+    \item Explore the applicability of SAM2 for medical imaging
+    \item Reduce labeling costs by automating classification steps
+    \item Combine datasets from different domains for improved robustness
+    \item Evaluate transfer learning capabilities for skin lesion detection
+    \item Design a modular, hierarchical pipeline for multi-stage classification
+  \end{itemize}
+\end{frame}
+
+
+\section{Methodology}
+
+\begin{frame}{Pipeline Overview}
+  \begin{itemize}
+    \item Two-stage classification using SAM2 encoder features:
+      \begin{itemize}
+        \item Stage 1: Skin vs Not-Skin (MLP1)
+        \item Stage 2: Lesion Group (MLP2) and Malignancy (MLP3)
+      \end{itemize}
+    \item Feature extraction:
+      \begin{itemize}
+        \item SAM2 ViT encoder (frozen)
+        \item 256-dimensional embeddings
+      \end{itemize}
+    \item Linear probing to leverage pre-trained features
+    \item Segmentation masks for visualization
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Datasets}
+  \begin{itemize}
+    \item ISIC 2019 Dataset:
+      \begin{itemize}
+        \item 157,610 augmented images (33,569 original)
+        \item 5 lesion groups:
+          \begin{itemize}
+            \item melanocytic: 106,095 images (21,219 original)
+            \item non-melanocytic carcinoma: 25,455 images (5,091 original)
+            \item keratosis: 22,625 images (4,525 original)
+            \item vascular: 1,785 images (357 original)
+            \item fibrous: 1,650 images (330 original)
+          \end{itemize}
+        \item Malignancy labels: benign (96,705), malignant (60,905)
+      \end{itemize}
+    \item DTD (Describable Textures Dataset):
+      \begin{itemize}
+        \item 28,200 augmented images (5,640 original)
+        \item 47 texture categories
+        \item Used as non-skin examples
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Data Processing}
+  \begin{itemize}
+    \item Unified preprocessing pipeline:
+      \begin{itemize}
+        \item Resize all images to 1024x1024 (SAM format)
+        \item 5x augmentation per image:
+          \begin{itemize}
+            \item Original
+            \item Horizontal flip
+            \item Rotations (90°, 180°, 270°)
+          \end{itemize}
+      \end{itemize}
+    \item Dataset splits (total 196,045 images):
+      \begin{itemize}
+        \item Train: 137,122 images (117,490 skin / 19,632 non-skin)
+        \item Validation: 29,399 images (25,175 skin / 4,224 non-skin)
+        \item Test: 29,524 images (25,180 skin / 4,344 non-skin)
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Feature Extraction and Linear Probing}
+  \begin{itemize}
+    \item SAM2 Feature Extractor:
+      \begin{itemize}
+        \item Frozen ViT encoder
+        \item 256-dimensional embeddings
+        \item GPU-accelerated batch processing
+      \end{itemize}
+    \item Linear Probing Architecture:
+      \begin{itemize}
+        \item Input: 256-dim SAM features
+        \item Hidden layers: [512, 256] with ReLU \& Dropout(0.3)
+        \item Output: task-specific classes
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\section{Results}
+
+\begin{frame}{Segmentation Results}
+  \begin{itemize}
+    \item Qualitative mask visualization
+    \item SAM2 performance on different skin conditions
+    \item Mask selection effectiveness
+  \end{itemize}
+  \todo[inline]{Add side-by-side comparison of original images and masks}
+\end{frame}
+
+\begin{frame}{Classification Performance}
+  \begin{itemize}
+    \item Skin vs Not-Skin (MLP1): 99.38\% validation accuracy
+      \begin{itemize}
+        \item Balanced dataset: 2,000 samples per class
+        \item FocalLoss with class weights [1.0, 5.93]
+      \end{itemize}
+    \item Lesion Type (MLP2): 65.8\% validation accuracy
+      \begin{itemize}
+        \item Max 2,000 samples per majority class
+        \item F1 scores: 0.59-0.72 across 5 classes
+        \item FocalLoss with class weights [1.5, 1.5, 1.5, 1.2, 1.2]
+      \end{itemize}
+    \item Benign/Malignant (MLP3): 72.55\% validation accuracy
+      \begin{itemize}
+        \item Balanced dataset: 2,000 samples per class
+        \item FocalLoss with gamma=2.0
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Ablation Study Results}
+  \begin{itemize}
+    \item Class imbalance handling (MLP3):
+      \begin{itemize}
+        \item Balanced sampling vs. original distribution
+        \item Balanced (4k samples): 72.55\% accuracy, F1 score 0.7255
+        \item Original (22k samples): 71.29\% accuracy, F1 score 0.7045
+      \end{itemize}
+    \item Training time comparison:
+      \begin{itemize}
+        \item Balanced model: ~1.5 hours
+        \item Original distribution: ~4.5 hours (3x slower)
+      \end{itemize}
+    \item Augmented dataset model still in progress:
+      \begin{itemize}
+        \item 110,470 images (67,990 benign / 42,480 malignant)
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Connection to Objectives}
+  \begin{itemize}
+    \item Foundation model applicability:
+      \begin{itemize}
+        \item SAM2 features effective for medical imaging tasks
+        \item Linear probing demonstrates strong transfer learning capabilities
+      \end{itemize}
+    \item Multi-domain dataset integration:
+      \begin{itemize}
+        \item Successfully combined DTD textures with ISIC skin lesions
+        \item Hierarchical pipeline provides modular classification
+      \end{itemize}
+    \item Automated labeling steps:
+      \begin{itemize}
+        \item 99.38\% accurate skin detection enables efficient filtering
+        \item Modular approach allows targeted fine-tuning
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\section{Conclusion}
+
+\begin{frame}{Key Findings \& Future Work}
+  \begin{itemize}
+    \item Key Findings:
+      \begin{itemize}
+        \item SAM2 encoder features highly effective for skin lesion classification
+        \item Linear probing with balanced sampling outperforms larger imbalanced datasets
+        \item Multi-stage pipeline effective for hierarchical classification
+      \end{itemize}
+    \item Future Work:
+      \begin{itemize}
+        \item Investigate prompt point generation using grayscale extrema
+        \item Analyze SAM mask filtering heuristics
+        \item Explore ensemble methods for improved accuracy
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Thank You}
+  \centering
+  \Large Thank you for your attention!
+  
+  \vspace{1cm}
+  \normalsize
+  \begin{itemize}
+    \item Supervisor: Dr. Marc Masana Castrillo
+    \item Institute of Visual Computing (IVC)
+    \item Technical University of Graz
+  \end{itemize}
+\end{frame}
+
+\end{document}

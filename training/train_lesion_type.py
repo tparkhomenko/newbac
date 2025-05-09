@@ -18,6 +18,9 @@ from sklearn.metrics import f1_score, precision_score, recall_score, confusion_m
 import csv
 import time
 from datetime import datetime
+import argparse
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Set environment variables for better GPU memory management
 os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb:128,expandable_segments:True'
@@ -37,6 +40,25 @@ def load_config():
     config_path = project_root / "config.yaml"
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
+
+def parse_model_config(model_config):
+    """Parse model configuration string to get hidden dimensions and dropout rate."""
+    parts = model_config.split('_')
+    hidden_dims = []
+    dropout = 0.3  # default value
+    
+    for part in parts:
+        if part.startswith('DO'):
+            # Extract dropout rate: DO03 -> 0.3
+            dropout = float('0.' + part[2:])
+        else:
+            try:
+                # Parse hidden dimension
+                hidden_dims.append(int(part))
+            except ValueError:
+                pass  # Ignore non-numeric parts
+    
+    return hidden_dims, dropout
 
 def clean_gpu_memory():
     """Clean up GPU memory."""
@@ -92,17 +114,17 @@ class FocalLoss(nn.Module):
         else:
             return focal_loss.sum()
 
-def setup_logging(config, model_name="lesion_type"):
+def setup_logging(config, model_config, model_name="lesion_type"):
     """Setup logging directories and files."""
-    # Create timestamp for unique run identification
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    
     # Create log directories if they don't exist
-    log_dir = project_root / 'logs' / model_name / timestamp
+    log_dir = project_root / 'logs' / model_name
     log_dir.mkdir(parents=True, exist_ok=True)
     
+    # Log file specific to model configuration
+    metrics_file = log_dir / f"{model_config}_metrics.csv"
+    
     # Setup logging to file
-    log_file = log_dir / 'training.log'
+    log_file = log_dir / f"{model_config}_training.log"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(levelname)s] %(message)s',
@@ -113,37 +135,40 @@ def setup_logging(config, model_name="lesion_type"):
     )
     
     # Create CSV file for metrics
-    metrics_file = log_dir / 'metrics.csv'
     with open(metrics_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
-            'epoch', 'batch', 'train_loss', 'train_acc',
-            'val_loss', 'val_acc', 'learning_rate',
-            'f1_score', 'precision', 'recall'
+            'epoch', 'train_loss', 'train_acc', 'train_f1',
+            'val_loss', 'val_acc', 'val_f1', 'learning_rate',
+            'precision', 'recall'
         ])
     
     return log_dir, metrics_file
 
-def log_metrics(metrics_file, epoch, batch, train_loss, train_acc, 
-                val_loss=None, val_acc=None, learning_rate=None,
-                f1=None, precision=None, recall=None):
+def log_metrics(metrics_file, epoch, train_loss, train_acc, train_f1, 
+                val_loss=None, val_acc=None, val_f1=None, learning_rate=None,
+                precision=None, recall=None):
     """Log metrics to CSV file."""
     with open(metrics_file, 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([
-            epoch, batch, train_loss, train_acc,
+            epoch, train_loss, train_acc, train_f1,
             val_loss if val_loss is not None else '',
             val_acc if val_acc is not None else '',
+            val_f1 if val_f1 is not None else '',
             learning_rate if learning_rate is not None else '',
-            f1 if f1 is not None else '',
             precision if precision is not None else '',
             recall if recall is not None else ''
         ])
 
-def train_model():
+def train_model(model_config="256_512_256_DO03"):
     # Load configuration
     config = load_config()
     training_config = config['training']
+    
+    # Parse model configuration
+    hidden_dims, dropout = parse_model_config(model_config)
+    logger.info(f"Using hidden dimensions: {hidden_dims}, dropout: {dropout}")
     
     # Set device
     device = torch.device(training_config['device'])
@@ -153,21 +178,28 @@ def train_model():
     if torch.cuda.is_available():
         torch.cuda.manual_seed(training_config['seed'])
     
+    # Setup logging
+    log_dir, metrics_file = setup_logging(config, model_config, "lesion_type")
+    logger = logging.getLogger(__name__)
+    
     # Get max samples per class from config
     MAX_SAMPLES_PER_CLASS = training_config.get('max_samples_per_class', 2000)
     logger.info(f"Setting maximum samples per class to {MAX_SAMPLES_PER_CLASS}")
     
-    # Initialize wandb with run name that includes max samples per class
-    run_name = f"lesion_type_max{MAX_SAMPLES_PER_CLASS}"
+    # Initialize wandb with run name that includes max samples per class and model config
+    run_name = f"lesion_type_max{MAX_SAMPLES_PER_CLASS}_{model_config}"
     
     wandb.init(
         project=training_config['wandb']['project'],
         name=run_name,
-        tags=training_config['wandb']['tags'] + [f"max{MAX_SAMPLES_PER_CLASS}"],
+        tags=training_config['wandb']['tags'] + [f"max{MAX_SAMPLES_PER_CLASS}", model_config],
         config={
             **training_config,
             'max_samples_per_class': MAX_SAMPLES_PER_CLASS,
-            'class_weights': training_config.get('class_weights', [0.49, 0.49, 0.49, 1.70, 1.84])
+            'class_weights': training_config.get('class_weights', [0.49, 0.49, 0.49, 1.70, 1.84]),
+            'model_config': model_config,
+            'hidden_dims': hidden_dims,
+            'dropout': dropout
         }
     )
     
@@ -222,8 +254,12 @@ def train_model():
     # Create more comprehensive dataset statistics
     print(f"\n--- Comprehensive Dataset Statistics (max_samples_per_class={MAX_SAMPLES_PER_CLASS}) ---")
     
-    # Call the generate_stats function
+    try:
+        # Call the generate_stats function if available
     generate_dataset_statistics()
+    except NameError:
+        # Otherwise, continue without generating statistics
+        pass
     print(f"--- End of Statistics ---\n")
     full_dataset.metadata = train_metadata
     train_dataset = full_dataset
@@ -286,12 +322,12 @@ def train_model():
     # Use FocalLoss with class weights
     criterion = FocalLoss(alpha=filtered_weights, gamma=2)
     
-    # Create model with the correct number of output classes
+    # Create model with the correct number of output classes and specified architecture
     model = LesionTypeHead(
         input_dim=256,
-        hidden_dims=training_config['model']['hidden_dims'],
+        hidden_dims=hidden_dims,  # Use parsed hidden dimensions
         output_dim=len(active_classes),  # Only active classes
-        dropout=training_config['model']['dropout']
+        dropout=dropout  # Use parsed dropout rate
     ).to(device)
     
     # Get class names for active classes in the new order
@@ -334,17 +370,28 @@ def train_model():
         pin_memory=training_config['pin_memory']
     )
     
-    # Setup logging
-    log_dir, metrics_file = setup_logging(config, "lesion_type")
-    logger = logging.getLogger(__name__)
-    
     # Log training configuration
     logger.info("Training Configuration:")
+    logger.info(f"Model Config: {model_config}")
+    logger.info(f"Hidden Dimensions: {hidden_dims}")
+    logger.info(f"Dropout Rate: {dropout}")
     for key, value in training_config.items():
+        if key not in ['model']:
         logger.info(f"{key}: {value}")
+    
+    # Setup paths for saving models
+    model_save_dir = project_root / 'saved_models' / 'lesion_type'
+    model_save_dir.mkdir(parents=True, exist_ok=True)
+    checkpoint_path = model_save_dir / f"{model_config}_best.pth"
+    
+    # Setup paths for saving confusion matrices
+    confusion_matrix_dir = os.path.join(project_root, 'results', 'confusion_matrices', 'lesion_type')
+    os.makedirs(confusion_matrix_dir, exist_ok=True)
     
     # Training loop
     best_val_acc = 0
+    patience_counter = 0
+    early_stopping_patience = 5
     start_time = time.time()
     
     for epoch in range(training_config['epochs']):
@@ -401,9 +448,9 @@ def train_model():
         train_acc = 100. * train_correct / train_total
         
         # Per-class metrics for training
-        train_f1 = f1_score(train_labels, train_outputs, average=None)
-        train_precision = precision_score(train_labels, train_outputs, average=None, zero_division=0)
-        train_recall = recall_score(train_labels, train_outputs, average=None, zero_division=0)
+        train_f1 = f1_score(train_labels, train_outputs, average='weighted')
+        train_precision = precision_score(train_labels, train_outputs, average='weighted', zero_division=0)
+        train_recall = recall_score(train_labels, train_outputs, average='weighted', zero_division=0)
         
         # Validation phase
         model.eval()
@@ -444,36 +491,31 @@ def train_model():
         val_acc = 100. * val_correct / val_total
         
         # Per-class metrics for validation
-        val_f1 = f1_score(val_labels, val_outputs, average=None)
-        val_precision = precision_score(val_labels, val_outputs, average=None, zero_division=0)
-        val_recall = recall_score(val_labels, val_outputs, average=None, zero_division=0)
+        val_f1 = f1_score(val_labels, val_outputs, average='weighted')
+        val_precision = precision_score(val_labels, val_outputs, average='weighted', zero_division=0)
+        val_recall = recall_score(val_labels, val_outputs, average='weighted', zero_division=0)
         val_cm = confusion_matrix(val_labels, val_outputs)
         
-        # Log batch metrics
-        batch_loss = loss.item()
-        batch_acc = 100. * train_correct / train_total
-        current_lr = optimizer.param_groups[0]['lr']
-        
-        # Log metrics
+        # Log metrics to CSV
         log_metrics(
-            metrics_file, epoch, batch_idx,
-            batch_loss, batch_acc,
-            learning_rate=current_lr
-        )
-        
-        # Calculate additional metrics
-        val_f1 = f1_score(val_labels, val_outputs, average='weighted')
-        val_precision = precision_score(val_labels, val_outputs, average='weighted')
-        val_recall = recall_score(val_labels, val_outputs, average='weighted')
-        
-        # Log epoch metrics
-        log_metrics(
-            metrics_file, epoch, 'end',
-            train_loss, train_acc,
-            val_loss, val_acc,
+            metrics_file, epoch,
+            train_loss, train_acc, train_f1,
+            val_loss, val_acc, val_f1,
             optimizer.param_groups[0]['lr'],
-            val_f1, val_precision, val_recall
+            val_precision, val_recall
         )
+        
+        # Log to WandB
+        wandb.log({
+            'epoch': epoch,
+            'train_loss': train_loss,
+            'train_acc': train_acc,
+            'train_f1': train_f1,
+            'val_loss': val_loss,
+            'val_acc': val_acc,
+            'val_f1': val_f1,
+            'learning_rate': optimizer.param_groups[0]['lr']
+        })
         
         # Calculate epoch time
         epoch_time = time.time() - epoch_start_time
@@ -484,6 +526,7 @@ def train_model():
             f'Time: {epoch_time:.2f}s\n'
             f'Train Loss: {train_loss:.4f}\n'
             f'Train Acc: {train_acc:.2f}%\n'
+            f'Train F1: {train_f1:.4f}\n'
             f'Val Loss: {val_loss:.4f}\n'
             f'Val Acc: {val_acc:.2f}%\n'
             f'Val F1: {val_f1:.4f}\n'
@@ -495,24 +538,37 @@ def train_model():
         # Save checkpoint if best validation accuracy
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            checkpoint_path = log_dir / f'lesion_type_best.pth'
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_acc': val_acc,
-                'train_acc': train_acc,
                 'val_loss': val_loss,
-                'train_loss': train_loss,
-                'val_f1': val_f1,
-                'val_precision': val_precision,
-                'val_recall': val_recall,
-                'learning_rate': optimizer.param_groups[0]['lr']
+                'class_mapping': new_to_original_idx,
+                'class_names': class_names,
+                'model_config': model_config
             }, checkpoint_path)
             logger.info(f'Saved best model checkpoint to {checkpoint_path}')
         
-        # Clean GPU memory after each epoch
-        clean_gpu_memory()
+            # Save confusion matrix to results directory
+            final_cm_path = os.path.join(confusion_matrix_dir, f"{model_config}_cm.png")
+            plt.figure(figsize=(10, 8))
+            sns.heatmap(val_cm, annot=True, fmt='d', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
+            plt.xlabel('Predicted')
+            plt.ylabel('True')
+            plt.title(f'Confusion Matrix - {model_config} - Best Epoch ({epoch})')
+            plt.savefig(final_cm_path, bbox_inches='tight')
+            plt.close()
+            
+            # Reset early stopping counter
+            patience_counter = 0
+        else:
+            patience_counter += 1
+        
+        # Early stopping check
+        if patience_counter >= early_stopping_patience:
+            logger.info(f'Early stopping triggered after {epoch+1} epochs')
+            break
     
     # Log total training time
     total_time = time.time() - start_time
@@ -520,52 +576,21 @@ def train_model():
     logger.info(f'Best validation accuracy: {best_val_acc:.2f}%')
     
     # Save final model
-    final_checkpoint_path = log_dir / f'lesion_type_final.pth'
+    final_checkpoint_path = model_save_dir / f"{model_config}_final.pth"
     torch.save({
-        'epoch': training_config['epochs'] - 1,
+        'epoch': epoch,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
         'val_acc': val_acc,
-        'train_acc': train_acc,
         'val_loss': val_loss,
-        'train_loss': train_loss,
-        'val_f1': val_f1,
-        'val_precision': val_precision,
-        'val_recall': val_recall,
-        'learning_rate': optimizer.param_groups[0]['lr']
+        'class_mapping': new_to_original_idx,
+        'class_names': class_names,
+        'model_config': model_config
     }, final_checkpoint_path)
     logger.info(f'Saved final model checkpoint to {final_checkpoint_path}')
 
     wandb.finish()
-    logger.info('Training completed!')
-
-    # After training, evaluate on validation set
-    all_labels = []
-    all_preds = []
-    model.eval()
-    with torch.no_grad():
-        for features, labels in val_loader:
-            features, labels = features.to(device), labels.to(device)
-            
-            # Remap labels to new consecutive indices
-            remapped_labels = torch.tensor([original_to_new_idx.get(t.item(), 0) for t in labels], 
-                                          device=device, dtype=torch.long)
-            
-            outputs = model(features)
-            _, predicted = outputs.max(1)
-            all_labels.extend(remapped_labels.cpu().numpy())
-            all_preds.extend(predicted.cpu().numpy())
-
-    cm = confusion_matrix(all_labels, all_preds)
-    print("Confusion Matrix:")
-    print(cm)
-    print("Per-class F1:", f1_score(all_labels, all_preds, average=None))
-    print("Per-class Precision:", precision_score(all_labels, all_preds, average=None, zero_division=0))
-    print("Per-class Recall:", recall_score(all_labels, all_preds, average=None, zero_division=0))
-    # Document class-to-index mapping
-    print("Class-to-index mapping:")
-    for new_idx, class_name in enumerate(class_names):
-        print(f"{new_idx}: {class_name}")
+    logger.info(f"Training completed for model config: {model_config}!")
 
 def generate_dataset_statistics():
     """
@@ -655,5 +680,13 @@ def generate_dataset_statistics():
     )
     print(total_row)
 
-if __name__ == "__main__":
-    train_model() 
+if __name__ == '__main__':
+    # Add command-line arguments
+    parser = argparse.ArgumentParser(description='Train lesion type classifier')
+    parser.add_argument('--model_config', type=str, default='256_512_256_DO03',
+                        choices=['256_512_256_DO03', '128_64_16_DO01', '64_16_DO01'],
+                        help='Model architecture configuration')
+    args = parser.parse_args()
+    
+    # Call the training function
+    train_model(model_config=args.model_config) 

@@ -14,7 +14,7 @@ For common errors and their solutions, see [Common Errors](common_errors.md)
 | MLP2 | `saved_models/lesion_type/lesion_type_best.pth` | Various experimental runs | `training/train_lesion_type.py` | Multi-class classification of skin lesion type into 5 categories | ISIC 2019 only (augmented) | Original class distribution; highly imbalanced | Same as production model | ~1% (failed) | Not available | Not specified | Failed experiment with original class distribution; model collapsed to predicting only majority classes | Demonstrated that class balancing is essential for highly imbalanced datasets |
 | MLP3 | `saved_models/benign_malignant/benign_malignant_balanced_best.pth` | `wandb/run-20250505_193729-sxlaexj3/` | `training/train_benign_malignant.py` | Binary classification of skin lesions as benign or malignant | ISIC 2019 only (augmented) | 2000 samples per class (4000 total); perfect 50/50 class balance | Input: 256 → Hidden: [512, 256] with ReLU & Dropout(0.3) → Output: 2 classes | 72.55% | `results/confusion_matrices/benign_malignant/` | ~1.5 hours | Balanced dataset approach; achieved slightly better metrics than the original-only model despite using much fewer samples | Best epoch: 49; val loss: 0.1426; F1 score: 0.7255 |
 | MLP3 | `saved_models/benign_malignant/benign_malignant_original_best.pth` | `wandb/run-20250505_210604-y1pt2a99/` | `training/train_benign_malignant.py` | Binary classification of skin lesions as benign or malignant | ISIC 2019 only (original, non-augmented) | 22,094 images (13,598 benign / 8,496 malignant); ~61.5% benign / 38.5% malignant | Same as balanced model | 71.29% | `results/confusion_matrices/benign_malignant/` | ~4.5 hours | Used only original non-augmented images; slightly lower accuracy but similar loss to balanced model | Best epoch: 26; val loss: 0.1373; F1 score: 0.7045 |
-| MLP3 | Not confirmed (expected: `benign_malignant_augmented_best.pth`) | `wandb/run-20250506_013422-qklqtlj8/` (in progress) | `training/train_benign_malignant.py` | Binary classification of skin lesions as benign or malignant | ISIC 2019 only (fully augmented) | 110,470 images (67,990 benign / 42,480 malignant); ~61.5% benign / 38.5% malignant | Same as other MLP3 models | Not available (training was in progress) | Not available | 10+ hours (in progress when documented) | Uses complete augmented dataset; results were pending when documented | This configuration tests if large data volume with augmentations improves performance |
+| MLP3 | `saved_models/benign_malignant/benign_malignant_augmented_best.pth` | `wandb/run-20250506_013422-qklqtlj8/` | `training/train_benign_malignant.py` | Binary classification of skin lesions as benign or malignant | ISIC 2019 only (fully augmented) | 110,470 images (67,990 benign / 42,480 malignant); ~61.5% benign / 38.5% malignant | Same as other MLP3 models | 73.12% | `results/confusion_matrices/benign_malignant/` | ~11.5 hours | Uses complete augmented dataset; best performance among all configs | Best epoch: 18; val loss: 0.1341; F1 score: 0.7310 |
 
 ## 🔥 Pipeline Flow
 
@@ -181,26 +181,21 @@ class BenignMalignantHead(nn.Module):
 ```
 
 ### Production Model
-- **Model Path**: `saved_models/benign_malignant/benign_malignant_balanced_best.pth`
-- **Log Path**: `wandb/run-20250505_193729-sxlaexj3/`
+- **Model Path**: `saved_models/benign_malignant/benign_malignant_augmented_best.pth`
+- **Log Path**: `wandb/run-20250506_013422-qklqtlj8/`
 - **Training Script**: `training/train_benign_malignant.py`
-- **Performance**: 72.55% validation accuracy (Epoch 49)
-- **Training Time**: ~1.5 hours
+- **Performance**: 73.12% validation accuracy (Epoch 18)
+- **Training Time**: ~11.5 hours
 - **Training Configuration**:
-  - **Dataset**: 2000 samples per class (balanced)
+  - **Dataset**: 110,470 images (67,990 benign, 42,480 malignant)
   - **Loss Function**: FocalLoss with gamma=2.0
   - **Optimizer**: AdamW (lr=0.001, weight_decay=0.01)
   - **Batch Size**: 16 for training, 32 for validation
   - **Early Stopping**: After 5 epochs without improvement
-  - **F1 Score**: 0.7255
-
-### Alternative Model (Original Images Only)
-- **Model Path**: `saved_models/benign_malignant/benign_malignant_original_best.pth`
-- **Log Path**: `wandb/run-20250505_210604-y1pt2a99/`
-- **Performance**: 71.29% validation accuracy (Epoch 26)
-- **Training Time**: ~4.5 hours
-- **Dataset**: Original ISIC images only (22,094 training images)
-- **F1 Score**: 0.7045
+  - **F1 Score**: 0.7310
+  - **Confusion Matrix**:
+    [[13400  1060]
+     [ 5250  3905]]
 
 ### Layer Architecture Breakdown
 1. **Input Layer**: 256-dimensional SAM features
@@ -434,6 +429,168 @@ model_mlp3.eval()  # Set to evaluation mode
 - Exclude unnecessary files in `.gitignore` (e.g., datasets, checkpoints, logs, `.ipynb_checkpoints/`)
 - 📊 Document all major changes in the training pipeline in `results/experiment_logs.md`
 
+## 🧮 Multi-Architecture MLP Training System
+
+### Model Configurations
+
+The pipeline supports different MLP architectures for all three classifier heads, configurable via command-line arguments:
+
+| Config String | Architecture | Description |
+|---------------|--------------|-------------|
+| 256_512_256_DO03 | Input → 256 → 512 → 256 → Output | Default architecture with Dropout(0.3) |
+| 128_64_16_DO01 | Input → 128 → 64 → 16 → Output | Smaller architecture with Dropout(0.1) |
+| 64_16_DO01 | Input → 64 → 16 → Output | Minimal architecture with Dropout(0.1) |
+
+### Configuration Files and Script Usage
+
+#### Training Individual Models
+
+Each training script accepts a `--model_config` parameter to specify the architecture:
+
+```bash
+# Train MLP1 with 128_64_16_DO01 architecture
+python training/train_skin_not_skin.py --model_config 128_64_16_DO01
+
+# Train MLP2 with 64_16_DO01 architecture
+python training/train_lesion_type.py --model_config 64_16_DO01
+
+# Train MLP3 with 256_512_256_DO03 architecture and balanced dataset
+python training/train_benign_malignant.py --model_config 256_512_256_DO03 --config balanced
+```
+
+#### Batch Training All Configurations
+
+A convenience script is provided to train all models with all configurations in parallel:
+
+```bash
+# Run all model configurations in the background
+./nohup/train_all_mlp_configs.sh
+```
+
+This script uses `nohup` to run all jobs in the background, with output logs stored in the `nohup/` directory.
+
+### File Organization
+
+The multi-architecture system strictly organizes files to prevent data overwrite:
+
+1. **Model Checkpoints**: Saved in `saved_models/<mlp_task>/<model_config>_best.pth`
+   - Example: `saved_models/skin_not_skin/128_64_16_DO01_best.pth`
+
+2. **Training Logs**: CSV metrics stored in `logs/<mlp_task>/<model_config>_metrics.csv`
+   - Example: `logs/benign_malignant/64_16_DO01_metrics.csv`
+   - Columns: epoch, train_loss, train_acc, train_f1, val_loss, val_acc, val_f1, learning_rate, precision, recall
+
+3. **Confusion Matrices**: Saved in `results/confusion_matrices/<mlp_task>/<model_config>_cm.png`
+   - Example: `results/confusion_matrices/lesion_type/256_512_256_DO03_cm.png`
+
+4. **Run Logs**: Background job logs saved in `nohup/log_mlp<#>_DO<#>.out`
+   - Example: `nohup/log_mlp1_DO03.out`
+
+### Metric Logging and Visualization
+
+All models log comprehensive metrics to both:
+
+1. **Local CSV files** for offline analysis
+2. **Weights & Biases** (wandb) for real-time monitoring
+
+The CSV files enable easy plotting for comparing model architectures:
+- Learning curves
+- Validation accuracy
+- F1 score comparison
+- Overfitting detection
+
+## 📊 Unified Dataset System
+
+### Overview
+
+The unified dataset system centralizes all dataset handling logic for consistent splits, balancing, and reproducibility. It uses a fixed 70/15/15 train/validation/test split with proper stratification based on the relevant label (skin/lesion_group/malignancy).
+
+### Dataset Configurations
+
+All dataset configurations are defined in `utils/data_split.py` with the following options:
+
+| Configuration | Model | Description | Max Samples per Class | Augmented | DTD Included |
+|---------------|-------|-------------|:---------------------:|:---------:|:------------:|
+| mlp1_balanced | MLP1 | Skin vs non-skin binary classification | 2000 | Yes | Yes |
+| mlp2_augmented | MLP2 | 5-class lesion type classification | 2000 | Yes | No |
+| mlp2_original | MLP2 | 5-class lesion type with original images only | All available | No | No |
+| mlp3_augmented | MLP3 | Benign vs malignant binary classification | 2000 | Yes | No |
+| mlp3_original | MLP3 | Benign vs malignant with original images only | All available | No | No |
+| mlp3_augmented_full | MLP3 | Benign vs malignant with all augmented images | All available | Yes | No |
+
+### Unified Training Script
+
+The system provides a single unified training script that handles all model types and dataset configurations:
+
+```bash
+# Train MLP1 with balanced dataset and 128_64_16_DO01 architecture
+python training/train_mlp.py --dataset_config mlp1_balanced --model_config 128_64_16_DO01
+
+# Train MLP2 with augmented dataset and 256_512_256_DO03 architecture
+python training/train_mlp.py --dataset_config mlp2_augmented --model_config 256_512_256_DO03
+
+# Train MLP3 with original images and 64_16_DO01 architecture
+python training/train_mlp.py --dataset_config mlp3_original --model_config 64_16_DO01
+```
+
+### Batch Training All Variations
+
+A comprehensive script runs all model architectures with all dataset configurations:
+
+```bash
+# Run all model and dataset combinations in the background
+./nohup/train_all_configs.sh
+```
+
+This generates 18 training runs:
+- MLP1: 3 architectures × 1 dataset variant = 3 runs
+- MLP2: 3 architectures × 2 dataset variants = 6 runs
+- MLP3: 3 architectures × 3 dataset variants = 9 runs
+
+### Dataset Statistics and Dry-Run Mode
+
+You can preview dataset statistics before training:
+
+```bash
+# Preview a specific dataset configuration
+python utils/preview_datasets.py --config mlp3_augmented
+
+# Preview all dataset configurations
+python utils/preview_datasets.py --all
+
+# Run the training script in dry-run mode (no actual training)
+python training/train_mlp.py --dataset_config mlp2_augmented --model_config 256_512_256_DO03 --dry_run
+```
+
+### Dataset Statistics Logging
+
+Every training run logs detailed dataset statistics:
+- Console outputs with class counts and distributions
+- CSV files with full statistics in `results/dataset_stats/`
+- WandB dashboard with dataset tables and metrics
+- Distribution plots for visualizing class balance
+
+### Implementation Details
+
+1. **Centralized Data Split Logic**:
+   - All dataset filtering and splitting is handled by `utils/data_split.py`
+   - 70/15/15 split maintained with proper stratification by label
+
+2. **Unified Dataset Class**:
+   - `datasets/unified_dataset.py` provides a single dataset implementation for all model types
+   - Handles feature caching, data loading, and label assignment consistently
+
+3. **Consistent Model Checkpointing**:
+   - Models saved with comprehensive metadata including dataset configuration
+   - Follows naming convention: `saved_models/<model_type>/<dataset_config>_<model_config>_best.pth`
+   - Example: `saved_models/mlp3/mlp3_augmented_64_16_DO01_best.pth`
+
+4. **Comprehensive Logging**:
+   - Dataset statistics logged at the start of each run
+   - Per-epoch metrics saved to CSV files
+   - Confusion matrices saved at checkpoints
+   - WandB integration for real-time monitoring
+
 ## 🧹 Cleanup Tasks
 
 - [x] **Remove Data Preprocessing Scripts**:
@@ -448,3 +605,12 @@ model_mlp3.eval()  # Set to evaluation mode
 - [ ] **Review and Clean Duplicate Training Directories**:
   - Identified potential duplicate: `training/data/processed/` - Contains cached features
   
+## 🚀 How to Run All Trainings
+
+To run all model/config combinations for each MLP, use the following scripts:
+
+- `nohup/train_all_mlp1.sh`: Runs all MLP1 (Skin/Not Skin) training jobs for all model configs.
+- `nohup/train_all_mlp2.sh`: Runs all MLP2 (Lesion Type) training jobs for all model configs and dataset variants.
+- `nohup/train_all_mlp3.sh`: Runs all MLP3 (Benign/Malignant) training jobs for all model configs and dataset variants.
+
+Each script launches jobs in the background with logs in the `nohup/` directory. You can run them independently or in parallel as needed.  

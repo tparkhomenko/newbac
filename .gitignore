@@ -91,5 +91,5 @@ logs/
 *.toc
 *.snm
 *.nav
-*.log
+#*.log
 beamerthemetugraz/ 

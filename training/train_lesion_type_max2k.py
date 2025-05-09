@@ -181,12 +181,63 @@ def train_model():
         }
     )
     
-    # Load full dataset to sample from
+    # --- Custom split counts from 65% model ---
+    SPLIT_COUNTS = {
+        'melanocytic':      {'train': 74530, 'val': 15850, 'test': 15715},
+        'non-melanocytic carcinoma': {'train': 17670, 'val': 3835, 'test': 3950},
+        'keratosis':        {'train': 15845, 'val': 3405, 'test': 3375},
+        'fibrous':          {'train': 1220,  'val': 245,   'test': 185},
+        'vascular':         {'train': 1205,  'val': 280,   'test': 300},
+    }
+
+    # Load full metadata
+    metadata_path = training_config['metadata_path']
+    full_df = pd.read_csv(metadata_path)
+    full_df = full_df[(full_df['skin'] == 1) & (full_df['lesion_group'] != 'unknown') & (full_df['lesion_group'] != 'not_skin_texture')]
+
+    # Sample splits
+    split_dfs = {'train': [], 'val': [], 'test': []}
+    for group, counts in SPLIT_COUNTS.items():
+        group_df = full_df[full_df['lesion_group'] == group]
+        # Shuffle for reproducibility
+        group_df = group_df.sample(frac=1, random_state=42).reset_index(drop=True)
+        start = 0
+        for split in ['train', 'val', 'test']:
+            n = counts[split]
+            split_dfs[split].append(group_df.iloc[start:start+n])
+            start += n
+
+    train_df = pd.concat(split_dfs['train']).reset_index(drop=True)
+    val_df = pd.concat(split_dfs['val']).reset_index(drop=True)
+    test_df = pd.concat(split_dfs['test']).reset_index(drop=True)
+
+    # Downsample val and test splits to match the exact counts
+    val_dfs = []
+    test_dfs = []
+    for group, counts in SPLIT_COUNTS.items():
+        group_val = val_df[val_df['lesion_group'] == group]
+        n_val = min(counts['val'], len(group_val))
+        val_dfs.append(group_val.sample(n=n_val, random_state=42))
+        group_test = test_df[test_df['lesion_group'] == group]
+        n_test = min(counts['test'], len(group_test))
+        test_dfs.append(group_test.sample(n=n_test, random_state=42))
+    val_df = pd.concat(val_dfs).reset_index(drop=True)
+    test_df = pd.concat(test_dfs).reset_index(drop=True)
+
+    # Downsample train split to 2,000 per class for training
+    train_dfs = []
+    for group in SPLIT_COUNTS.keys():
+        group_train = train_df[train_df['lesion_group'] == group]
+        n = min(2000, len(group_train))
+        train_dfs.append(group_train.sample(n=n, random_state=42))
+    train_df = pd.concat(train_dfs).reset_index(drop=True)
+    
+    # Apply to dataset
     full_dataset = SkinLesionDataset(
         metadata_path=training_config['metadata_path'],
         feature_cache_dir=training_config['train_features_dir'],
         skin_only=True,
-        original_only=False,
+        original_only=False,  # Do NOT restrict to originals only for training
         subset_fraction=None,
         per_class_fraction=None
     )
@@ -227,7 +278,7 @@ def train_model():
     # Create DataLoader
     train_loader = DataLoader(
         train_dataset,
-        batch_size=32,  # Increased batch size
+        batch_size=training_config['batch_size'],
         shuffle=True,
         num_workers=0,
         pin_memory=training_config['pin_memory']
@@ -256,12 +307,12 @@ def train_model():
     for orig_idx, new_idx in original_to_new_idx.items():
         filtered_weights[new_idx] = manual_class_weights[orig_idx]
     
-    # Create model with higher dropout
+    # Create model with dropout from config
     model = LesionTypeHead(
         input_dim=256,
         hidden_dims=training_config['model']['hidden_dims'],
         output_dim=len(active_classes),
-        dropout=0.5  # Increased dropout
+        dropout=training_config['model']['dropout']
     ).to(device)
     
     # Get class names for active classes in the new order
@@ -281,7 +332,7 @@ def train_model():
     optimizer = optim.AdamW(
         model.parameters(),
         lr=training_config['learning_rate'],
-        weight_decay=0.1  # Increased weight decay
+        weight_decay=training_config['weight_decay']
     )
     
     # Learning rate scheduler with warmup
@@ -299,44 +350,34 @@ def train_model():
     scaler = torch.amp.GradScaler()
     
     # Load validation dataset
-    # For validation, use balanced subset with max 300 samples per class
     val_dataset = SkinLesionDataset(
         metadata_path=training_config.get('val_metadata_path', training_config['metadata_path']),
         feature_cache_dir=training_config['val_features_dir'],
         skin_only=True,
-        original_only=True,
+        original_only=False,  # Do NOT restrict to originals only for validation
         subset_fraction=None
     )
     
     # Create balanced validation set
     val_class_dfs = {}
-    VAL_SAMPLES_PER_CLASS = 300  # Use 300 samples per class for validation
-    logger.info(f"Setting validation samples per class to {VAL_SAMPLES_PER_CLASS}")
-    
+    logger.info(f"Using all available validation samples per class (no cap)")
     # Get validation counts
     val_class_counts = {}
     for group in ['melanocytic', 'non-melanocytic carcinoma', 'keratosis', 'fibrous', 'vascular']:
         group_df = val_dataset.metadata[val_dataset.metadata['lesion_group'] == group]
         val_class_counts[group] = len(group_df)
-        
-        # Downsample or use all available
-        if len(group_df) > VAL_SAMPLES_PER_CLASS:
-            val_class_dfs[group] = group_df.sample(n=VAL_SAMPLES_PER_CLASS, random_state=42)
-            logger.info(f"Validation class {group}: Downsampled from {len(group_df)} to {VAL_SAMPLES_PER_CLASS} samples")
-        else:
-            val_class_dfs[group] = group_df
-            logger.info(f"Validation class {group}: Using all {len(group_df)} samples")
-    
+        # Use all available samples for validation
+        val_class_dfs[group] = group_df
+        logger.info(f"Validation class {group}: Using all {len(group_df)} samples")
     # Combine into balanced validation dataset
     val_balanced_metadata = pd.concat(list(val_class_dfs.values())).sample(frac=1, random_state=42).reset_index(drop=True)
-    logger.info(f"Created balanced validation dataset with {len(val_balanced_metadata)} samples")
-    
+    logger.info(f"Created validation dataset with {len(val_balanced_metadata)} samples (no per-class cap)")
     # Apply to validation dataset
     val_dataset.metadata = val_balanced_metadata
     
     val_loader = DataLoader(
         val_dataset,
-        batch_size=32,  # Increased batch size
+        batch_size=training_config['batch_size'],
         shuffle=False,
         num_workers=0,
         pin_memory=training_config['pin_memory']
@@ -344,9 +385,13 @@ def train_model():
     
     # Training loop
     num_epochs = training_config.get('debug_epochs', training_config['num_epochs']) if training_config.get('debug_epochs', 0) > 0 else training_config['num_epochs']
-    patience = training_config.get('early_stopping_patience', 7)  # Increased patience
+    patience = training_config.get('early_stopping_patience', 5)
     best_val_loss = float('inf')
     patience_counter = 0
+    
+    logger.info(f"TRAINING set: {len(train_dataset)} images")
+    logger.info(f"VALIDATION set: {len(val_dataset)} images")
+    # If there is a test set, print its size (not present in this script)
     
     for epoch in range(num_epochs):
         # Training phase
@@ -550,7 +595,7 @@ def train_model():
             wandb.log({"val_tsne_visualization": wandb.Image(val_tsne_path)})
         
         # Per-class metrics for validation
-        if val_outputs and val_labels:
+        if len(val_outputs) > 0 and len(val_labels) > 0:
             # Convert to numpy arrays
             val_outputs = np.array(val_outputs)
             val_labels = np.array(val_labels)
@@ -620,7 +665,7 @@ def train_model():
                     logger.info(f'  {class_name}: {val_f1[i]:.4f}')
         
         # Print confusion matrix
-        if val_outputs and val_labels:
+        if len(val_outputs) > 0 and len(val_labels) > 0:
             logger.info('Validation Confusion Matrix:')
             logger.info(val_cm)
         
@@ -694,7 +739,7 @@ def train_model():
             class_name = list(training_config['class_names'])[orig_idx]
             f.write(f"Original index {orig_idx} ({class_name}) → New index {new_idx}\n")
         
-        if val_outputs and val_labels:
+        if len(val_outputs) > 0 and len(val_labels) > 0:
             f.write("\nConfusion Matrix:\n")
             f.write(str(val_cm))
     

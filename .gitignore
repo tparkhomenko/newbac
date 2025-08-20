@@ -63,6 +63,12 @@ venv.bak/
 
 # Data, models, logs, and results
 # Keep metadata tracked, ignore large datasets
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+plots/
+models/
 data/raw/
 data/processed/
 data/cleaned_resized/

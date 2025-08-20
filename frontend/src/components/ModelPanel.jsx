@@ -55,10 +55,10 @@ const ModelPanel = ({ onModelSwitch }) => {
 
   if (loading && !modelInfo) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-neutral-100 dark:bg-gray-800 rounded-lg shadow p-6">
         <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
-          <span className="ml-3 text-gray-600">Loading model info...</span>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent2-600"></div>
+          <span className="ml-3 text-gray-600 dark:text-gray-300">Loading model info...</span>
         </div>
       </div>
     )
@@ -88,13 +88,13 @@ const ModelPanel = ({ onModelSwitch }) => {
   const isActive = (arch) => modelInfo.current_model === arch
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Model</h3>
+    <div className="bg-neutral-100 dark:bg-gray-800 rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold text-primary mb-4">Model</h3>
 
       {/* Current Model */}
       <div className="mb-4 text-sm">
-        <span className="text-gray-600">Active:</span>
-        <span className="ml-2 font-medium text-primary-600">{modelInfo.current_model}</span>
+        <span className="text-gray-600 dark:text-gray-300">Active:</span>
+        <span className="ml-2 font-medium text-accent1-600">{modelInfo.current_model}</span>
       </div>
 
       {/* Toggle Buttons */}
@@ -106,8 +106,8 @@ const ModelPanel = ({ onModelSwitch }) => {
             disabled={loading}
             className={`px-4 py-2 rounded-md text-sm font-medium border ${
               isActive(arch)
-                ? 'bg-primary-600 text-white border-primary-600'
-                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                ? 'bg-accent1-600 text-white border-accent1-600'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-neutral-300 hover:bg-neutral-100'
             }`}
           >
             {arch.charAt(0).toUpperCase() + arch.slice(1)}
@@ -118,34 +118,34 @@ const ModelPanel = ({ onModelSwitch }) => {
       {/* Stats per MLP (parsed from logs) */}
       {modelInfo.stats && (
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Stats (from logs)</h4>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Stats (from logs)</h4>
           {['mlp1','mlp2','mlp3'].map((mlp) => (
             <div key={mlp} className="mb-3">
-              <div className="text-xs font-semibold text-gray-600 mb-1">{mlp.toUpperCase()}</div>
+              <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">{mlp.toUpperCase()}</div>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">Skin Acc</div>
-                  <div className="font-bold text-green-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_acc)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">Skin Acc</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_acc)}</div>
                 </div>
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">Skin F1</div>
-                  <div className="font-bold text-green-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_f1_macro)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">Skin F1</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_f1_macro)}</div>
                 </div>
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">Lesion Acc</div>
-                  <div className="font-bold text-blue-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_acc)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">Lesion Acc</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_acc)}</div>
                 </div>
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">Lesion F1</div>
-                  <div className="font-bold text-blue-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_f1_macro)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">Lesion F1</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_f1_macro)}</div>
                 </div>
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">B/M Acc</div>
-                  <div className="font-bold text-purple-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_acc)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">B/M Acc</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_acc)}</div>
                 </div>
-                <div className="bg-gray-50 rounded p-2">
-                  <div className="text-gray-600">B/M F1</div>
-                  <div className="font-bold text-purple-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_f1_macro)}</div>
+                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+                  <div className="text-gray-600 dark:text-gray-300">B/M F1</div>
+                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_f1_macro)}</div>
                 </div>
               </div>
             </div>

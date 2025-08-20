@@ -1,0 +1,6 @@
+  23176 ISIC_2020_Training_GroundTruth.csv
+  10693 ISIC_2019_Training_GroundTruth.csv
+   7012 ISIC2018_Task3_Training_GroundTruth.csv
+   5671 ISIC_2019_Test_GroundTruth.csv
+    743 imagenet_ood
+    133 ISIC2018_Task3_Validation_GroundTruth.csv

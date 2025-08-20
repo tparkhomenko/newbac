@@ -1,0 +1,10 @@
+  20421 other
+  14393 nevus
+   4503 melanoma
+   3008 bcc
+   2455 bkl
+   1012 ak
+    743 non_skin
+    412 scc
+    250 vascular
+    231 df

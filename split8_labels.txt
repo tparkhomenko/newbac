@@ -1,0 +1,10 @@
+ak
+bcc
+bkl
+df
+melanoma
+nevus
+non_skin
+other
+scc
+vascular

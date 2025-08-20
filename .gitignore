@@ -62,12 +62,19 @@ venv.bak/
 .vscode/
 
 # Data, models, logs, and results
-/data/
-/d/
-/datasets/
-/saved_models/
-/results/
-/wandb/
+# Keep metadata tracked, ignore large datasets
+data/raw/
+data/processed/
+data/cleaned_resized/
+!data/metadata/
+!data/metadata/metadata.csv
+data/testing_only/*.jpg
+
+d/
+datasets/
+saved_models/
+results/
+wandb/
 
 # SAM checkpoints
 sam_vit_h.pth
@@ -75,6 +82,12 @@ sam_vit_h.pth
 # Logs
 *.log
 logs/
+
+# Backend models (use Git LFS if tracking)
+backend/models/*/*.pt
+backend/models/*/*.pth
+# keep logs optional (parsed for stats panel) – comment to track
+# backend/models/*/logs_mlp*.txt
 
 # MacOS
 .DS_Store

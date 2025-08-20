@@ -1,0 +1,1987 @@
+.
+├── configs
+├── d
+│   ├── dtd
+│   │   ├── images
+│   │   │   ├── banded
+│   │   │   ├── blotchy
+│   │   │   ├── braided
+│   │   │   ├── bubbly
+│   │   │   ├── bumpy
+│   │   │   ├── chequered
+│   │   │   ├── cobwebbed
+│   │   │   ├── cracked
+│   │   │   ├── crosshatched
+│   │   │   ├── crystalline
+│   │   │   ├── dotted
+│   │   │   ├── fibrous
+│   │   │   ├── flecked
+│   │   │   ├── freckled
+│   │   │   ├── frilly
+│   │   │   ├── gauzy
+│   │   │   ├── grid
+│   │   │   ├── grooved
+│   │   │   ├── honeycombed
+│   │   │   ├── interlaced
+│   │   │   ├── knitted
+│   │   │   ├── lacelike
+│   │   │   ├── lined
+│   │   │   ├── marbled
+│   │   │   ├── matted
+│   │   │   ├── meshed
+│   │   │   ├── paisley
+│   │   │   ├── perforated
+│   │   │   ├── pitted
+│   │   │   ├── pleated
+│   │   │   ├── polka-dotted
+│   │   │   ├── porous
+│   │   │   ├── potholed
+│   │   │   ├── scaly
+│   │   │   ├── smeared
+│   │   │   ├── spiralled
+│   │   │   ├── sprinkled
+│   │   │   ├── stained
+│   │   │   ├── stratified
+│   │   │   ├── striped
+│   │   │   ├── studded
+│   │   │   ├── swirly
+│   │   │   ├── veined
+│   │   │   ├── waffled
+│   │   │   ├── woven
+│   │   │   ├── wrinkled
+│   │   │   └── zigzagged
+│   │   ├── imdb
+│   │   └── labels
+│   ├── ISIC2019
+│   ├── metadata
+│   └── processed
+│       └── features
+│           ├── test
+│           ├── train
+│           └── val
+├── data
+│   └── processed
+│       └── features
+│           ├── benign_malignant
+│           ├── train
+│           ├── train_bm
+│           ├── train_mlp1_balanced
+│           ├── train_mlp2_augmented
+│           ├── train_mlp2_original
+│           ├── train_mlp3_augmented
+│           ├── train_mlp3_augmented_full
+│           ├── train_mlp3_original
+│           ├── train_skinonly
+│           ├── train_subset100
+│           ├── train_subset1000
+│           ├── train_subset10000
+│           ├── train_subset2000
+│           ├── train_subset2000_skinonly
+│           ├── val
+│           ├── val_bm
+│           ├── val_mlp1_balanced
+│           ├── val_mlp2_augmented
+│           ├── val_mlp2_original
+│           ├── val_mlp3_augmented_full
+│           ├── val_skinonly
+│           ├── val_subset20
+│           ├── val_subset200
+│           ├── val_subset2000
+│           ├── val_subset400
+│           └── val_subset400_skinonly
+├── datasets
+│   ├── cache
+│   ├── dtd_aug
+│   ├── isic2019_aug
+│   ├── merged_isic_dtd
+│   └── metadata
+├── evaluation
+│   ├── auc_curves
+│   ├── confusion_matrices
+│   ├── mask_visualizations
+│   └── tsne_umap_embeddings
+├── logs
+│   ├── mlp1
+│   │   └── dataset_stats
+│   ├── mlp2
+│   │   └── dataset_stats
+│   └── mlp3
+├── models
+├── results
+│   ├── confusion_matrices
+│   │   ├── benign_malignant
+│   │   ├── mlp1
+│   │   └── mlp2
+│   ├── dataset_stats
+│   ├── lesion_type_exp2_20250508_194704
+│   ├── lesion_type_exp2_20250508_194935
+│   ├── lesion_type_exp2_20250508_195021
+│   ├── lesion_type_exp2_20250508_195114
+│   ├── lesion_type_exp2_20250508_195618
+│   ├── lesion_type_exp2_20250508_195826
+│   ├── lesion_type_exp2_20250508_200519
+│   ├── lesion_type_exp2_20250508_200737
+│   ├── lesion_type_exp2_20250508_200801
+│   ├── lesion_type_exp2_20250508_200932
+│   ├── lesion_type_exp2_20250508_201102
+│   ├── lesion_type_exp2_20250508_201103
+│   ├── lesion_type_exp2_20250508_201519
+│   ├── lesion_type_exp2_20250508_201545
+│   ├── lesion_type_exp2_20250508_201753
+│   └── statistics
+├── sam
+├── saved_models
+│   ├── benign_malignant
+│   ├── lesion_type
+│   ├── mlp1
+│   ├── mlp2
+│   ├── sam
+│   └── skin_not_skin
+├── training
+│   ├── data
+│   │   └── processed
+│   │       └── features
+│   │           ├── train_skinonly
+│   │           └── val_skinonly
+│   └── saved_models
+│       └── sam
+├── utils
+├── venv
+│   ├── bin
+│   ├── include
+│   │   └── python3.12
+│   ├── lib
+│   │   └── python3.12
+│   │       └── site-packages
+│   │           ├── albucore
+│   │           ├── albucore-0.0.24.dist-info
+│   │           ├── albumentations
+│   │           │   ├── augmentations
+│   │           │   │   ├── blur
+│   │           │   │   ├── crops
+│   │           │   │   ├── dropout
+│   │           │   │   ├── geometric
+│   │           │   │   ├── mixing
+│   │           │   │   ├── spectrogram
+│   │           │   │   ├── text
+│   │           │   │   └── transforms3d
+│   │           │   ├── core
+│   │           │   └── pytorch
+│   │           ├── albumentations-2.0.6.dist-info
+│   │           │   └── licenses
+│   │           ├── annotated_types
+│   │           ├── annotated_types-0.7.0.dist-info
+│   │           │   └── licenses
+│   │           ├── certifi
+│   │           ├── certifi-2025.4.26.dist-info
+│   │           │   └── licenses
+│   │           ├── charset_normalizer
+│   │           │   └── cli
+│   │           ├── charset_normalizer-3.4.1.dist-info
+│   │           ├── cli
+│   │           ├── click
+│   │           ├── click-8.1.8.dist-info
+│   │           ├── contourpy
+│   │           │   └── util
+│   │           ├── contourpy-1.3.2.dist-info
+│   │           ├── cusparselt
+│   │           │   ├── include
+│   │           │   └── lib
+│   │           ├── cv2
+│   │           │   ├── aruco
+│   │           │   ├── barcode
+│   │           │   ├── cuda
+│   │           │   ├── data
+│   │           │   ├── detail
+│   │           │   ├── dnn
+│   │           │   ├── Error
+│   │           │   ├── fisheye
+│   │           │   ├── flann
+│   │           │   ├── gapi
+│   │           │   │   ├── core
+│   │           │   │   │   ├── cpu
+│   │           │   │   │   ├── fluid
+│   │           │   │   │   └── ocl
+│   │           │   │   ├── ie
+│   │           │   │   │   └── detail
+│   │           │   │   ├── imgproc
+│   │           │   │   │   └── fluid
+│   │           │   │   ├── oak
+│   │           │   │   ├── onnx
+│   │           │   │   │   └── ep
+│   │           │   │   ├── ot
+│   │           │   │   │   └── cpu
+│   │           │   │   ├── ov
+│   │           │   │   ├── own
+│   │           │   │   │   └── detail
+│   │           │   │   ├── render
+│   │           │   │   │   └── ocv
+│   │           │   │   ├── streaming
+│   │           │   │   ├── video
+│   │           │   │   └── wip
+│   │           │   │       ├── draw
+│   │           │   │       ├── gst
+│   │           │   │       └── onevpl
+│   │           │   ├── ipp
+│   │           │   ├── mat_wrapper
+│   │           │   ├── misc
+│   │           │   ├── ml
+│   │           │   ├── ocl
+│   │           │   ├── ogl
+│   │           │   ├── parallel
+│   │           │   ├── qt
+│   │           │   │   ├── fonts
+│   │           │   │   └── plugins
+│   │           │   │       └── platforms
+│   │           │   ├── samples
+│   │           │   ├── segmentation
+│   │           │   ├── typing
+│   │           │   ├── utils
+│   │           │   │   ├── fs
+│   │           │   │   └── nested
+│   │           │   └── videoio_registry
+│   │           ├── cycler
+│   │           ├── cycler-0.12.1.dist-info
+│   │           ├── dateutil
+│   │           │   ├── parser
+│   │           │   ├── tz
+│   │           │   └── zoneinfo
+│   │           ├── _distutils_hack
+│   │           ├── dockerpycreds
+│   │           ├── docker_pycreds-0.4.0.dist-info
+│   │           ├── filelock
+│   │           ├── filelock-3.18.0.dist-info
+│   │           │   └── licenses
+│   │           ├── fontTools
+│   │           │   ├── cffLib
+│   │           │   ├── colorLib
+│   │           │   ├── config
+│   │           │   ├── cu2qu
+│   │           │   ├── designspaceLib
+│   │           │   ├── encodings
+│   │           │   ├── feaLib
+│   │           │   ├── merge
+│   │           │   ├── misc
+│   │           │   │   └── plistlib
+│   │           │   ├── mtiLib
+│   │           │   ├── otlLib
+│   │           │   │   └── optimize
+│   │           │   ├── pens
+│   │           │   ├── qu2cu
+│   │           │   ├── subset
+│   │           │   ├── svgLib
+│   │           │   │   └── path
+│   │           │   ├── t1Lib
+│   │           │   ├── ttLib
+│   │           │   │   └── tables
+│   │           │   ├── ufoLib
+│   │           │   ├── unicodedata
+│   │           │   ├── varLib
+│   │           │   │   └── instancer
+│   │           │   └── voltLib
+│   │           ├── fonttools-4.57.0.dist-info
+│   │           │   └── licenses
+│   │           ├── fsspec
+│   │           │   ├── implementations
+│   │           │   └── tests
+│   │           │       └── abstract
+│   │           ├── fsspec-2025.3.2.dist-info
+│   │           │   └── licenses
+│   │           ├── functorch
+│   │           │   ├── compile
+│   │           │   ├── dim
+│   │           │   ├── einops
+│   │           │   ├── experimental
+│   │           │   └── _src
+│   │           │       ├── aot_autograd
+│   │           │       ├── eager_transforms
+│   │           │       ├── make_functional
+│   │           │       └── vmap
+│   │           ├── git
+│   │           │   ├── index
+│   │           │   ├── objects
+│   │           │   │   └── submodule
+│   │           │   ├── refs
+│   │           │   └── repo
+│   │           ├── gitdb
+│   │           │   ├── db
+│   │           │   ├── test
+│   │           │   └── utils
+│   │           ├── gitdb-4.0.12.dist-info
+│   │           ├── GitPython-3.1.44.dist-info
+│   │           ├── google
+│   │           │   ├── protobuf
+│   │           │   │   ├── compiler
+│   │           │   │   ├── internal
+│   │           │   │   ├── pyext
+│   │           │   │   ├── testdata
+│   │           │   │   └── util
+│   │           │   └── _upb
+│   │           ├── huggingface_hub
+│   │           │   ├── commands
+│   │           │   ├── inference
+│   │           │   │   ├── _generated
+│   │           │   │   │   └── types
+│   │           │   │   └── _providers
+│   │           │   ├── serialization
+│   │           │   ├── templates
+│   │           │   └── utils
+│   │           ├── huggingface_hub-0.30.2.dist-info
+│   │           ├── idna
+│   │           ├── idna-3.10.dist-info
+│   │           ├── jinja2
+│   │           ├── jinja2-3.1.6.dist-info
+│   │           │   └── licenses
+│   │           ├── joblib
+│   │           │   ├── externals
+│   │           │   │   ├── cloudpickle
+│   │           │   │   └── loky
+│   │           │   │       └── backend
+│   │           │   └── test
+│   │           │       └── data
+│   │           ├── joblib-1.4.2.dist-info
+│   │           ├── kiwisolver
+│   │           ├── kiwisolver-1.4.8.dist-info
+│   │           ├── latexcodec
+│   │           ├── latexcodec-3.0.0.dist-info
+│   │           ├── markupsafe
+│   │           ├── MarkupSafe-3.0.2.dist-info
+│   │           ├── matplotlib
+│   │           │   ├── _api
+│   │           │   ├── axes
+│   │           │   ├── backends
+│   │           │   │   ├── qt_editor
+│   │           │   │   └── web_backend
+│   │           │   │       ├── css
+│   │           │   │       └── js
+│   │           │   ├── mpl-data
+│   │           │   │   ├── fonts
+│   │           │   │   │   ├── afm
+│   │           │   │   │   ├── pdfcorefonts
+│   │           │   │   │   └── ttf
+│   │           │   │   ├── images
+│   │           │   │   ├── plot_directive
+│   │           │   │   ├── sample_data
+│   │           │   │   │   └── axes_grid
+│   │           │   │   └── stylelib
+│   │           │   ├── projections
+│   │           │   ├── sphinxext
+│   │           │   ├── style
+│   │           │   ├── testing
+│   │           │   │   └── jpl_units
+│   │           │   ├── tests
+│   │           │   └── tri
+│   │           ├── matplotlib-3.10.1.dist-info
+│   │           ├── mpl_toolkits
+│   │           │   ├── axes_grid1
+│   │           │   │   └── tests
+│   │           │   ├── axisartist
+│   │           │   │   └── tests
+│   │           │   └── mplot3d
+│   │           │       └── tests
+│   │           ├── mpmath
+│   │           │   ├── calculus
+│   │           │   ├── functions
+│   │           │   ├── libmp
+│   │           │   ├── matrices
+│   │           │   └── tests
+│   │           ├── mpmath-1.3.0.dist-info
+│   │           ├── networkx
+│   │           │   ├── algorithms
+│   │           │   │   ├── approximation
+│   │           │   │   │   └── tests
+│   │           │   │   ├── assortativity
+│   │           │   │   │   └── tests
+│   │           │   │   ├── bipartite
+│   │           │   │   │   └── tests
+│   │           │   │   ├── centrality
+│   │           │   │   │   └── tests
+│   │           │   │   ├── coloring
+│   │           │   │   │   └── tests
+│   │           │   │   ├── community
+│   │           │   │   │   └── tests
+│   │           │   │   ├── components
+│   │           │   │   │   └── tests
+│   │           │   │   ├── connectivity
+│   │           │   │   │   └── tests
+│   │           │   │   ├── flow
+│   │           │   │   │   └── tests
+│   │           │   │   ├── isomorphism
+│   │           │   │   │   └── tests
+│   │           │   │   ├── link_analysis
+│   │           │   │   │   └── tests
+│   │           │   │   ├── minors
+│   │           │   │   │   └── tests
+│   │           │   │   ├── operators
+│   │           │   │   │   └── tests
+│   │           │   │   ├── shortest_paths
+│   │           │   │   │   └── tests
+│   │           │   │   ├── tests
+│   │           │   │   ├── traversal
+│   │           │   │   │   └── tests
+│   │           │   │   └── tree
+│   │           │   │       └── tests
+│   │           │   ├── classes
+│   │           │   │   └── tests
+│   │           │   ├── drawing
+│   │           │   │   └── tests
+│   │           │   │       └── baseline
+│   │           │   ├── generators
+│   │           │   │   └── tests
+│   │           │   ├── linalg
+│   │           │   │   └── tests
+│   │           │   ├── readwrite
+│   │           │   │   ├── json_graph
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── tests
+│   │           │   └── utils
+│   │           │       └── tests
+│   │           ├── networkx-3.4.2.dist-info
+│   │           ├── numpy
+│   │           │   ├── char
+│   │           │   ├── compat
+│   │           │   │   └── tests
+│   │           │   ├── _core
+│   │           │   │   ├── include
+│   │           │   │   │   └── numpy
+│   │           │   │   │       └── random
+│   │           │   │   ├── lib
+│   │           │   │   │   ├── npy-pkg-config
+│   │           │   │   │   └── pkgconfig
+│   │           │   │   └── tests
+│   │           │   │       ├── data
+│   │           │   │       └── examples
+│   │           │   │           ├── cython
+│   │           │   │           └── limited_api
+│   │           │   ├── core
+│   │           │   ├── doc
+│   │           │   ├── f2py
+│   │           │   │   ├── _backends
+│   │           │   │   ├── src
+│   │           │   │   └── tests
+│   │           │   │       └── src
+│   │           │   │           ├── abstract_interface
+│   │           │   │           ├── array_from_pyobj
+│   │           │   │           ├── assumed_shape
+│   │           │   │           ├── block_docstring
+│   │           │   │           ├── callback
+│   │           │   │           ├── cli
+│   │           │   │           ├── common
+│   │           │   │           ├── crackfortran
+│   │           │   │           ├── f2cmap
+│   │           │   │           ├── isocintrin
+│   │           │   │           ├── kind
+│   │           │   │           ├── mixed
+│   │           │   │           ├── modules
+│   │           │   │           │   ├── gh25337
+│   │           │   │           │   └── gh26920
+│   │           │   │           ├── negative_bounds
+│   │           │   │           ├── parameter
+│   │           │   │           ├── quoted_character
+│   │           │   │           ├── regression
+│   │           │   │           ├── return_character
+│   │           │   │           ├── return_complex
+│   │           │   │           ├── return_integer
+│   │           │   │           ├── return_logical
+│   │           │   │           ├── return_real
+│   │           │   │           ├── routines
+│   │           │   │           ├── size
+│   │           │   │           ├── string
+│   │           │   │           └── value_attrspec
+│   │           │   ├── fft
+│   │           │   │   └── tests
+│   │           │   ├── lib
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── linalg
+│   │           │   │   └── tests
+│   │           │   ├── ma
+│   │           │   │   └── tests
+│   │           │   ├── matrixlib
+│   │           │   │   └── tests
+│   │           │   ├── polynomial
+│   │           │   │   └── tests
+│   │           │   ├── _pyinstaller
+│   │           │   │   └── tests
+│   │           │   ├── random
+│   │           │   │   ├── _examples
+│   │           │   │   │   ├── cffi
+│   │           │   │   │   ├── cython
+│   │           │   │   │   └── numba
+│   │           │   │   ├── lib
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── rec
+│   │           │   ├── strings
+│   │           │   ├── testing
+│   │           │   │   ├── _private
+│   │           │   │   └── tests
+│   │           │   ├── tests
+│   │           │   ├── _typing
+│   │           │   ├── typing
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   │           ├── fail
+│   │           │   │           ├── misc
+│   │           │   │           ├── pass
+│   │           │   │           └── reveal
+│   │           │   └── _utils
+│   │           ├── numpy-2.2.5.dist-info
+│   │           ├── numpy.libs
+│   │           ├── nvidia
+│   │           │   ├── cublas
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cuda_cupti
+│   │           │   │   ├── include
+│   │           │   │   │   ├── Openacc
+│   │           │   │   │   └── Openmp
+│   │           │   │   └── lib
+│   │           │   ├── cuda_nvrtc
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cuda_runtime
+│   │           │   │   ├── include
+│   │           │   │   │   └── cooperative_groups
+│   │           │   │   │       └── details
+│   │           │   │   └── lib
+│   │           │   ├── cudnn
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cufft
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cufile
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── curand
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cusolver
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── cusparse
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── nccl
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   ├── nvjitlink
+│   │           │   │   ├── include
+│   │           │   │   └── lib
+│   │           │   └── nvtx
+│   │           │       ├── include
+│   │           │       │   └── nvtx3
+│   │           │       │       └── nvtxDetail
+│   │           │       └── lib
+│   │           ├── nvidia_cublas_cu12-12.6.4.1.dist-info
+│   │           ├── nvidia_cuda_cupti_cu12-12.6.80.dist-info
+│   │           ├── nvidia_cuda_nvrtc_cu12-12.6.77.dist-info
+│   │           ├── nvidia_cuda_runtime_cu12-12.6.77.dist-info
+│   │           ├── nvidia_cudnn_cu12-9.5.1.17.dist-info
+│   │           ├── nvidia_cufft_cu12-11.3.0.4.dist-info
+│   │           ├── nvidia_cufile_cu12-1.11.1.6.dist-info
+│   │           ├── nvidia_curand_cu12-10.3.7.77.dist-info
+│   │           ├── nvidia_cusolver_cu12-11.7.1.2.dist-info
+│   │           ├── nvidia_cusparse_cu12-12.5.4.2.dist-info
+│   │           ├── nvidia_cusparselt_cu12-0.6.3.dist-info
+│   │           ├── nvidia_nccl_cu12-2.26.2.dist-info
+│   │           ├── nvidia_nvjitlink_cu12-12.6.85.dist-info
+│   │           ├── nvidia_nvtx_cu12-12.6.77.dist-info
+│   │           ├── opencv_python-4.11.0.86.dist-info
+│   │           ├── opencv_python_headless-4.11.0.86.dist-info
+│   │           ├── opencv_python_headless.libs
+│   │           ├── opencv_python.libs
+│   │           ├── ordered_set
+│   │           ├── ordered_set-4.1.0.dist-info
+│   │           ├── packaging
+│   │           │   └── licenses
+│   │           ├── packaging-25.0.dist-info
+│   │           │   └── licenses
+│   │           ├── pandas
+│   │           │   ├── api
+│   │           │   │   ├── extensions
+│   │           │   │   ├── indexers
+│   │           │   │   ├── interchange
+│   │           │   │   ├── types
+│   │           │   │   └── typing
+│   │           │   ├── arrays
+│   │           │   ├── compat
+│   │           │   │   └── numpy
+│   │           │   ├── _config
+│   │           │   ├── core
+│   │           │   │   ├── array_algos
+│   │           │   │   ├── arrays
+│   │           │   │   │   ├── arrow
+│   │           │   │   │   └── sparse
+│   │           │   │   ├── computation
+│   │           │   │   ├── dtypes
+│   │           │   │   ├── groupby
+│   │           │   │   ├── indexers
+│   │           │   │   ├── indexes
+│   │           │   │   ├── interchange
+│   │           │   │   ├── internals
+│   │           │   │   ├── methods
+│   │           │   │   ├── _numba
+│   │           │   │   │   └── kernels
+│   │           │   │   ├── ops
+│   │           │   │   ├── reshape
+│   │           │   │   ├── sparse
+│   │           │   │   ├── strings
+│   │           │   │   ├── tools
+│   │           │   │   ├── util
+│   │           │   │   └── window
+│   │           │   ├── errors
+│   │           │   ├── io
+│   │           │   │   ├── clipboard
+│   │           │   │   ├── excel
+│   │           │   │   ├── formats
+│   │           │   │   │   └── templates
+│   │           │   │   ├── json
+│   │           │   │   ├── parsers
+│   │           │   │   └── sas
+│   │           │   ├── _libs
+│   │           │   │   ├── tslibs
+│   │           │   │   └── window
+│   │           │   ├── plotting
+│   │           │   │   └── _matplotlib
+│   │           │   ├── _testing
+│   │           │   ├── tests
+│   │           │   │   ├── api
+│   │           │   │   ├── apply
+│   │           │   │   ├── arithmetic
+│   │           │   │   ├── arrays
+│   │           │   │   │   ├── boolean
+│   │           │   │   │   ├── categorical
+│   │           │   │   │   ├── datetimes
+│   │           │   │   │   ├── floating
+│   │           │   │   │   ├── integer
+│   │           │   │   │   ├── interval
+│   │           │   │   │   ├── masked
+│   │           │   │   │   ├── numpy_
+│   │           │   │   │   ├── period
+│   │           │   │   │   ├── sparse
+│   │           │   │   │   ├── string_
+│   │           │   │   │   └── timedeltas
+│   │           │   │   ├── base
+│   │           │   │   ├── computation
+│   │           │   │   ├── config
+│   │           │   │   ├── construction
+│   │           │   │   ├── copy_view
+│   │           │   │   │   └── index
+│   │           │   │   ├── dtypes
+│   │           │   │   │   └── cast
+│   │           │   │   ├── extension
+│   │           │   │   │   ├── array_with_attr
+│   │           │   │   │   ├── base
+│   │           │   │   │   ├── date
+│   │           │   │   │   ├── decimal
+│   │           │   │   │   ├── json
+│   │           │   │   │   └── list
+│   │           │   │   ├── frame
+│   │           │   │   │   ├── constructors
+│   │           │   │   │   ├── indexing
+│   │           │   │   │   └── methods
+│   │           │   │   ├── generic
+│   │           │   │   ├── groupby
+│   │           │   │   │   ├── aggregate
+│   │           │   │   │   ├── methods
+│   │           │   │   │   └── transform
+│   │           │   │   ├── indexes
+│   │           │   │   │   ├── base_class
+│   │           │   │   │   ├── categorical
+│   │           │   │   │   ├── datetimelike_
+│   │           │   │   │   ├── datetimes
+│   │           │   │   │   │   └── methods
+│   │           │   │   │   ├── interval
+│   │           │   │   │   ├── multi
+│   │           │   │   │   ├── numeric
+│   │           │   │   │   ├── object
+│   │           │   │   │   ├── period
+│   │           │   │   │   │   └── methods
+│   │           │   │   │   ├── ranges
+│   │           │   │   │   └── timedeltas
+│   │           │   │   │       └── methods
+│   │           │   │   ├── indexing
+│   │           │   │   │   ├── interval
+│   │           │   │   │   └── multiindex
+│   │           │   │   ├── interchange
+│   │           │   │   ├── internals
+│   │           │   │   ├── io
+│   │           │   │   │   ├── excel
+│   │           │   │   │   ├── formats
+│   │           │   │   │   │   └── style
+│   │           │   │   │   ├── json
+│   │           │   │   │   ├── parser
+│   │           │   │   │   │   ├── common
+│   │           │   │   │   │   ├── dtypes
+│   │           │   │   │   │   └── usecols
+│   │           │   │   │   ├── pytables
+│   │           │   │   │   ├── sas
+│   │           │   │   │   └── xml
+│   │           │   │   ├── libs
+│   │           │   │   ├── plotting
+│   │           │   │   │   └── frame
+│   │           │   │   ├── reductions
+│   │           │   │   ├── resample
+│   │           │   │   ├── reshape
+│   │           │   │   │   ├── concat
+│   │           │   │   │   └── merge
+│   │           │   │   ├── scalar
+│   │           │   │   │   ├── interval
+│   │           │   │   │   ├── period
+│   │           │   │   │   ├── timedelta
+│   │           │   │   │   │   └── methods
+│   │           │   │   │   └── timestamp
+│   │           │   │   │       └── methods
+│   │           │   │   ├── series
+│   │           │   │   │   ├── accessors
+│   │           │   │   │   ├── indexing
+│   │           │   │   │   └── methods
+│   │           │   │   ├── strings
+│   │           │   │   ├── tools
+│   │           │   │   ├── tseries
+│   │           │   │   │   ├── frequencies
+│   │           │   │   │   ├── holiday
+│   │           │   │   │   └── offsets
+│   │           │   │   ├── tslibs
+│   │           │   │   ├── util
+│   │           │   │   └── window
+│   │           │   │       └── moments
+│   │           │   ├── tseries
+│   │           │   └── util
+│   │           │       └── version
+│   │           ├── pandas-2.2.3.dist-info
+│   │           ├── PIL
+│   │           ├── pillow-11.2.1.dist-info
+│   │           │   └── licenses
+│   │           ├── pillow.libs
+│   │           ├── pip
+│   │           │   ├── _internal
+│   │           │   │   ├── cli
+│   │           │   │   ├── commands
+│   │           │   │   ├── distributions
+│   │           │   │   ├── index
+│   │           │   │   ├── locations
+│   │           │   │   ├── metadata
+│   │           │   │   │   └── importlib
+│   │           │   │   ├── models
+│   │           │   │   ├── network
+│   │           │   │   ├── operations
+│   │           │   │   │   ├── build
+│   │           │   │   │   └── install
+│   │           │   │   ├── req
+│   │           │   │   ├── resolution
+│   │           │   │   │   ├── legacy
+│   │           │   │   │   └── resolvelib
+│   │           │   │   ├── utils
+│   │           │   │   └── vcs
+│   │           │   └── _vendor
+│   │           │       ├── cachecontrol
+│   │           │       │   └── caches
+│   │           │       ├── certifi
+│   │           │       ├── chardet
+│   │           │       │   ├── cli
+│   │           │       │   └── metadata
+│   │           │       ├── colorama
+│   │           │       │   └── tests
+│   │           │       ├── distlib
+│   │           │       ├── distro
+│   │           │       ├── idna
+│   │           │       ├── msgpack
+│   │           │       ├── packaging
+│   │           │       ├── pkg_resources
+│   │           │       ├── platformdirs
+│   │           │       ├── pygments
+│   │           │       │   ├── filters
+│   │           │       │   ├── formatters
+│   │           │       │   ├── lexers
+│   │           │       │   └── styles
+│   │           │       ├── pyparsing
+│   │           │       │   └── diagram
+│   │           │       ├── pyproject_hooks
+│   │           │       │   └── _in_process
+│   │           │       ├── requests
+│   │           │       ├── resolvelib
+│   │           │       │   └── compat
+│   │           │       ├── rich
+│   │           │       ├── tenacity
+│   │           │       ├── tomli
+│   │           │       ├── truststore
+│   │           │       ├── urllib3
+│   │           │       │   ├── contrib
+│   │           │       │   │   └── _securetransport
+│   │           │       │   ├── packages
+│   │           │       │   │   └── backports
+│   │           │       │   └── util
+│   │           │       └── webencodings
+│   │           ├── pip-24.0.dist-info
+│   │           ├── pkg_resources
+│   │           │   └── tests
+│   │           │       └── data
+│   │           │           ├── my-test-package-source
+│   │           │           ├── my-test-package_unpacked-egg
+│   │           │           │   └── my_test_package-1.0-py3.7.egg
+│   │           │           │       └── EGG-INFO
+│   │           │           ├── my-test-package-zip
+│   │           │           └── my-test-package_zipped-egg
+│   │           ├── platformdirs
+│   │           ├── platformdirs-4.3.7.dist-info
+│   │           │   └── licenses
+│   │           ├── protobuf-6.30.2.dist-info
+│   │           ├── psutil
+│   │           │   └── tests
+│   │           ├── psutil-7.0.0.dist-info
+│   │           ├── pydantic
+│   │           │   ├── deprecated
+│   │           │   ├── experimental
+│   │           │   ├── _internal
+│   │           │   ├── plugin
+│   │           │   └── v1
+│   │           ├── pydantic-2.11.3.dist-info
+│   │           │   └── licenses
+│   │           ├── pydantic_core
+│   │           ├── pydantic_core-2.33.1.dist-info
+│   │           │   └── licenses
+│   │           ├── pylatex
+│   │           │   └── base_classes
+│   │           ├── pylatex-1.4.2.dist-info
+│   │           │   └── licenses
+│   │           ├── pyparsing
+│   │           │   ├── diagram
+│   │           │   └── tools
+│   │           ├── pyparsing-3.2.3.dist-info
+│   │           ├── python_dateutil-2.9.0.post0.dist-info
+│   │           ├── pytz
+│   │           │   └── zoneinfo
+│   │           │       ├── Africa
+│   │           │       ├── America
+│   │           │       │   ├── Argentina
+│   │           │       │   ├── Indiana
+│   │           │       │   ├── Kentucky
+│   │           │       │   └── North_Dakota
+│   │           │       ├── Antarctica
+│   │           │       ├── Arctic
+│   │           │       ├── Asia
+│   │           │       ├── Atlantic
+│   │           │       ├── Australia
+│   │           │       ├── Brazil
+│   │           │       ├── Canada
+│   │           │       ├── Chile
+│   │           │       ├── Etc
+│   │           │       ├── Europe
+│   │           │       ├── Indian
+│   │           │       ├── Mexico
+│   │           │       ├── Pacific
+│   │           │       └── US
+│   │           ├── pytz-2025.2.dist-info
+│   │           ├── PyYAML-6.0.2.dist-info
+│   │           ├── requests
+│   │           ├── requests-2.32.3.dist-info
+│   │           ├── safetensors
+│   │           ├── safetensors-0.5.3.dist-info
+│   │           ├── scikit_learn-1.6.1.dist-info
+│   │           ├── scikit_learn.libs
+│   │           ├── scipy
+│   │           │   ├── cluster
+│   │           │   │   └── tests
+│   │           │   ├── constants
+│   │           │   │   └── tests
+│   │           │   ├── datasets
+│   │           │   │   └── tests
+│   │           │   ├── differentiate
+│   │           │   │   └── tests
+│   │           │   ├── fft
+│   │           │   │   ├── _pocketfft
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── fftpack
+│   │           │   │   └── tests
+│   │           │   ├── integrate
+│   │           │   │   ├── _ivp
+│   │           │   │   │   └── tests
+│   │           │   │   ├── _rules
+│   │           │   │   └── tests
+│   │           │   ├── interpolate
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── io
+│   │           │   │   ├── arff
+│   │           │   │   │   └── tests
+│   │           │   │   │       └── data
+│   │           │   │   ├── _fast_matrix_market
+│   │           │   │   ├── _harwell_boeing
+│   │           │   │   │   └── tests
+│   │           │   │   ├── matlab
+│   │           │   │   │   └── tests
+│   │           │   │   │       └── data
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── _lib
+│   │           │   │   ├── array_api_compat
+│   │           │   │   │   ├── common
+│   │           │   │   │   ├── cupy
+│   │           │   │   │   ├── dask
+│   │           │   │   │   │   └── array
+│   │           │   │   │   ├── numpy
+│   │           │   │   │   └── torch
+│   │           │   │   ├── array_api_extra
+│   │           │   │   ├── cobyqa
+│   │           │   │   │   ├── subsolvers
+│   │           │   │   │   └── utils
+│   │           │   │   ├── tests
+│   │           │   │   └── _uarray
+│   │           │   ├── linalg
+│   │           │   │   └── tests
+│   │           │   │       ├── _cython_examples
+│   │           │   │       └── data
+│   │           │   ├── misc
+│   │           │   ├── ndimage
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── odr
+│   │           │   │   └── tests
+│   │           │   ├── optimize
+│   │           │   │   ├── cython_optimize
+│   │           │   │   ├── _highspy
+│   │           │   │   ├── _lsq
+│   │           │   │   ├── _shgo_lib
+│   │           │   │   ├── tests
+│   │           │   │   │   └── _cython_examples
+│   │           │   │   ├── _trlib
+│   │           │   │   └── _trustregion_constr
+│   │           │   │       └── tests
+│   │           │   ├── signal
+│   │           │   │   ├── tests
+│   │           │   │   └── windows
+│   │           │   ├── sparse
+│   │           │   │   ├── csgraph
+│   │           │   │   │   └── tests
+│   │           │   │   ├── linalg
+│   │           │   │   │   ├── _dsolve
+│   │           │   │   │   │   └── tests
+│   │           │   │   │   ├── _eigen
+│   │           │   │   │   │   ├── arpack
+│   │           │   │   │   │   │   └── tests
+│   │           │   │   │   │   ├── lobpcg
+│   │           │   │   │   │   │   └── tests
+│   │           │   │   │   │   └── tests
+│   │           │   │   │   ├── _isolve
+│   │           │   │   │   │   └── tests
+│   │           │   │   │   ├── _propack
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   ├── spatial
+│   │           │   │   ├── qhull_src
+│   │           │   │   ├── tests
+│   │           │   │   │   └── data
+│   │           │   │   └── transform
+│   │           │   │       └── tests
+│   │           │   ├── special
+│   │           │   │   ├── _precompute
+│   │           │   │   ├── tests
+│   │           │   │   │   ├── _cython_examples
+│   │           │   │   │   └── data
+│   │           │   │   └── xsf
+│   │           │   │       └── cephes
+│   │           │   └── stats
+│   │           │       ├── _levy_stable
+│   │           │       ├── _rcont
+│   │           │       ├── tests
+│   │           │       │   └── data
+│   │           │       │       ├── levy_stable
+│   │           │       │       ├── nist_anova
+│   │           │       │       └── nist_linregress
+│   │           │       └── _unuran
+│   │           ├── scipy-1.15.2.dist-info
+│   │           ├── scipy.libs
+│   │           ├── seaborn
+│   │           │   ├── colors
+│   │           │   ├── _core
+│   │           │   ├── external
+│   │           │   ├── _marks
+│   │           │   └── _stats
+│   │           ├── seaborn-0.13.2.dist-info
+│   │           ├── segment_anything
+│   │           │   ├── modeling
+│   │           │   └── utils
+│   │           ├── segment_anything-1.0.dist-info
+│   │           │   └── licenses
+│   │           ├── sentry_sdk
+│   │           │   ├── ai
+│   │           │   ├── crons
+│   │           │   ├── integrations
+│   │           │   │   ├── celery
+│   │           │   │   ├── django
+│   │           │   │   ├── grpc
+│   │           │   │   │   └── aio
+│   │           │   │   ├── opentelemetry
+│   │           │   │   ├── redis
+│   │           │   │   │   └── modules
+│   │           │   │   └── spark
+│   │           │   └── profiler
+│   │           ├── sentry_sdk-2.27.0.dist-info
+│   │           │   └── licenses
+│   │           ├── setproctitle
+│   │           ├── setproctitle-1.3.5.dist-info
+│   │           ├── setuptools
+│   │           │   ├── command
+│   │           │   ├── compat
+│   │           │   ├── config
+│   │           │   │   └── _validate_pyproject
+│   │           │   ├── _distutils
+│   │           │   │   ├── command
+│   │           │   │   ├── compat
+│   │           │   │   ├── compilers
+│   │           │   │   │   └── C
+│   │           │   │   │       └── tests
+│   │           │   │   └── tests
+│   │           │   │       └── compat
+│   │           │   ├── tests
+│   │           │   │   ├── compat
+│   │           │   │   ├── config
+│   │           │   │   │   └── downloads
+│   │           │   │   ├── indexes
+│   │           │   │   │   └── test_links_priority
+│   │           │   │   │       └── simple
+│   │           │   │   │           └── foobar
+│   │           │   │   └── integration
+│   │           │   └── _vendor
+│   │           │       ├── autocommand
+│   │           │       ├── autocommand-2.2.2.dist-info
+│   │           │       ├── backports
+│   │           │       │   └── tarfile
+│   │           │       │       └── compat
+│   │           │       ├── backports.tarfile-1.2.0.dist-info
+│   │           │       ├── importlib_metadata
+│   │           │       │   └── compat
+│   │           │       ├── importlib_metadata-8.0.0.dist-info
+│   │           │       ├── inflect
+│   │           │       │   └── compat
+│   │           │       ├── inflect-7.3.1.dist-info
+│   │           │       ├── jaraco
+│   │           │       │   ├── collections
+│   │           │       │   ├── functools
+│   │           │       │   └── text
+│   │           │       ├── jaraco.collections-5.1.0.dist-info
+│   │           │       ├── jaraco.context-5.3.0.dist-info
+│   │           │       ├── jaraco.functools-4.0.1.dist-info
+│   │           │       ├── jaraco.text-3.12.1.dist-info
+│   │           │       ├── more_itertools
+│   │           │       ├── more_itertools-10.3.0.dist-info
+│   │           │       ├── packaging
+│   │           │       │   └── licenses
+│   │           │       ├── packaging-24.2.dist-info
+│   │           │       ├── platformdirs
+│   │           │       ├── platformdirs-4.2.2.dist-info
+│   │           │       │   └── licenses
+│   │           │       ├── tomli
+│   │           │       ├── tomli-2.0.1.dist-info
+│   │           │       ├── typeguard
+│   │           │       ├── typeguard-4.3.0.dist-info
+│   │           │       ├── typing_extensions-4.12.2.dist-info
+│   │           │       ├── wheel
+│   │           │       │   ├── cli
+│   │           │       │   └── vendored
+│   │           │       │       └── packaging
+│   │           │       ├── wheel-0.45.1.dist-info
+│   │           │       ├── zipp
+│   │           │       │   └── compat
+│   │           │       └── zipp-3.19.2.dist-info
+│   │           ├── setuptools-80.0.0.dist-info
+│   │           │   └── licenses
+│   │           ├── simsimd
+│   │           ├── simsimd.
+│   │           ├── simsimd-6.2.1.dist-info
+│   │           ├── six-1.17.0.dist-info
+│   │           ├── sklearn
+│   │           │   ├── _build_utils
+│   │           │   ├── __check_build
+│   │           │   ├── cluster
+│   │           │   │   ├── _hdbscan
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── compose
+│   │           │   │   └── tests
+│   │           │   ├── covariance
+│   │           │   │   └── tests
+│   │           │   ├── cross_decomposition
+│   │           │   │   └── tests
+│   │           │   ├── datasets
+│   │           │   │   ├── data
+│   │           │   │   ├── descr
+│   │           │   │   ├── images
+│   │           │   │   └── tests
+│   │           │   │       └── data
+│   │           │   │           └── openml
+│   │           │   │               ├── id_1
+│   │           │   │               ├── id_1119
+│   │           │   │               ├── id_1590
+│   │           │   │               ├── id_2
+│   │           │   │               ├── id_292
+│   │           │   │               ├── id_3
+│   │           │   │               ├── id_40589
+│   │           │   │               ├── id_40675
+│   │           │   │               ├── id_40945
+│   │           │   │               ├── id_40966
+│   │           │   │               ├── id_42074
+│   │           │   │               ├── id_42585
+│   │           │   │               ├── id_561
+│   │           │   │               ├── id_61
+│   │           │   │               └── id_62
+│   │           │   ├── decomposition
+│   │           │   │   └── tests
+│   │           │   ├── ensemble
+│   │           │   │   ├── _hist_gradient_boosting
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── experimental
+│   │           │   │   └── tests
+│   │           │   ├── externals
+│   │           │   │   ├── _packaging
+│   │           │   │   └── _scipy
+│   │           │   │       └── sparse
+│   │           │   │           └── csgraph
+│   │           │   ├── feature_extraction
+│   │           │   │   └── tests
+│   │           │   ├── feature_selection
+│   │           │   │   └── tests
+│   │           │   ├── frozen
+│   │           │   │   └── tests
+│   │           │   ├── gaussian_process
+│   │           │   │   └── tests
+│   │           │   ├── impute
+│   │           │   │   └── tests
+│   │           │   ├── inspection
+│   │           │   │   ├── _plot
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── linear_model
+│   │           │   │   ├── _glm
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── _loss
+│   │           │   │   └── tests
+│   │           │   ├── manifold
+│   │           │   │   └── tests
+│   │           │   ├── metrics
+│   │           │   │   ├── cluster
+│   │           │   │   │   └── tests
+│   │           │   │   ├── _pairwise_distances_reduction
+│   │           │   │   ├── _plot
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── mixture
+│   │           │   │   └── tests
+│   │           │   ├── model_selection
+│   │           │   │   └── tests
+│   │           │   ├── neighbors
+│   │           │   │   └── tests
+│   │           │   ├── neural_network
+│   │           │   │   └── tests
+│   │           │   ├── preprocessing
+│   │           │   │   └── tests
+│   │           │   ├── semi_supervised
+│   │           │   │   └── tests
+│   │           │   ├── svm
+│   │           │   │   ├── src
+│   │           │   │   │   ├── liblinear
+│   │           │   │   │   ├── libsvm
+│   │           │   │   │   └── newrand
+│   │           │   │   └── tests
+│   │           │   ├── tests
+│   │           │   ├── tree
+│   │           │   │   └── tests
+│   │           │   └── utils
+│   │           │       ├── src
+│   │           │       ├── _test_common
+│   │           │       └── tests
+│   │           ├── smmap
+│   │           │   └── test
+│   │           ├── smmap-5.0.2.dist-info
+│   │           ├── stringzilla-3.12.5.dist-info
+│   │           │   └── licenses
+│   │           ├── sympy
+│   │           │   ├── algebras
+│   │           │   │   └── tests
+│   │           │   ├── assumptions
+│   │           │   │   ├── handlers
+│   │           │   │   ├── predicates
+│   │           │   │   ├── relation
+│   │           │   │   └── tests
+│   │           │   ├── benchmarks
+│   │           │   ├── calculus
+│   │           │   │   └── tests
+│   │           │   ├── categories
+│   │           │   │   └── tests
+│   │           │   ├── codegen
+│   │           │   │   └── tests
+│   │           │   ├── combinatorics
+│   │           │   │   └── tests
+│   │           │   ├── concrete
+│   │           │   │   └── tests
+│   │           │   ├── core
+│   │           │   │   ├── benchmarks
+│   │           │   │   └── tests
+│   │           │   ├── crypto
+│   │           │   │   └── tests
+│   │           │   ├── diffgeom
+│   │           │   │   └── tests
+│   │           │   ├── discrete
+│   │           │   │   └── tests
+│   │           │   ├── external
+│   │           │   │   └── tests
+│   │           │   ├── functions
+│   │           │   │   ├── combinatorial
+│   │           │   │   │   └── tests
+│   │           │   │   ├── elementary
+│   │           │   │   │   ├── benchmarks
+│   │           │   │   │   └── tests
+│   │           │   │   └── special
+│   │           │   │       ├── benchmarks
+│   │           │   │       └── tests
+│   │           │   ├── geometry
+│   │           │   │   └── tests
+│   │           │   ├── holonomic
+│   │           │   │   └── tests
+│   │           │   ├── integrals
+│   │           │   │   ├── benchmarks
+│   │           │   │   └── tests
+│   │           │   ├── interactive
+│   │           │   │   └── tests
+│   │           │   ├── liealgebras
+│   │           │   │   └── tests
+│   │           │   ├── logic
+│   │           │   │   ├── algorithms
+│   │           │   │   ├── tests
+│   │           │   │   └── utilities
+│   │           │   ├── matrices
+│   │           │   │   ├── benchmarks
+│   │           │   │   ├── expressions
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── multipledispatch
+│   │           │   │   └── tests
+│   │           │   ├── ntheory
+│   │           │   │   └── tests
+│   │           │   ├── parsing
+│   │           │   │   ├── autolev
+│   │           │   │   │   ├── _antlr
+│   │           │   │   │   └── test-examples
+│   │           │   │   │       └── pydy-example-repo
+│   │           │   │   ├── c
+│   │           │   │   ├── fortran
+│   │           │   │   ├── latex
+│   │           │   │   │   ├── _antlr
+│   │           │   │   │   └── lark
+│   │           │   │   │       └── grammar
+│   │           │   │   └── tests
+│   │           │   ├── physics
+│   │           │   │   ├── biomechanics
+│   │           │   │   │   └── tests
+│   │           │   │   ├── continuum_mechanics
+│   │           │   │   │   └── tests
+│   │           │   │   ├── control
+│   │           │   │   │   └── tests
+│   │           │   │   ├── hep
+│   │           │   │   │   └── tests
+│   │           │   │   ├── mechanics
+│   │           │   │   │   └── tests
+│   │           │   │   ├── optics
+│   │           │   │   │   └── tests
+│   │           │   │   ├── quantum
+│   │           │   │   │   └── tests
+│   │           │   │   ├── tests
+│   │           │   │   ├── units
+│   │           │   │   │   ├── definitions
+│   │           │   │   │   ├── systems
+│   │           │   │   │   └── tests
+│   │           │   │   └── vector
+│   │           │   │       └── tests
+│   │           │   ├── plotting
+│   │           │   │   ├── backends
+│   │           │   │   │   ├── matplotlibbackend
+│   │           │   │   │   └── textbackend
+│   │           │   │   ├── intervalmath
+│   │           │   │   │   └── tests
+│   │           │   │   ├── pygletplot
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── polys
+│   │           │   │   ├── agca
+│   │           │   │   │   └── tests
+│   │           │   │   ├── benchmarks
+│   │           │   │   ├── domains
+│   │           │   │   │   └── tests
+│   │           │   │   ├── matrices
+│   │           │   │   │   └── tests
+│   │           │   │   ├── numberfields
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── printing
+│   │           │   │   ├── pretty
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── sandbox
+│   │           │   │   └── tests
+│   │           │   ├── series
+│   │           │   │   ├── benchmarks
+│   │           │   │   └── tests
+│   │           │   ├── sets
+│   │           │   │   ├── handlers
+│   │           │   │   └── tests
+│   │           │   ├── simplify
+│   │           │   │   └── tests
+│   │           │   ├── solvers
+│   │           │   │   ├── benchmarks
+│   │           │   │   ├── diophantine
+│   │           │   │   │   └── tests
+│   │           │   │   ├── ode
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── stats
+│   │           │   │   ├── sampling
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── strategies
+│   │           │   │   ├── branch
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── tensor
+│   │           │   │   ├── array
+│   │           │   │   │   ├── expressions
+│   │           │   │   │   │   └── tests
+│   │           │   │   │   └── tests
+│   │           │   │   └── tests
+│   │           │   ├── testing
+│   │           │   │   └── tests
+│   │           │   ├── unify
+│   │           │   │   └── tests
+│   │           │   ├── utilities
+│   │           │   │   ├── _compilation
+│   │           │   │   │   └── tests
+│   │           │   │   ├── mathml
+│   │           │   │   │   └── data
+│   │           │   │   └── tests
+│   │           │   └── vector
+│   │           │       └── tests
+│   │           ├── sympy-1.14.0.dist-info
+│   │           │   └── licenses
+│   │           ├── tabulate
+│   │           ├── tabulate-0.9.0.dist-info
+│   │           ├── threadpoolctl-3.6.0.dist-info
+│   │           │   └── licenses
+│   │           ├── timm
+│   │           │   ├── data
+│   │           │   │   ├── _info
+│   │           │   │   └── readers
+│   │           │   ├── layers
+│   │           │   ├── loss
+│   │           │   ├── models
+│   │           │   │   ├── layers
+│   │           │   │   └── _pruned
+│   │           │   ├── optim
+│   │           │   ├── scheduler
+│   │           │   └── utils
+│   │           ├── timm-1.0.15.dist-info
+│   │           │   └── licenses
+│   │           ├── torch
+│   │           │   ├── accelerator
+│   │           │   ├── amp
+│   │           │   ├── ao
+│   │           │   │   ├── nn
+│   │           │   │   │   ├── intrinsic
+│   │           │   │   │   │   ├── modules
+│   │           │   │   │   │   ├── qat
+│   │           │   │   │   │   │   └── modules
+│   │           │   │   │   │   └── quantized
+│   │           │   │   │   │       ├── dynamic
+│   │           │   │   │   │       │   └── modules
+│   │           │   │   │   │       └── modules
+│   │           │   │   │   ├── qat
+│   │           │   │   │   │   ├── dynamic
+│   │           │   │   │   │   │   └── modules
+│   │           │   │   │   │   └── modules
+│   │           │   │   │   ├── quantizable
+│   │           │   │   │   │   └── modules
+│   │           │   │   │   ├── quantized
+│   │           │   │   │   │   ├── dynamic
+│   │           │   │   │   │   │   └── modules
+│   │           │   │   │   │   ├── modules
+│   │           │   │   │   │   └── reference
+│   │           │   │   │   │       └── modules
+│   │           │   │   │   └── sparse
+│   │           │   │   │       └── quantized
+│   │           │   │   │           └── dynamic
+│   │           │   │   ├── ns
+│   │           │   │   │   └── fx
+│   │           │   │   ├── pruning
+│   │           │   │   │   ├── _experimental
+│   │           │   │   │   │   ├── activation_sparsifier
+│   │           │   │   │   │   ├── data_scheduler
+│   │           │   │   │   │   ├── data_sparsifier
+│   │           │   │   │   │   │   └── lightning
+│   │           │   │   │   │   │       └── callbacks
+│   │           │   │   │   │   └── pruner
+│   │           │   │   │   ├── scheduler
+│   │           │   │   │   └── sparsifier
+│   │           │   │   └── quantization
+│   │           │   │       ├── backend_config
+│   │           │   │       ├── fx
+│   │           │   │       │   └── _model_report
+│   │           │   │       ├── pt2e
+│   │           │   │       │   └── representation
+│   │           │   │       └── quantizer
+│   │           │   ├── autograd
+│   │           │   │   └── _functions
+│   │           │   ├── _awaits
+│   │           │   ├── backends
+│   │           │   │   ├── _coreml
+│   │           │   │   ├── cpu
+│   │           │   │   ├── cuda
+│   │           │   │   ├── cudnn
+│   │           │   │   ├── cusparselt
+│   │           │   │   ├── kleidiai
+│   │           │   │   ├── mha
+│   │           │   │   ├── mkl
+│   │           │   │   ├── mkldnn
+│   │           │   │   ├── mps
+│   │           │   │   ├── _nnapi
+│   │           │   │   ├── nnpack
+│   │           │   │   ├── openmp
+│   │           │   │   ├── opt_einsum
+│   │           │   │   ├── quantized
+│   │           │   │   ├── xeon
+│   │           │   │   └── xnnpack
+│   │           │   ├── bin
+│   │           │   ├── _C
+│   │           │   ├── compiler
+│   │           │   ├── contrib
+│   │           │   ├── cpu
+│   │           │   │   └── amp
+│   │           │   ├── cuda
+│   │           │   │   └── amp
+│   │           │   ├── _custom_op
+│   │           │   ├── _decomp
+│   │           │   ├── _dispatch
+│   │           │   ├── distributed
+│   │           │   │   ├── algorithms
+│   │           │   │   │   ├── _checkpoint
+│   │           │   │   │   ├── _comm_hooks
+│   │           │   │   │   ├── ddp_comm_hooks
+│   │           │   │   │   ├── model_averaging
+│   │           │   │   │   ├── _optimizer_overlap
+│   │           │   │   │   └── _quantization
+│   │           │   │   ├── autograd
+│   │           │   │   ├── checkpoint
+│   │           │   │   ├── _composable
+│   │           │   │   │   └── fsdp
+│   │           │   │   ├── elastic
+│   │           │   │   │   ├── agent
+│   │           │   │   │   │   └── server
+│   │           │   │   │   ├── events
+│   │           │   │   │   ├── metrics
+│   │           │   │   │   ├── multiprocessing
+│   │           │   │   │   │   ├── errors
+│   │           │   │   │   │   └── subprocess_handler
+│   │           │   │   │   ├── rendezvous
+│   │           │   │   │   ├── timer
+│   │           │   │   │   └── utils
+│   │           │   │   │       └── data
+│   │           │   │   ├── fsdp
+│   │           │   │   │   └── _fully_shard
+│   │           │   │   ├── launcher
+│   │           │   │   ├── nn
+│   │           │   │   │   ├── api
+│   │           │   │   │   └── jit
+│   │           │   │   │       └── templates
+│   │           │   │   ├── optim
+│   │           │   │   ├── pipelining
+│   │           │   │   ├── rpc
+│   │           │   │   │   └── _testing
+│   │           │   │   ├── _shard
+│   │           │   │   │   ├── checkpoint
+│   │           │   │   │   ├── sharded_optim
+│   │           │   │   │   ├── sharded_tensor
+│   │           │   │   │   │   └── _ops
+│   │           │   │   │   ├── sharding_plan
+│   │           │   │   │   └── sharding_spec
+│   │           │   │   │       └── chunk_sharding_spec_ops
+│   │           │   │   ├── _sharded_tensor
+│   │           │   │   ├── _sharding_spec
+│   │           │   │   ├── _symmetric_memory
+│   │           │   │   ├── _tensor
+│   │           │   │   ├── tensor
+│   │           │   │   │   ├── debug
+│   │           │   │   │   ├── experimental
+│   │           │   │   │   ├── _ops
+│   │           │   │   │   └── parallel
+│   │           │   │   └── _tools
+│   │           │   ├── distributions
+│   │           │   ├── _dynamo
+│   │           │   │   ├── backends
+│   │           │   │   ├── polyfills
+│   │           │   │   ├── repro
+│   │           │   │   └── variables
+│   │           │   ├── _export
+│   │           │   │   ├── db
+│   │           │   │   │   └── examples
+│   │           │   │   ├── passes
+│   │           │   │   ├── pass_infra
+│   │           │   │   └── serde
+│   │           │   ├── export
+│   │           │   │   ├── experimental
+│   │           │   │   └── passes
+│   │           │   ├── fft
+│   │           │   ├── func
+│   │           │   ├── _functorch
+│   │           │   │   ├── _activation_checkpointing
+│   │           │   │   └── _aot_autograd
+│   │           │   ├── futures
+│   │           │   ├── fx
+│   │           │   │   ├── experimental
+│   │           │   │   │   ├── migrate_gradual_types
+│   │           │   │   │   └── unification
+│   │           │   │   │       └── multipledispatch
+│   │           │   │   └── passes
+│   │           │   │       ├── backends
+│   │           │   │       ├── dialect
+│   │           │   │       │   └── common
+│   │           │   │       ├── infra
+│   │           │   │       ├── tests
+│   │           │   │       └── utils
+│   │           │   ├── _higher_order_ops
+│   │           │   ├── include
+│   │           │   │   ├── ATen
+│   │           │   │   │   ├── core
+│   │           │   │   │   │   ├── boxing
+│   │           │   │   │   │   │   └── impl
+│   │           │   │   │   │   ├── dispatch
+│   │           │   │   │   │   └── op_registration
+│   │           │   │   │   ├── cpu
+│   │           │   │   │   │   └── vec
+│   │           │   │   │   │       ├── sve
+│   │           │   │   │   │       ├── vec128
+│   │           │   │   │   │       ├── vec256
+│   │           │   │   │   │       │   ├── vsx
+│   │           │   │   │   │       │   └── zarch
+│   │           │   │   │   │       └── vec512
+│   │           │   │   │   ├── cuda
+│   │           │   │   │   │   ├── detail
+│   │           │   │   │   │   └── tunable
+│   │           │   │   │   ├── cudnn
+│   │           │   │   │   ├── detail
+│   │           │   │   │   ├── functorch
+│   │           │   │   │   ├── hip
+│   │           │   │   │   │   └── impl
+│   │           │   │   │   ├── miopen
+│   │           │   │   │   ├── mps
+│   │           │   │   │   ├── native
+│   │           │   │   │   │   ├── cpu
+│   │           │   │   │   │   ├── cuda
+│   │           │   │   │   │   ├── hip
+│   │           │   │   │   │   ├── kleidiai
+│   │           │   │   │   │   ├── mkldnn
+│   │           │   │   │   │   │   └── xpu
+│   │           │   │   │   │   │       └── detail
+│   │           │   │   │   │   ├── mps
+│   │           │   │   │   │   ├── nested
+│   │           │   │   │   │   ├── quantized
+│   │           │   │   │   │   │   └── cpu
+│   │           │   │   │   │   ├── transformers
+│   │           │   │   │   │   └── utils
+│   │           │   │   │   ├── ops
+│   │           │   │   │   ├── quantized
+│   │           │   │   │   └── xpu
+│   │           │   │   │       └── detail
+│   │           │   │   ├── c10
+│   │           │   │   │   ├── core
+│   │           │   │   │   │   └── impl
+│   │           │   │   │   ├── cuda
+│   │           │   │   │   │   └── impl
+│   │           │   │   │   ├── macros
+│   │           │   │   │   ├── metal
+│   │           │   │   │   ├── util
+│   │           │   │   │   └── xpu
+│   │           │   │   │       └── impl
+│   │           │   │   ├── caffe2
+│   │           │   │   │   └── serialize
+│   │           │   │   ├── kineto
+│   │           │   │   ├── pybind11
+│   │           │   │   │   ├── detail
+│   │           │   │   │   └── eigen
+│   │           │   │   ├── tensorpipe
+│   │           │   │   │   ├── channel
+│   │           │   │   │   │   ├── basic
+│   │           │   │   │   │   ├── cma
+│   │           │   │   │   │   ├── mpt
+│   │           │   │   │   │   └── xth
+│   │           │   │   │   ├── common
+│   │           │   │   │   ├── core
+│   │           │   │   │   └── transport
+│   │           │   │   │       ├── ibv
+│   │           │   │   │       ├── shm
+│   │           │   │   │       └── uv
+│   │           │   │   ├── THC
+│   │           │   │   └── torch
+│   │           │   │       └── csrc
+│   │           │   │           ├── api
+│   │           │   │           │   └── include
+│   │           │   │           │       └── torch
+│   │           │   │           │           ├── data
+│   │           │   │           │           │   ├── dataloader
+│   │           │   │           │           │   ├── datasets
+│   │           │   │           │           │   ├── detail
+│   │           │   │           │           │   ├── samplers
+│   │           │   │           │           │   └── transforms
+│   │           │   │           │           ├── detail
+│   │           │   │           │           ├── nn
+│   │           │   │           │           │   ├── functional
+│   │           │   │           │           │   ├── modules
+│   │           │   │           │           │   │   └── container
+│   │           │   │           │           │   ├── options
+│   │           │   │           │           │   ├── parallel
+│   │           │   │           │           │   └── utils
+│   │           │   │           │           ├── optim
+│   │           │   │           │           │   └── schedulers
+│   │           │   │           │           └── serialize
+│   │           │   │           ├── autograd
+│   │           │   │           │   ├── functions
+│   │           │   │           │   ├── generated
+│   │           │   │           │   └── utils
+│   │           │   │           ├── cuda
+│   │           │   │           ├── distributed
+│   │           │   │           │   ├── autograd
+│   │           │   │           │   │   ├── context
+│   │           │   │           │   │   ├── functions
+│   │           │   │           │   │   └── rpc_messages
+│   │           │   │           │   ├── c10d
+│   │           │   │           │   └── rpc
+│   │           │   │           ├── dynamo
+│   │           │   │           ├── inductor
+│   │           │   │           │   ├── aoti_include
+│   │           │   │           │   ├── aoti_package
+│   │           │   │           │   ├── aoti_runner
+│   │           │   │           │   ├── aoti_runtime
+│   │           │   │           │   ├── aoti_torch
+│   │           │   │           │   │   ├── c
+│   │           │   │           │   │   └── generated
+│   │           │   │           │   └── cpp_wrapper
+│   │           │   │           │       └── device_internal
+│   │           │   │           ├── jit
+│   │           │   │           │   ├── api
+│   │           │   │           │   ├── backends
+│   │           │   │           │   ├── codegen
+│   │           │   │           │   │   └── cuda
+│   │           │   │           │   ├── frontend
+│   │           │   │           │   ├── ir
+│   │           │   │           │   ├── mobile
+│   │           │   │           │   ├── passes
+│   │           │   │           │   │   ├── quantization
+│   │           │   │           │   │   └── utils
+│   │           │   │           │   ├── python
+│   │           │   │           │   ├── runtime
+│   │           │   │           │   ├── serialization
+│   │           │   │           │   ├── tensorexpr
+│   │           │   │           │   │   └── operators
+│   │           │   │           │   └── testing
+│   │           │   │           ├── lazy
+│   │           │   │           │   ├── backend
+│   │           │   │           │   ├── core
+│   │           │   │           │   │   ├── internal_ops
+│   │           │   │           │   │   └── ops
+│   │           │   │           │   ├── python
+│   │           │   │           │   └── ts_backend
+│   │           │   │           ├── onnx
+│   │           │   │           ├── profiler
+│   │           │   │           │   ├── orchestration
+│   │           │   │           │   ├── python
+│   │           │   │           │   ├── standalone
+│   │           │   │           │   ├── stubs
+│   │           │   │           │   └── unwind
+│   │           │   │           ├── stable
+│   │           │   │           ├── tensor
+│   │           │   │           ├── utils
+│   │           │   │           └── xpu
+│   │           │   ├── _inductor
+│   │           │   │   ├── autoheuristic
+│   │           │   │   │   └── artifacts
+│   │           │   │   ├── codegen
+│   │           │   │   │   ├── aoti_runtime
+│   │           │   │   │   ├── cuda
+│   │           │   │   │   │   └── cutlass_lib_extensions
+│   │           │   │   │   ├── rocm
+│   │           │   │   │   └── xpu
+│   │           │   │   ├── compile_worker
+│   │           │   │   ├── fx_passes
+│   │           │   │   │   └── serialized_patterns
+│   │           │   │   ├── kernel
+│   │           │   │   ├── package
+│   │           │   │   └── runtime
+│   │           │   ├── jit
+│   │           │   │   ├── mobile
+│   │           │   │   └── _passes
+│   │           │   ├── _lazy
+│   │           │   ├── lib
+│   │           │   ├── _library
+│   │           │   ├── linalg
+│   │           │   ├── _logging
+│   │           │   ├── masked
+│   │           │   │   └── maskedtensor
+│   │           │   ├── monitor
+│   │           │   ├── mps
+│   │           │   ├── mtia
+│   │           │   ├── multiprocessing
+│   │           │   ├── nested
+│   │           │   │   └── _internal
+│   │           │   ├── nn
+│   │           │   │   ├── attention
+│   │           │   │   │   └── experimental
+│   │           │   │   ├── backends
+│   │           │   │   ├── intrinsic
+│   │           │   │   │   ├── modules
+│   │           │   │   │   ├── qat
+│   │           │   │   │   │   └── modules
+│   │           │   │   │   └── quantized
+│   │           │   │   │       ├── dynamic
+│   │           │   │   │       │   └── modules
+│   │           │   │   │       └── modules
+│   │           │   │   ├── modules
+│   │           │   │   ├── parallel
+│   │           │   │   ├── qat
+│   │           │   │   │   ├── dynamic
+│   │           │   │   │   │   └── modules
+│   │           │   │   │   └── modules
+│   │           │   │   ├── quantizable
+│   │           │   │   │   └── modules
+│   │           │   │   ├── quantized
+│   │           │   │   │   ├── dynamic
+│   │           │   │   │   │   └── modules
+│   │           │   │   │   ├── modules
+│   │           │   │   │   └── _reference
+│   │           │   │   │       └── modules
+│   │           │   │   └── utils
+│   │           │   │       └── _expanded_weights
+│   │           │   ├── _numpy
+│   │           │   │   └── testing
+│   │           │   ├── onnx
+│   │           │   │   └── _internal
+│   │           │   │       ├── diagnostics
+│   │           │   │       │   └── infra
+│   │           │   │       │       └── sarif
+│   │           │   │       ├── exporter
+│   │           │   │       │   └── _torchlib
+│   │           │   │       │       └── ops
+│   │           │   │       └── fx
+│   │           │   │           ├── analysis
+│   │           │   │           └── passes
+│   │           │   ├── optim
+│   │           │   │   └── _multi_tensor
+│   │           │   ├── package
+│   │           │   │   └── analyze
+│   │           │   ├── _prims
+│   │           │   ├── _prims_common
+│   │           │   ├── profiler
+│   │           │   ├── quantization
+│   │           │   │   └── fx
+│   │           │   ├── _refs
+│   │           │   │   ├── linalg
+│   │           │   │   ├── nn
+│   │           │   │   │   └── functional
+│   │           │   │   └── special
+│   │           │   ├── share
+│   │           │   │   └── cmake
+│   │           │   │       ├── ATen
+│   │           │   │       ├── Caffe2
+│   │           │   │       │   ├── Modules_CUDA_fix
+│   │           │   │       │   │   └── upstream
+│   │           │   │       │   │       └── FindCUDA
+│   │           │   │       │   └── public
+│   │           │   │       ├── Tensorpipe
+│   │           │   │       └── Torch
+│   │           │   ├── signal
+│   │           │   │   └── windows
+│   │           │   ├── sparse
+│   │           │   ├── special
+│   │           │   ├── _strobelight
+│   │           │   ├── _subclasses
+│   │           │   ├── testing
+│   │           │   │   └── _internal
+│   │           │   │       ├── codegen
+│   │           │   │       ├── data
+│   │           │   │       ├── distributed
+│   │           │   │       │   ├── nn
+│   │           │   │       │   │   └── api
+│   │           │   │       │   ├── rpc
+│   │           │   │       │   │   ├── examples
+│   │           │   │       │   │   └── jit
+│   │           │   │       │   ├── _shard
+│   │           │   │       │   │   └── sharded_tensor
+│   │           │   │       │   └── _tensor
+│   │           │   │       ├── generated
+│   │           │   │       ├── opinfo
+│   │           │   │       │   └── definitions
+│   │           │   │       ├── optests
+│   │           │   │       └── test_module
+│   │           │   ├── utils
+│   │           │   │   ├── backcompat
+│   │           │   │   ├── benchmark
+│   │           │   │   │   ├── examples
+│   │           │   │   │   ├── op_fuzzers
+│   │           │   │   │   └── utils
+│   │           │   │   │       └── valgrind_wrapper
+│   │           │   │   ├── bottleneck
+│   │           │   │   ├── data
+│   │           │   │   │   ├── datapipes
+│   │           │   │   │   │   ├── dataframe
+│   │           │   │   │   │   ├── iter
+│   │           │   │   │   │   ├── map
+│   │           │   │   │   │   └── utils
+│   │           │   │   │   └── _utils
+│   │           │   │   ├── hipify
+│   │           │   │   ├── jit
+│   │           │   │   ├── model_dump
+│   │           │   │   ├── serialization
+│   │           │   │   ├── _strobelight
+│   │           │   │   ├── _sympy
+│   │           │   │   ├── tensorboard
+│   │           │   │   └── viz
+│   │           │   ├── _vendor
+│   │           │   │   └── packaging
+│   │           │   └── xpu
+│   │           ├── torch-2.7.0.dist-info
+│   │           ├── torchgen
+│   │           │   ├── aoti
+│   │           │   ├── api
+│   │           │   │   └── types
+│   │           │   ├── dest
+│   │           │   ├── executorch
+│   │           │   │   └── api
+│   │           │   │       └── types
+│   │           │   ├── operator_versions
+│   │           │   ├── packaged
+│   │           │   │   ├── ATen
+│   │           │   │   │   ├── native
+│   │           │   │   │   └── templates
+│   │           │   │   └── autograd
+│   │           │   │       └── templates
+│   │           │   ├── selective_build
+│   │           │   └── static_runtime
+│   │           ├── torchvision
+│   │           │   ├── datasets
+│   │           │   │   └── samplers
+│   │           │   ├── io
+│   │           │   ├── models
+│   │           │   │   ├── detection
+│   │           │   │   ├── optical_flow
+│   │           │   │   ├── quantization
+│   │           │   │   ├── segmentation
+│   │           │   │   └── video
+│   │           │   ├── ops
+│   │           │   ├── prototype
+│   │           │   │   ├── datasets
+│   │           │   │   │   ├── _builtin
+│   │           │   │   │   └── utils
+│   │           │   │   ├── models
+│   │           │   │   │   └── depth
+│   │           │   │   │       └── stereo
+│   │           │   │   ├── transforms
+│   │           │   │   ├── tv_tensors
+│   │           │   │   └── utils
+│   │           │   ├── transforms
+│   │           │   │   └── v2
+│   │           │   │       └── functional
+│   │           │   └── tv_tensors
+│   │           ├── torchvision-0.22.0.dist-info
+│   │           ├── torchvision.libs
+│   │           ├── tqdm
+│   │           │   └── contrib
+│   │           ├── tqdm-4.67.1.dist-info
+│   │           ├── triton
+│   │           │   ├── backends
+│   │           │   │   ├── amd
+│   │           │   │   │   ├── include
+│   │           │   │   │   │   ├── hip
+│   │           │   │   │   │   │   └── amd_detail
+│   │           │   │   │   │   ├── hsa
+│   │           │   │   │   │   └── roctracer
+│   │           │   │   │   │       └── ext
+│   │           │   │   │   └── lib
+│   │           │   │   └── nvidia
+│   │           │   │       ├── bin
+│   │           │   │       ├── include
+│   │           │   │       │   ├── cooperative_groups
+│   │           │   │       │   │   └── details
+│   │           │   │       │   ├── crt
+│   │           │   │       │   ├── Openacc
+│   │           │   │       │   └── Openmp
+│   │           │   │       └── lib
+│   │           │   │           └── cupti
+│   │           │   ├── _C
+│   │           │   ├── compiler
+│   │           │   ├── instrumentation
+│   │           │   ├── language
+│   │           │   │   └── extra
+│   │           │   │       ├── cuda
+│   │           │   │       └── hip
+│   │           │   ├── profiler
+│   │           │   ├── runtime
+│   │           │   └── tools
+│   │           │       └── extra
+│   │           │           └── cuda
+│   │           ├── triton-3.3.0.dist-info
+│   │           ├── typing_extensions-4.13.2.dist-info
+│   │           │   └── licenses
+│   │           ├── typing_inspection
+│   │           ├── typing_inspection-0.4.0.dist-info
+│   │           │   └── licenses
+│   │           ├── tzdata
+│   │           │   └── zoneinfo
+│   │           │       ├── Africa
+│   │           │       ├── America
+│   │           │       │   ├── Argentina
+│   │           │       │   ├── Indiana
+│   │           │       │   ├── Kentucky
+│   │           │       │   └── North_Dakota
+│   │           │       ├── Antarctica
+│   │           │       ├── Arctic
+│   │           │       ├── Asia
+│   │           │       ├── Atlantic
+│   │           │       ├── Australia
+│   │           │       ├── Brazil
+│   │           │       ├── Canada
+│   │           │       ├── Chile
+│   │           │       ├── Etc
+│   │           │       ├── Europe
+│   │           │       ├── Indian
+│   │           │       ├── Mexico
+│   │           │       ├── Pacific
+│   │           │       └── US
+│   │           ├── tzdata-2025.2.dist-info
+│   │           │   └── licenses
+│   │           │       └── licenses
+│   │           ├── urllib3
+│   │           │   ├── contrib
+│   │           │   │   └── emscripten
+│   │           │   ├── http2
+│   │           │   └── util
+│   │           ├── urllib3-2.4.0.dist-info
+│   │           │   └── licenses
+│   │           ├── wandb-0.19.10.dist-info
+│   │           │   └── licenses
+│   │           ├── _yaml
+│   │           └── yaml
+│   ├── lib64 -> lib
+│   └── share
+│       └── man
+│           └── man1
+└── Writing
+    ├── ICG_ReportTemplate_v_1_3
+    ├── Summer_Bachelor
+    └── Vorlage-TU-Graz-LaTeX-presentation-template-202306
+        └── beamerthemetugraz
+            └── institute
+
+1985 directories

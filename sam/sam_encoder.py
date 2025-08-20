@@ -103,6 +103,11 @@ class SAMFeatureExtractor:
             image = Image.fromarray(image)
         elif not isinstance(image, Image.Image):
             raise ValueError(f"Unsupported image type: {type(image)}")
+        
+        # Always use the model's expected input size to avoid dimension mismatches
+        # The model has fixed positional embeddings that expect specific input dimensions
+        if image.size != (self.image_size, self.image_size):
+            image = image.resize((self.image_size, self.image_size), Image.Resampling.LANCZOS)
             
         return self.transform(image)
 

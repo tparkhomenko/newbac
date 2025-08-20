@@ -1,0 +1,10 @@
+   4376 other
+   3085 nevus
+    965 melanoma
+    645 bcc
+    526 bkl
+    217 ak
+    159 non_skin
+     88 scc
+     54 vascular
+     49 df

@@ -224,20 +224,10 @@ new_project
 ├── create_balanced_exp1_working.py
 ├── create_balanced_testing_dataset.py
 ├── create_data_folders.py
-├── create_exp1_comparison_csv.py
-├── create_exp1_comparison_csv_fixed.py
-├── create_exp1_tier2_losses_csv.py
 ├── create_experimental_splits.py
-├── create_loss_comparison_weighted_ce_vs_focal_csv.py
-├── create_loss_comparison_weighted_ce_vs_focal_csv_fixed.py
-├── create_losses_with_mixup_comparison_csv.py
-├── create_losses_with_mixup_comparison_csv_fixed.py
 ├── create_metadata_with_filenames.py
 ├── create_missing_images_list.py
 ├── create_stratified_splits.py
-├── create_uploaded_csv.py
-├── create_uploaded_csv_final.py
-├── create_uploaded_csv_fixed.py
 ├── d
 │   ├── ISIC2019
 │   │   ├── ISIC_0000000.jpg
@@ -477,7 +467,6 @@ new_project
 │   │   └── main.jsx
 │   ├── tailwind.config.js
 │   └── vite.config.js
-├── generate_stats.py
 ├── logs
 │   ├── exp1_balanced_multihead
 │   │   ├── 20250828_080940

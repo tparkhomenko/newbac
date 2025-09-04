@@ -1,261 +1,0 @@
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 train: 2563 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-INFO:datasets.parallel_unified_dataset:Loaded features: train (1642 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_train_incremental.pkl
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 val: 549 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-WARNING:datasets.parallel_unified_dataset:Feature store not found: /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_val.pkl or /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_val_incremental.pkl
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 test: 526 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-WARNING:datasets.parallel_unified_dataset:Feature store not found: /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_test.pkl or /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_test_incremental.pkl
-wandb: Currently logged in as: taisiyaparkhomenko (taisiyaparkhomenko-technische-universit-t-graz) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: Tracking run with wandb version 0.21.0
-wandb: Run data is saved locally in /home/parkhomenko/Documents/new_project/wandb/run-20250820_153545-dsqhl489
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run exp2_multi_auto
-wandb: ⭐️ View project at https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded
-wandb: 🚀 View run at https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded/runs/dsqhl489
-Epoch 1 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 1 - train:   2%|▏         | 1/41 [00:00<00:10,  3.77it/s]Epoch 1 - train:  37%|███▋      | 15/41 [00:00<00:00, 51.28it/s]Epoch 1 - train: 100%|██████████| 41/41 [00:00<00:00, 119.88it/s]Epoch 1 - train: 100%|██████████| 41/41 [00:00<00:00, 87.49it/s] 
-Epoch 1 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 1 - val: 100%|██████████| 5/5 [00:00<00:00, 283.24it/s]
-Epoch 1/50 | train_loss 2.98649 | train_skin_acc 0.65080 | train_lesion_acc 0.17755 | train_bm_acc 0.52131 | val_loss 2.50698 | val_skin_acc 0.92350 | val_lesion_acc 0.16024 | val_bm_acc 0.51053 | val_skin_f1_macro 0.77695 | val_lesion_f1_macro 0.05524 | val_bm_f1_macro 0.33798 | lr 0.000100
-Epoch 2 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 2 - train:  66%|██████▌   | 27/41 [00:00<00:00, 263.78it/s]Epoch 2 - train: 100%|██████████| 41/41 [00:00<00:00, 264.42it/s]
-Epoch 2 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 2 - val: 100%|██████████| 5/5 [00:00<00:00, 249.14it/s]
-Epoch 2/50 | train_loss 2.95834 | train_skin_acc 0.93016 | train_lesion_acc 0.18864 | train_bm_acc 0.52189 | val_loss 2.46053 | val_skin_acc 0.95628 | val_lesion_acc 0.17507 | val_bm_acc 0.51053 | val_skin_f1_macro 0.88934 | val_lesion_f1_macro 0.07353 | val_bm_f1_macro 0.33798 | lr 0.000100
-Epoch 3 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 3 - train:  68%|██████▊   | 28/41 [00:00<00:00, 263.42it/s]Epoch 3 - train: 100%|██████████| 41/41 [00:00<00:00, 268.96it/s]
-Epoch 3 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 3 - val: 100%|██████████| 5/5 [00:00<00:00, 280.46it/s]
-Epoch 3/50 | train_loss 2.90304 | train_skin_acc 0.95084 | train_lesion_acc 0.19974 | train_bm_acc 0.52765 | val_loss 2.38015 | val_skin_acc 0.97086 | val_lesion_acc 0.20772 | val_bm_acc 0.51053 | val_skin_f1_macro 0.93370 | val_lesion_f1_macro 0.10863 | val_bm_f1_macro 0.33798 | lr 0.000100
-Epoch 4 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 4 - train:  66%|██████▌   | 27/41 [00:00<00:00, 261.47it/s]Epoch 4 - train: 100%|██████████| 41/41 [00:00<00:00, 265.40it/s]
-Epoch 4 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 4 - val: 100%|██████████| 5/5 [00:00<00:00, 247.41it/s]
-Epoch 4/50 | train_loss 2.79647 | train_skin_acc 0.96410 | train_lesion_acc 0.22977 | train_bm_acc 0.53802 | val_loss 2.25712 | val_skin_acc 0.96903 | val_lesion_acc 0.33234 | val_bm_acc 0.56579 | val_skin_f1_macro 0.92999 | val_lesion_f1_macro 0.17440 | val_bm_f1_macro 0.50517 | lr 0.000100
-Epoch 5 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 5 - train:  63%|██████▎   | 26/41 [00:00<00:00, 259.96it/s]Epoch 5 - train: 100%|██████████| 41/41 [00:00<00:00, 269.25it/s]
-Epoch 5 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 5 - val: 100%|██████████| 5/5 [00:00<00:00, 252.79it/s]
-Epoch 5/50 | train_loss 2.68498 | train_skin_acc 0.96645 | train_lesion_acc 0.24804 | train_bm_acc 0.54320 | val_loss 2.14420 | val_skin_acc 0.97814 | val_lesion_acc 0.22552 | val_bm_acc 0.57105 | val_skin_f1_macro 0.95204 | val_lesion_f1_macro 0.12113 | val_bm_f1_macro 0.53411 | lr 0.000100
-Epoch 6 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 6 - train:  61%|██████    | 25/41 [00:00<00:00, 248.08it/s]Epoch 6 - train: 100%|██████████| 41/41 [00:00<00:00, 242.32it/s]
-Epoch 6 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 6 - val: 100%|██████████| 5/5 [00:00<00:00, 263.33it/s]
-Epoch 6/50 | train_loss 2.57923 | train_skin_acc 0.97035 | train_lesion_acc 0.23172 | train_bm_acc 0.57316 | val_loss 2.06885 | val_skin_acc 0.97632 | val_lesion_acc 0.30861 | val_bm_acc 0.57895 | val_skin_f1_macro 0.94953 | val_lesion_f1_macro 0.15158 | val_bm_f1_macro 0.57212 | lr 0.000100
-Epoch 7 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 7 - train:  59%|█████▊    | 24/41 [00:00<00:00, 225.29it/s]Epoch 7 - train: 100%|██████████| 41/41 [00:00<00:00, 242.33it/s]
-Epoch 7 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 7 - val: 100%|██████████| 5/5 [00:00<00:00, 244.55it/s]
-Epoch 7/50 | train_loss 2.46119 | train_skin_acc 0.96840 | train_lesion_acc 0.22454 | train_bm_acc 0.57143 | val_loss 2.01737 | val_skin_acc 0.97450 | val_lesion_acc 0.27003 | val_bm_acc 0.56842 | val_skin_f1_macro 0.94655 | val_lesion_f1_macro 0.13990 | val_bm_f1_macro 0.56837 | lr 0.000100
-Epoch 8 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 8 - train:  63%|██████▎   | 26/41 [00:00<00:00, 257.41it/s]Epoch 8 - train: 100%|██████████| 41/41 [00:00<00:00, 259.47it/s]
-Epoch 8 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 8 - val: 100%|██████████| 5/5 [00:00<00:00, 272.72it/s]
-Epoch 8/50 | train_loss 2.46987 | train_skin_acc 0.96098 | train_lesion_acc 0.25457 | train_bm_acc 0.57719 | val_loss 1.99001 | val_skin_acc 0.96721 | val_lesion_acc 0.31751 | val_bm_acc 0.57105 | val_skin_f1_macro 0.93275 | val_lesion_f1_macro 0.17450 | val_bm_f1_macro 0.57105 | lr 0.000100
-Epoch 9 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 9 - train:  56%|█████▌    | 23/41 [00:00<00:00, 224.67it/s]Epoch 9 - train: 100%|██████████| 41/41 [00:00<00:00, 244.89it/s]
-Epoch 9 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 9 - val: 100%|██████████| 5/5 [00:00<00:00, 246.90it/s]
-Epoch 9/50 | train_loss 2.44199 | train_skin_acc 0.96684 | train_lesion_acc 0.22128 | train_bm_acc 0.59562 | val_loss 1.96166 | val_skin_acc 0.97814 | val_lesion_acc 0.22849 | val_bm_acc 0.55789 | val_skin_f1_macro 0.95367 | val_lesion_f1_macro 0.13243 | val_bm_f1_macro 0.53947 | lr 0.000100
-Epoch 10 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 10 - train:  63%|██████▎   | 26/41 [00:00<00:00, 246.82it/s]Epoch 10 - train: 100%|██████████| 41/41 [00:00<00:00, 253.33it/s]
-Epoch 10 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 10 - val: 100%|██████████| 5/5 [00:00<00:00, 250.61it/s]
-Epoch 10/50 | train_loss 2.42788 | train_skin_acc 0.96762 | train_lesion_acc 0.24086 | train_bm_acc 0.59274 | val_loss 1.94583 | val_skin_acc 0.96903 | val_lesion_acc 0.28190 | val_bm_acc 0.57105 | val_skin_f1_macro 0.93615 | val_lesion_f1_macro 0.17387 | val_bm_f1_macro 0.57091 | lr 0.000100
-Epoch 11 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 11 - train:  63%|██████▎   | 26/41 [00:00<00:00, 252.99it/s]Epoch 11 - train: 100%|██████████| 41/41 [00:00<00:00, 252.57it/s]
-Epoch 11 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 11 - val: 100%|██████████| 5/5 [00:00<00:00, 278.45it/s]
-Epoch 11/50 | train_loss 2.41303 | train_skin_acc 0.96215 | train_lesion_acc 0.24086 | train_bm_acc 0.58583 | val_loss 1.93399 | val_skin_acc 0.97086 | val_lesion_acc 0.16617 | val_bm_acc 0.56579 | val_skin_f1_macro 0.93958 | val_lesion_f1_macro 0.10256 | val_bm_f1_macro 0.56288 | lr 0.000100
-Epoch 12 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 12 - train:  66%|██████▌   | 27/41 [00:00<00:00, 264.27it/s]Epoch 12 - train: 100%|██████████| 41/41 [00:00<00:00, 265.91it/s]
-Epoch 12 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 12 - val: 100%|██████████| 5/5 [00:00<00:00, 250.18it/s]
-Epoch 12/50 | train_loss 2.39691 | train_skin_acc 0.96684 | train_lesion_acc 0.22781 | train_bm_acc 0.58122 | val_loss 1.92317 | val_skin_acc 0.97086 | val_lesion_acc 0.23145 | val_bm_acc 0.55789 | val_skin_f1_macro 0.93958 | val_lesion_f1_macro 0.20619 | val_bm_f1_macro 0.55582 | lr 0.000100
-Epoch 13 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 13 - train:  63%|██████▎   | 26/41 [00:00<00:00, 253.21it/s]Epoch 13 - train: 100%|██████████| 41/41 [00:00<00:00, 245.70it/s]
-Epoch 13 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 13 - val: 100%|██████████| 5/5 [00:00<00:00, 286.62it/s]
-Epoch 13/50 | train_loss 2.38963 | train_skin_acc 0.96723 | train_lesion_acc 0.24935 | train_bm_acc 0.57834 | val_loss 1.91938 | val_skin_acc 0.97086 | val_lesion_acc 0.23739 | val_bm_acc 0.56316 | val_skin_f1_macro 0.94023 | val_lesion_f1_macro 0.18028 | val_bm_f1_macro 0.56141 | lr 0.000100
-Epoch 14 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 14 - train:  63%|██████▎   | 26/41 [00:00<00:00, 253.38it/s]Epoch 14 - train: 100%|██████████| 41/41 [00:00<00:00, 259.45it/s]
-Epoch 14 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 14 - val: 100%|██████████| 5/5 [00:00<00:00, 247.17it/s]
-Epoch 14/50 | train_loss 2.38627 | train_skin_acc 0.96645 | train_lesion_acc 0.20496 | train_bm_acc 0.59274 | val_loss 1.90980 | val_skin_acc 0.97996 | val_lesion_acc 0.26706 | val_bm_acc 0.56579 | val_skin_f1_macro 0.95729 | val_lesion_f1_macro 0.23768 | val_bm_f1_macro 0.55904 | lr 0.000100
-Epoch 15 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 15 - train:  66%|██████▌   | 27/41 [00:00<00:00, 259.89it/s]Epoch 15 - train: 100%|██████████| 41/41 [00:00<00:00, 267.55it/s]
-Epoch 15 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 15 - val: 100%|██████████| 5/5 [00:00<00:00, 255.15it/s]
-Epoch 15/50 | train_loss 2.36462 | train_skin_acc 0.97035 | train_lesion_acc 0.25065 | train_bm_acc 0.58065 | val_loss 1.90742 | val_skin_acc 0.97632 | val_lesion_acc 0.27596 | val_bm_acc 0.55526 | val_skin_f1_macro 0.95009 | val_lesion_f1_macro 0.18920 | val_bm_f1_macro 0.54186 | lr 0.000100
-Epoch 16 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 16 - train:  63%|██████▎   | 26/41 [00:00<00:00, 254.92it/s]Epoch 16 - train: 100%|██████████| 41/41 [00:00<00:00, 260.29it/s]
-Epoch 16 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 16 - val: 100%|██████████| 5/5 [00:00<00:00, 282.51it/s]
-Epoch 16/50 | train_loss 2.36108 | train_skin_acc 0.97191 | train_lesion_acc 0.24674 | train_bm_acc 0.59101 | val_loss 1.90143 | val_skin_acc 0.97632 | val_lesion_acc 0.18991 | val_bm_acc 0.56842 | val_skin_f1_macro 0.95064 | val_lesion_f1_macro 0.12866 | val_bm_f1_macro 0.56200 | lr 0.000100
-Epoch 17 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 17 - train:  61%|██████    | 25/41 [00:00<00:00, 249.12it/s]Epoch 17 - train: 100%|██████████| 41/41 [00:00<00:00, 255.35it/s]
-Epoch 17 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 17 - val: 100%|██████████| 5/5 [00:00<00:00, 248.36it/s]
-Epoch 17/50 | train_loss 2.37181 | train_skin_acc 0.96879 | train_lesion_acc 0.21540 | train_bm_acc 0.59850 | val_loss 1.90149 | val_skin_acc 0.97268 | val_lesion_acc 0.22255 | val_bm_acc 0.58684 | val_skin_f1_macro 0.94366 | val_lesion_f1_macro 0.18619 | val_bm_f1_macro 0.58601 | lr 0.000100
-Epoch 18 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 18 - train:  66%|██████▌   | 27/41 [00:00<00:00, 263.57it/s]Epoch 18 - train: 100%|██████████| 41/41 [00:00<00:00, 263.67it/s]
-Epoch 18 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 18 - val: 100%|██████████| 5/5 [00:00<00:00, 288.60it/s]
-Epoch 18/50 | train_loss 2.35454 | train_skin_acc 0.97152 | train_lesion_acc 0.23890 | train_bm_acc 0.59562 | val_loss 1.89664 | val_skin_acc 0.97268 | val_lesion_acc 0.21958 | val_bm_acc 0.58684 | val_skin_f1_macro 0.94366 | val_lesion_f1_macro 0.19446 | val_bm_f1_macro 0.58475 | lr 0.000100
-Epoch 19 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 19 - train:  63%|██████▎   | 26/41 [00:00<00:00, 258.27it/s]Epoch 19 - train: 100%|██████████| 41/41 [00:00<00:00, 267.49it/s]
-Epoch 19 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 19 - val: 100%|██████████| 5/5 [00:00<00:00, 247.30it/s]
-Epoch 19/50 | train_loss 2.35852 | train_skin_acc 0.96957 | train_lesion_acc 0.23629 | train_bm_acc 0.59505 | val_loss 1.89244 | val_skin_acc 0.97268 | val_lesion_acc 0.20475 | val_bm_acc 0.60263 | val_skin_f1_macro 0.94366 | val_lesion_f1_macro 0.18702 | val_bm_f1_macro 0.60230 | lr 0.000100
-Epoch 20 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 20 - train:  63%|██████▎   | 26/41 [00:00<00:00, 256.05it/s]Epoch 20 - train: 100%|██████████| 41/41 [00:00<00:00, 261.40it/s]
-Epoch 20 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 20 - val: 100%|██████████| 5/5 [00:00<00:00, 247.07it/s]
-Epoch 20/50 | train_loss 2.33538 | train_skin_acc 0.97503 | train_lesion_acc 0.25587 | train_bm_acc 0.59850 | val_loss 1.89057 | val_skin_acc 0.97268 | val_lesion_acc 0.24036 | val_bm_acc 0.59737 | val_skin_f1_macro 0.94366 | val_lesion_f1_macro 0.24026 | val_bm_f1_macro 0.59501 | lr 0.000100
-Epoch 21 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 21 - train:  66%|██████▌   | 27/41 [00:00<00:00, 265.13it/s]Epoch 21 - train: 100%|██████████| 41/41 [00:00<00:00, 261.33it/s]
-Epoch 21 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 21 - val: 100%|██████████| 5/5 [00:00<00:00, 255.38it/s]
-Epoch 21/50 | train_loss 2.33568 | train_skin_acc 0.96762 | train_lesion_acc 0.24347 | train_bm_acc 0.60253 | val_loss 1.88633 | val_skin_acc 0.98179 | val_lesion_acc 0.24332 | val_bm_acc 0.58684 | val_skin_f1_macro 0.96095 | val_lesion_f1_macro 0.19284 | val_bm_f1_macro 0.57439 | lr 0.000100
-Epoch 22 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 22 - train:  63%|██████▎   | 26/41 [00:00<00:00, 255.11it/s]Epoch 22 - train: 100%|██████████| 41/41 [00:00<00:00, 254.78it/s]
-Epoch 22 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 22 - val: 100%|██████████| 5/5 [00:00<00:00, 216.09it/s]
-Epoch 22/50 | train_loss 2.32126 | train_skin_acc 0.97698 | train_lesion_acc 0.24543 | train_bm_acc 0.61060 | val_loss 1.88400 | val_skin_acc 0.97268 | val_lesion_acc 0.29080 | val_bm_acc 0.60526 | val_skin_f1_macro 0.94366 | val_lesion_f1_macro 0.27081 | val_bm_f1_macro 0.60516 | lr 0.000100
-Epoch 23 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 23 - train:  54%|█████▎    | 22/41 [00:00<00:00, 209.17it/s]Epoch 23 - train: 100%|██████████| 41/41 [00:00<00:00, 208.44it/s]
-Epoch 23 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 23 - val: 100%|██████████| 5/5 [00:00<00:00, 271.09it/s]
-Epoch 23/50 | train_loss 2.28527 | train_skin_acc 0.96957 | train_lesion_acc 0.23825 | train_bm_acc 0.61521 | val_loss 1.87746 | val_skin_acc 0.97450 | val_lesion_acc 0.30564 | val_bm_acc 0.60526 | val_skin_f1_macro 0.94713 | val_lesion_f1_macro 0.23940 | val_bm_f1_macro 0.60499 | lr 0.000100
-Epoch 24 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 24 - train:  54%|█████▎    | 22/41 [00:00<00:00, 215.21it/s]Epoch 24 - train: 100%|██████████| 41/41 [00:00<00:00, 226.45it/s]
-Epoch 24 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 24 - val: 100%|██████████| 5/5 [00:00<00:00, 192.61it/s]
-Epoch 24/50 | train_loss 2.33471 | train_skin_acc 0.97113 | train_lesion_acc 0.26958 | train_bm_acc 0.61233 | val_loss 1.87253 | val_skin_acc 0.97632 | val_lesion_acc 0.25519 | val_bm_acc 0.60789 | val_skin_f1_macro 0.95064 | val_lesion_f1_macro 0.22862 | val_bm_f1_macro 0.60691 | lr 0.000100
-Epoch 25 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 25 - train:  56%|█████▌    | 23/41 [00:00<00:00, 226.31it/s]Epoch 25 - train: 100%|██████████| 41/41 [00:00<00:00, 151.20it/s]
-Epoch 25 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 25 - val: 100%|██████████| 5/5 [00:00<00:00, 249.69it/s]
-Epoch 25/50 | train_loss 2.31816 | train_skin_acc 0.97932 | train_lesion_acc 0.25914 | train_bm_acc 0.61924 | val_loss 1.87181 | val_skin_acc 0.97814 | val_lesion_acc 0.23145 | val_bm_acc 0.59211 | val_skin_f1_macro 0.95418 | val_lesion_f1_macro 0.22378 | val_bm_f1_macro 0.58401 | lr 0.000100
-Epoch 26 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 26 - train:  54%|█████▎    | 22/41 [00:00<00:00, 214.81it/s]Epoch 26 - train: 100%|██████████| 41/41 [00:00<00:00, 228.68it/s]
-Epoch 26 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 26 - val: 100%|██████████| 5/5 [00:00<00:00, 283.70it/s]
-Epoch 26/50 | train_loss 2.32209 | train_skin_acc 0.97815 | train_lesion_acc 0.23890 | train_bm_acc 0.62673 | val_loss 1.86756 | val_skin_acc 0.97814 | val_lesion_acc 0.22552 | val_bm_acc 0.59211 | val_skin_f1_macro 0.95418 | val_lesion_f1_macro 0.22411 | val_bm_f1_macro 0.58401 | lr 0.000100
-Epoch 27 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 27 - train:  63%|██████▎   | 26/41 [00:00<00:00, 250.80it/s]Epoch 27 - train: 100%|██████████| 41/41 [00:00<00:00, 261.28it/s]
-Epoch 27 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 27 - val: 100%|██████████| 5/5 [00:00<00:00, 159.40it/s]
-Epoch 27/50 | train_loss 2.31162 | train_skin_acc 0.97659 | train_lesion_acc 0.23695 | train_bm_acc 0.61463 | val_loss 1.86177 | val_skin_acc 0.97632 | val_lesion_acc 0.29674 | val_bm_acc 0.62895 | val_skin_f1_macro 0.95117 | val_lesion_f1_macro 0.28943 | val_bm_f1_macro 0.62874 | lr 0.000100
-Epoch 28 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 28 - train:  61%|██████    | 25/41 [00:00<00:00, 240.27it/s]Epoch 28 - train: 100%|██████████| 41/41 [00:00<00:00, 241.55it/s]
-Epoch 28 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 28 - val: 100%|██████████| 5/5 [00:00<00:00, 287.00it/s]
-Epoch 28/50 | train_loss 2.31146 | train_skin_acc 0.97620 | train_lesion_acc 0.26958 | train_bm_acc 0.61751 | val_loss 1.85438 | val_skin_acc 0.97996 | val_lesion_acc 0.29970 | val_bm_acc 0.63158 | val_skin_f1_macro 0.95823 | val_lesion_f1_macro 0.27397 | val_bm_f1_macro 0.63157 | lr 0.000100
-Epoch 29 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 29 - train:  54%|█████▎    | 22/41 [00:00<00:00, 216.46it/s]Epoch 29 - train: 100%|██████████| 41/41 [00:00<00:00, 232.32it/s]
-Epoch 29 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 29 - val: 100%|██████████| 5/5 [00:00<00:00, 218.16it/s]
-Epoch 29/50 | train_loss 2.30174 | train_skin_acc 0.97542 | train_lesion_acc 0.27937 | train_bm_acc 0.62327 | val_loss 1.84847 | val_skin_acc 0.98179 | val_lesion_acc 0.34421 | val_bm_acc 0.65263 | val_skin_f1_macro 0.96139 | val_lesion_f1_macro 0.29491 | val_bm_f1_macro 0.65201 | lr 0.000100
-Epoch 30 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 30 - train:  56%|█████▌    | 23/41 [00:00<00:00, 222.78it/s]Epoch 30 - train: 100%|██████████| 41/41 [00:00<00:00, 226.46it/s]
-Epoch 30 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 30 - val: 100%|██████████| 5/5 [00:00<00:00, 233.83it/s]
-Epoch 30/50 | train_loss 2.29367 | train_skin_acc 0.97776 | train_lesion_acc 0.29112 | train_bm_acc 0.62385 | val_loss 1.85128 | val_skin_acc 0.97450 | val_lesion_acc 0.33531 | val_bm_acc 0.64211 | val_skin_f1_macro 0.94825 | val_lesion_f1_macro 0.30149 | val_bm_f1_macro 0.64186 | lr 0.000100
-Epoch 31 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 31 - train:  56%|█████▌    | 23/41 [00:00<00:00, 228.88it/s]Epoch 31 - train: 100%|██████████| 41/41 [00:00<00:00, 237.26it/s]
-Epoch 31 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 31 - val: 100%|██████████| 5/5 [00:00<00:00, 265.94it/s]
-Epoch 31/50 | train_loss 2.22994 | train_skin_acc 0.97893 | train_lesion_acc 0.28460 | train_bm_acc 0.62154 | val_loss 1.85003 | val_skin_acc 0.98179 | val_lesion_acc 0.28190 | val_bm_acc 0.61316 | val_skin_f1_macro 0.96182 | val_lesion_f1_macro 0.27435 | val_bm_f1_macro 0.60150 | lr 0.000100
-Epoch 32 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 32 - train:  59%|█████▊    | 24/41 [00:00<00:00, 231.40it/s]Epoch 32 - train: 100%|██████████| 41/41 [00:00<00:00, 237.99it/s]
-Epoch 32 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 32 - val: 100%|██████████| 5/5 [00:00<00:00, 226.24it/s]
-Epoch 32/50 | train_loss 2.28210 | train_skin_acc 0.98166 | train_lesion_acc 0.26240 | train_bm_acc 0.61982 | val_loss 1.83565 | val_skin_acc 0.97996 | val_lesion_acc 0.32047 | val_bm_acc 0.66579 | val_skin_f1_macro 0.95823 | val_lesion_f1_macro 0.28636 | val_bm_f1_macro 0.66577 | lr 0.000100
-Epoch 33 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 33 - train:  61%|██████    | 25/41 [00:00<00:00, 244.64it/s]Epoch 33 - train: 100%|██████████| 41/41 [00:00<00:00, 241.16it/s]
-Epoch 33 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 33 - val: 100%|██████████| 5/5 [00:00<00:00, 287.41it/s]
-Epoch 33/50 | train_loss 2.27271 | train_skin_acc 0.97893 | train_lesion_acc 0.25326 | train_bm_acc 0.64286 | val_loss 1.83317 | val_skin_acc 0.97996 | val_lesion_acc 0.34718 | val_bm_acc 0.67368 | val_skin_f1_macro 0.95823 | val_lesion_f1_macro 0.31686 | val_bm_f1_macro 0.67368 | lr 0.000100
-Epoch 34 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 34 - train:  61%|██████    | 25/41 [00:00<00:00, 249.02it/s]Epoch 34 - train: 100%|██████████| 41/41 [00:00<00:00, 251.52it/s]
-Epoch 34 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 34 - val: 100%|██████████| 5/5 [00:00<00:00, 245.39it/s]
-Epoch 34/50 | train_loss 2.27350 | train_skin_acc 0.98049 | train_lesion_acc 0.29569 | train_bm_acc 0.64286 | val_loss 1.82861 | val_skin_acc 0.98179 | val_lesion_acc 0.36795 | val_bm_acc 0.66579 | val_skin_f1_macro 0.96224 | val_lesion_f1_macro 0.30118 | val_bm_f1_macro 0.66540 | lr 0.000100
-Epoch 35 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 35 - train:  61%|██████    | 25/41 [00:00<00:00, 245.64it/s]Epoch 35 - train: 100%|██████████| 41/41 [00:00<00:00, 250.43it/s]
-Epoch 35 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 35 - val: 100%|██████████| 5/5 [00:00<00:00, 250.30it/s]
-Epoch 35/50 | train_loss 2.27882 | train_skin_acc 0.97776 | train_lesion_acc 0.30744 | train_bm_acc 0.63018 | val_loss 1.82628 | val_skin_acc 0.98361 | val_lesion_acc 0.36795 | val_bm_acc 0.63684 | val_skin_f1_macro 0.96545 | val_lesion_f1_macro 0.32026 | val_bm_f1_macro 0.63235 | lr 0.000100
-Epoch 36 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 36 - train:  66%|██████▌   | 27/41 [00:00<00:00, 263.88it/s]Epoch 36 - train: 100%|██████████| 41/41 [00:00<00:00, 249.91it/s]
-Epoch 36 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 36 - val: 100%|██████████| 5/5 [00:00<00:00, 281.72it/s]
-Epoch 36/50 | train_loss 2.28729 | train_skin_acc 0.97815 | train_lesion_acc 0.25783 | train_bm_acc 0.64286 | val_loss 1.82361 | val_skin_acc 0.97814 | val_lesion_acc 0.34421 | val_bm_acc 0.65526 | val_skin_f1_macro 0.95564 | val_lesion_f1_macro 0.27704 | val_bm_f1_macro 0.65351 | lr 0.000100
-Epoch 37 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 37 - train:  59%|█████▊    | 24/41 [00:00<00:00, 224.53it/s]Epoch 37 - train: 100%|██████████| 41/41 [00:00<00:00, 239.31it/s]
-Epoch 37 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 37 - val: 100%|██████████| 5/5 [00:00<00:00, 248.39it/s]
-Epoch 37/50 | train_loss 2.27023 | train_skin_acc 0.98244 | train_lesion_acc 0.27480 | train_bm_acc 0.62442 | val_loss 1.82062 | val_skin_acc 0.98179 | val_lesion_acc 0.32938 | val_bm_acc 0.65789 | val_skin_f1_macro 0.96224 | val_lesion_f1_macro 0.29255 | val_bm_f1_macro 0.65575 | lr 0.000100
-Epoch 38 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 38 - train:  66%|██████▌   | 27/41 [00:00<00:00, 262.41it/s]Epoch 38 - train: 100%|██████████| 41/41 [00:00<00:00, 263.15it/s]
-Epoch 38 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 38 - val: 100%|██████████| 5/5 [00:00<00:00, 287.62it/s]
-Epoch 38/50 | train_loss 2.26454 | train_skin_acc 0.98205 | train_lesion_acc 0.29439 | train_bm_acc 0.63710 | val_loss 1.82153 | val_skin_acc 0.98179 | val_lesion_acc 0.37685 | val_bm_acc 0.65526 | val_skin_f1_macro 0.96264 | val_lesion_f1_macro 0.33320 | val_bm_f1_macro 0.65231 | lr 0.000100
-Epoch 39 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 39 - train:  63%|██████▎   | 26/41 [00:00<00:00, 253.47it/s]Epoch 39 - train: 100%|██████████| 41/41 [00:00<00:00, 262.55it/s]
-Epoch 39 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 39 - val: 100%|██████████| 5/5 [00:00<00:00, 246.57it/s]
-Epoch 39/50 | train_loss 2.25296 | train_skin_acc 0.98127 | train_lesion_acc 0.30157 | train_bm_acc 0.63998 | val_loss 1.82106 | val_skin_acc 0.98543 | val_lesion_acc 0.31454 | val_bm_acc 0.63158 | val_skin_f1_macro 0.96946 | val_lesion_f1_macro 0.30432 | val_bm_f1_macro 0.62216 | lr 0.000100
-Epoch 40 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 40 - train:  63%|██████▎   | 26/41 [00:00<00:00, 253.17it/s]Epoch 40 - train: 100%|██████████| 41/41 [00:00<00:00, 258.58it/s]
-Epoch 40 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 40 - val: 100%|██████████| 5/5 [00:00<00:00, 247.88it/s]
-Epoch 40/50 | train_loss 2.27082 | train_skin_acc 0.98361 | train_lesion_acc 0.25587 | train_bm_acc 0.63306 | val_loss 1.80406 | val_skin_acc 0.99089 | val_lesion_acc 0.36499 | val_bm_acc 0.66316 | val_skin_f1_macro 0.98036 | val_lesion_f1_macro 0.29949 | val_bm_f1_macro 0.66240 | lr 0.000100
-Epoch 41 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 41 - train:  61%|██████    | 25/41 [00:00<00:00, 244.81it/s]Epoch 41 - train: 100%|██████████| 41/41 [00:00<00:00, 228.42it/s]
-Epoch 41 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 41 - val: 100%|██████████| 5/5 [00:00<00:00, 284.41it/s]
-Epoch 41/50 | train_loss 2.24780 | train_skin_acc 0.98439 | train_lesion_acc 0.29700 | train_bm_acc 0.63767 | val_loss 1.80648 | val_skin_acc 0.98543 | val_lesion_acc 0.36499 | val_bm_acc 0.66316 | val_skin_f1_macro 0.96979 | val_lesion_f1_macro 0.29511 | val_bm_f1_macro 0.66270 | lr 0.000100
-Epoch 42 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 42 - train:  61%|██████    | 25/41 [00:00<00:00, 248.06it/s]Epoch 42 - train: 100%|██████████| 41/41 [00:00<00:00, 255.71it/s]
-Epoch 42 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 42 - val: 100%|██████████| 5/5 [00:00<00:00, 242.69it/s]
-Epoch 42/50 | train_loss 2.20349 | train_skin_acc 0.98556 | train_lesion_acc 0.28851 | train_bm_acc 0.64171 | val_loss 1.81034 | val_skin_acc 0.97814 | val_lesion_acc 0.35015 | val_bm_acc 0.66842 | val_skin_f1_macro 0.95564 | val_lesion_f1_macro 0.32441 | val_bm_f1_macro 0.66841 | lr 0.000100
-Epoch 43 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 43 - train:  63%|██████▎   | 26/41 [00:00<00:00, 251.65it/s]Epoch 43 - train: 100%|██████████| 41/41 [00:00<00:00, 251.06it/s]
-Epoch 43 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 43 - val: 100%|██████████| 5/5 [00:00<00:00, 286.06it/s]
-Epoch 43/50 | train_loss 2.25225 | train_skin_acc 0.97971 | train_lesion_acc 0.27872 | train_bm_acc 0.65783 | val_loss 1.81143 | val_skin_acc 0.97450 | val_lesion_acc 0.32938 | val_bm_acc 0.66842 | val_skin_f1_macro 0.94879 | val_lesion_f1_macro 0.30211 | val_bm_f1_macro 0.66827 | lr 0.000100
-Epoch 44 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 44 - train:  63%|██████▎   | 26/41 [00:00<00:00, 257.58it/s]Epoch 44 - train: 100%|██████████| 41/41 [00:00<00:00, 250.73it/s]
-Epoch 44 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 44 - val: 100%|██████████| 5/5 [00:00<00:00, 222.68it/s]
-Epoch 44/50 | train_loss 2.23509 | train_skin_acc 0.98244 | train_lesion_acc 0.27480 | train_bm_acc 0.64631 | val_loss 1.80204 | val_skin_acc 0.98543 | val_lesion_acc 0.30564 | val_bm_acc 0.65789 | val_skin_f1_macro 0.96979 | val_lesion_f1_macro 0.29786 | val_bm_f1_macro 0.65406 | lr 0.000100
-Epoch 45 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 45 - train:  63%|██████▎   | 26/41 [00:00<00:00, 256.03it/s]Epoch 45 - train: 100%|██████████| 41/41 [00:00<00:00, 248.91it/s]
-Epoch 45 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 45 - val: 100%|██████████| 5/5 [00:00<00:00, 229.39it/s]
-Epoch 45/50 | train_loss 2.22917 | train_skin_acc 0.98127 | train_lesion_acc 0.26893 | train_bm_acc 0.64631 | val_loss 1.78966 | val_skin_acc 0.99271 | val_lesion_acc 0.28783 | val_bm_acc 0.66316 | val_skin_f1_macro 0.98456 | val_lesion_f1_macro 0.28393 | val_bm_f1_macro 0.66292 | lr 0.000100
-Epoch 46 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 46 - train:  59%|█████▊    | 24/41 [00:00<00:00, 234.68it/s]Epoch 46 - train: 100%|██████████| 41/41 [00:00<00:00, 236.08it/s]
-Epoch 46 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 46 - val: 100%|██████████| 5/5 [00:00<00:00, 264.10it/s]
-Epoch 46/50 | train_loss 2.20558 | train_skin_acc 0.98400 | train_lesion_acc 0.28394 | train_bm_acc 0.64689 | val_loss 1.79635 | val_skin_acc 0.98543 | val_lesion_acc 0.37389 | val_bm_acc 0.64211 | val_skin_f1_macro 0.96979 | val_lesion_f1_macro 0.30734 | val_bm_f1_macro 0.63768 | lr 0.000100
-Epoch 47 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 47 - train:  54%|█████▎    | 22/41 [00:00<00:00, 217.54it/s]Epoch 47 - train: 100%|██████████| 41/41 [00:00<00:00, 226.12it/s]
-Epoch 47 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 47 - val: 100%|██████████| 5/5 [00:00<00:00, 219.00it/s]
-Epoch 47/50 | train_loss 2.23312 | train_skin_acc 0.98556 | train_lesion_acc 0.30548 | train_bm_acc 0.65092 | val_loss 1.79530 | val_skin_acc 0.98543 | val_lesion_acc 0.36202 | val_bm_acc 0.66842 | val_skin_f1_macro 0.96979 | val_lesion_f1_macro 0.32296 | val_bm_f1_macro 0.66634 | lr 0.000100
-Epoch 48 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 48 - train:  56%|█████▌    | 23/41 [00:00<00:00, 223.04it/s]Epoch 48 - train: 100%|██████████| 41/41 [00:00<00:00, 217.98it/s]
-Epoch 48 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 48 - val: 100%|██████████| 5/5 [00:00<00:00, 289.16it/s]
-Epoch 48/50 | train_loss 2.21546 | train_skin_acc 0.98751 | train_lesion_acc 0.30809 | train_bm_acc 0.63594 | val_loss 1.80380 | val_skin_acc 0.98361 | val_lesion_acc 0.35905 | val_bm_acc 0.66316 | val_skin_f1_macro 0.96620 | val_lesion_f1_macro 0.30733 | val_bm_f1_macro 0.65722 | lr 0.000100
-Epoch 49 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 49 - train:  56%|█████▌    | 23/41 [00:00<00:00, 229.84it/s]Epoch 49 - train: 100%|██████████| 41/41 [00:00<00:00, 232.07it/s]
-Epoch 49 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 49 - val: 100%|██████████| 5/5 [00:00<00:00, 216.78it/s]
-Epoch 49/50 | train_loss 2.23814 | train_skin_acc 0.98556 | train_lesion_acc 0.30418 | train_bm_acc 0.65726 | val_loss 1.78395 | val_skin_acc 0.99271 | val_lesion_acc 0.38279 | val_bm_acc 0.66579 | val_skin_f1_macro 0.98456 | val_lesion_f1_macro 0.31947 | val_bm_f1_macro 0.66560 | lr 0.000100
-Epoch 50 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 50 - train:  59%|█████▊    | 24/41 [00:00<00:00, 236.63it/s]Epoch 50 - train: 100%|██████████| 41/41 [00:00<00:00, 227.11it/s]
-Epoch 50 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 50 - val: 100%|██████████| 5/5 [00:00<00:00, 245.24it/s]
-Epoch 50/50 | train_loss 2.22363 | train_skin_acc 0.98517 | train_lesion_acc 0.31462 | train_bm_acc 0.64459 | val_loss 1.79352 | val_skin_acc 0.97450 | val_lesion_acc 0.34125 | val_bm_acc 0.67368 | val_skin_f1_macro 0.94879 | val_lesion_f1_macro 0.31014 | val_bm_f1_macro 0.67310 | lr 0.000100
-Test:   0%|          | 0/5 [00:00<?, ?it/s]Test: 100%|██████████| 5/5 [00:00<00:00, 265.57it/s]
-Val CM:   0%|          | 0/5 [00:00<?, ?it/s]Val CM: 100%|██████████| 5/5 [00:00<00:00, 242.71it/s]
-wandb: uploading history steps 0-50, summary, console lines 0-190
-wandb:                                                                                
-wandb: 
-wandb: Run history:
-wandb:                epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇▇██
-wandb:                   lr ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb:          test_bm_acc ▁
-wandb:     test_bm_f1_macro ▁
-wandb:      test_lesion_acc ▁
-wandb: test_lesion_f1_macro ▁
-wandb:            test_loss ▁
-wandb:        test_skin_acc ▁
-wandb:   test_skin_f1_macro ▁
-wandb:         train_bm_acc ▁▁▁▂▂▄▄▅▅▅▄▅▄▅▅▅▅▆▆▆▆▇▆▆▇▇▆██▇▇▇█▇████▇█
-wandb:     train_lesion_acc ▁▂▂▄▅▃▅▃▄▄▅▂▅▅▃▄▅▄▄▄▅▄▄▆▆▆▅▅█▅▇▇▅▇▆▆▆███
-wandb:           train_loss ██▇▆▅▃▃▃▃▃▃▃▂▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▁▁▁▁▁▁▁
-wandb:       train_skin_acc ▁▇▇██▇██▇███████████████████████████████
-wandb:           val_bm_acc ▁▁▁▃▃▃▄▃▃▃▃▃▄▄▅▄▅▅▅▅▆▆▇▇▅██▆▇▇▆█████▇███
-wandb:      val_bm_f1_macro ▁▁▁▄▅▆▆▅▆▆▆▆▅▆▆▆▆▇▇▇▇▇█▇▆██▇██▇█████▇███
-wandb:       val_lesion_acc ▁▁▃▇▃▅▆▅▁▃▄▅▂▃▃▄▅▆▄▃▅▆▇▇▅▇██▇▇▆██▇▇▅███▇
-wandb:  val_lesion_f1_macro ▁▁▂▄▃▃▄▃▄▂▄▆▄▃▄▆▄▆▆▅▅▇▇▇▇▇█▇█▇█▇▇▇█▇▇▇█▇
-wandb:             val_loss ██▇▆▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb:         val_skin_acc ▁▄▆▆▇▆▅▇▆▆▆▇▆▆▆▆▆▇▆▆▇▇▆▇▇▇▇▇▇▇▇▇█▇▇▇█▇▇█
-wandb:    val_skin_f1_macro ▁▅▆▆▇▇▆▇▆▆▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇██▇██▇▇
-wandb: 
-wandb: Run summary:
-wandb:                epoch 50
-wandb:                   lr 0.0001
-wandb:          test_bm_acc 0.6338
-wandb:     test_bm_f1_macro 0.63345
-wandb:      test_lesion_acc 0.35669
-wandb: test_lesion_f1_macro 0.3058
-wandb:            test_loss 1.81941
-wandb:        test_skin_acc 0.9981
-wandb:   test_skin_f1_macro 0.99605
-wandb:         train_bm_acc 0.64459
-wandb:     train_lesion_acc 0.31462
-wandb:           train_loss 2.22363
-wandb:       train_skin_acc 0.98517
-wandb:           val_bm_acc 0.67368
-wandb:      val_bm_f1_macro 0.6731
-wandb:       val_lesion_acc 0.34125
-wandb:  val_lesion_f1_macro 0.31014
-wandb:             val_loss 1.79352
-wandb:         val_skin_acc 0.9745
-wandb:    val_skin_f1_macro 0.94879
-wandb: 
-wandb: 🚀 View run exp2_multi_auto at: https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded/runs/dsqhl489
-wandb: ⭐️ View project at: https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded
-wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20250820_153545-dsqhl489/logs
-wandb: train_count/AKIEC 1016
-wandb: train_count/BCC 1217
-wandb: train_count/BKL 964
-wandb: train_count/DF 232
-wandb: train_count/MEL 1065
-wandb: train_count/NOT_SKIN 742
-wandb: train_count/NV 829
-wandb: train_count/SCC 405
-wandb: train_count/UNKNOWN 724
-wandb: train_count/VASC 251
-wandb: val_count/AKIEC 215
-wandb: val_count/BCC 264
-wandb: val_count/BKL 220
-wandb: val_count/DF 50
-wandb: val_count/MEL 227
-wandb: val_count/NOT_SKIN 159
-wandb: val_count/NV 192
-wandb: val_count/SCC 85
-wandb: val_count/UNKNOWN 161
-wandb: val_count/VASC 52
-wandb: test_count/AKIEC 215
-wandb: test_count/BCC 267
-wandb: test_count/BKL 212
-wandb: test_count/DF 48
-wandb: test_count/MEL 236
-wandb: test_count/NOT_SKIN 160
-wandb: test_count/NV 163
-wandb: test_count/SCC 98
-wandb: test_count/UNKNOWN 155
-wandb: test_count/VASC 54
-Run summary:
-wandb: epoch 50
-wandb: lr 0.00010
-wandb: test_skin_acc 0.99810
-wandb: test_lesion_acc 0.35669
-wandb: test_bm_acc 0.63380
-wandb: test_skin_f1_macro 0.99605
-wandb: test_lesion_f1_macro 0.30580
-wandb: test_bm_f1_macro 0.63345

@@ -15,9 +15,12 @@ from sam.sam_encoder import SAMFeatureExtractor
 DEFAULT_LESION_LABELS = [
     "melanoma",
     "nevus", 
-    "seborrheic_keratosis",
     "basal_cell_carcinoma",
-    "actinic_keratosis",
+    "squamous_cell_carcinoma",
+    "seborrheic_keratosis",
+    "actinic_keratosis", 
+    "dermatofibroma",
+    "vascular"
 ]
 
 
@@ -92,8 +95,8 @@ class InferencePipeline:
                 import io
                 image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
                 
-                # Extract features using SAM
-                features = self.sam_extractor.extract_features(image)
+                # Extract features using SAM - pass as a list to match expected input format
+                features = self.sam_extractor.extract_features([image])
                 return features
             except Exception as e:
                 print(f"Warning: SAM feature extraction failed: {e}")
@@ -117,8 +120,8 @@ class InferencePipeline:
                 # Handle case where model returns single tensor that needs to be split
                 combined = outputs
                 skin_logits = combined[:, :2]
-                lesion_logits = combined[:, 2:7]  # 5 classes
-                bm_logits = combined[:, 7:9]     # 2 classes
+                lesion_logits = combined[:, 2:10]  # 8 lesion classes
+                bm_logits = combined[:, 10:12]    # 2 classes
             
             return skin_logits, lesion_logits, bm_logits
 
@@ -133,8 +136,8 @@ class InferencePipeline:
     def _fallback_mlp2(self, image_bytes: bytes) -> List[float]:
         stats = self.preprocessor.quick_image_stats(image_bytes)
         r, g, b = stats["mean_per_channel"]
-        # Simple color-based distribution for 5 classes
-        base = [r, g, b, (r+g)/2, (g+b)/2]
+        # Simple color-based distribution for 8 lesion classes
+        base = [r, g, b, (r+g)/2, (g+b)/2, (r+b)/2, (g+b)/2, (r+g+b)/3]
         probs = _normalize_probs(base)
         return probs
 
@@ -184,7 +187,7 @@ class InferencePipeline:
         if is_skin_label != "skin":
             return result
 
-        # MLP2: Lesion type (5 classes)
+        # MLP2: Lesion type (8 fine-grained classes - no NOT_SKIN)
         if self.mlp2 is not None:
             _, lesion_logits, _ = self._forward_multihead(self.mlp2, features)
             probs2 = _safe_softmax(lesion_logits)[0].tolist()

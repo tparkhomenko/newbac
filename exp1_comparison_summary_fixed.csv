@@ -1,0 +1,5 @@
+Run ID	Architecture	Dataset Setup	Loss Function	Augmentation	Test Skin Acc	Test Skin F1	Test Lesion Acc	Test Lesion F1	Test BM Acc	Test BM F1	Notes
+exp1_multi_weightedce_balanced	multi	exp1_balanced	base	None	1.00000	1.00000	0.12500	0.02778	0.57143	0.36364	Run ID: s9ljf2vq
+exp1_multi_weightedce_full	multi	exp1_full	base	None	0.99732	0.95673	0.54039	0.18437	0.74796	0.71393	Run ID: 6k2hsqxg
+exp1_parallel_weightedce_balanced	parallel	exp1_balanced	base	None	1.00000	1.00000	0.28333	0.24929	0.69841	0.69995	Run ID: hv6hqc4d
+exp1_parallel_weightedce_full	parallel	exp1_full	base	None	0.99851	0.99849	0.52758	0.56688	0.79312	0.78632	Run ID: y01qr0s0

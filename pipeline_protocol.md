@@ -27,6 +27,54 @@
 - **Performance tracking**: Log to both CSV and WandB for all metrics
 - **Memory management**: Implement GPU cleanup between training runs
 
+## ⚖️ Lesion Loss Experiments (exp1)
+
+Date: Aug 2025
+
+- **Goal**: Improve MLP2 (8-class lesion head) on exp1 by addressing class imbalance and testing alternative losses.
+- **Scripts**: `training/train_exp5_multihead.py`, `training/train_parallel.py`
+- **Runner**: `training/retrain_exp1_only.sh`
+- **Config toggle**: `config.yaml` → `lesion_loss_fn: "weighted_ce" | "focal" | "lmf"`
+
+### Implemented losses
+- **weighted_ce**: Standard `nn.CrossEntropyLoss(weight=class_weights)` with inverse-frequency weights computed from exp1 train split; printed and logged at startup. Baseline.
+- **focal**: `FocalLoss(alpha=class_weights, gamma=2.0)`; emphasizes hard examples. Logged alpha/gamma.
+- **lmf**: LDAM + Focal combined (LMF). File: `losses/lmf_loss.py`. Uses LDAM margins m_c ∝ 1/√(n_c) and focal term (γ=2.0). Combined as `α·LDAM + β·Focal` with α=0.5, β=0.5.
+
+### What was tuned/changed
+- Added lesion loss toggle parsing in both trainers; logs choice to console + WandB (`lesion_loss_fn`, and `focal_gamma` when applicable).
+- Computed lesion class counts/weights from train dataset (masked) on startup; printed to console and saved in logs.
+- For LMF, passed exp1 train class counts to `LMFLoss` (computed per run, no hardcoding).
+- `retrain_exp1_only.sh` names runs/logs by loss: `${EXPERIMENT}_${mode}_8classes_${LESION_LOSS_FN}`.
+
+### Where to find results
+- **Local logs**:
+  - Multi-head: `backend/models/multi/logs_multi_exp1_8classes_{weighted_ce|focal|lmf}.txt`
+  - Parallel: `backend/models/parallel/logs_parallel_exp1_8classes_{weighted_ce|focal|lmf}.txt`
+- **Local checkpoints**:
+  - Multi-head: `backend/models/multi/{mlp1,mlp2,mlp3}.pt`
+  - Parallel: `backend/models/parallel/{mlp1,mlp2,mlp3}.pt`
+- **WandB project**: `loss_comparison_weighted_ce_vs_focal` (LMF runs are included under same project)
+  - Example runs:
+    - Weighted CE: `exp1_multi_8classes_weighted_ce`, `exp1_parallel_8classes_weighted_ce`
+    - Focal: `exp1_multi_8classes_focal`, `exp1_parallel_8classes_focal`
+    - LMF: `exp1_multi_8classes_lmf`, `exp1_parallel_8classes_lmf`
+
+### Observed exp1 performance (quick sanity runs)
+- Multi-head:
+  - weighted_ce: lesion acc ≈ 0.514, lesion F1-macro ≈ 0.244
+  - focal: lesion acc ≈ 0.131, lesion F1-macro ≈ 0.158
+  - lmf: [see run; not listed here in console snapshot]
+- Parallel:
+  - weighted_ce: lesion acc ≈ 0.495, lesion F1 ≈ 0.544
+  - focal: lesion acc ≈ 0.018, lesion F1 ≈ 0.002
+  - lmf: lesion acc ≈ 0.645, lesion F1 ≈ 0.599 (test); val acc ≈ 0.645
+
+Notes:
+- Weighted CE is a strong baseline; focal underperformed with current α/γ on this setup.
+- LMF (LDAM+Focal) substantially improved lesion accuracy in the parallel architecture on exp1.
+
+
 ### 🔍 **Evaluation Rules**
 - **Comprehensive metrics**: Accuracy, F1, Precision, Recall, AUC
 - **Confusion matrices**: Generate for all models and save to results/

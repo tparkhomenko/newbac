@@ -24,20 +24,21 @@ const ModelPanel = ({ onModelSwitch }) => {
     }
   }
 
-  const switchTo = async (arch) => {
+  const switchTo = async (choice) => {
     try {
       setLoading(true)
       const response = await fetch('http://127.0.0.1:8000/model/switch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ architecture: arch })
+        body: JSON.stringify({ model_choice: choice })
       })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       const data = await response.json()
       setModelInfo(prev => ({
         ...(prev || {}),
         current_model: data.current_model,
-        stats: data.stats || prev?.stats
+        actual_model: data.actual_model,
+        summary: data.summary || prev?.summary
       }))
       onModelSwitch && onModelSwitch(data.current_model)
       setError(null)
@@ -85,7 +86,7 @@ const ModelPanel = ({ onModelSwitch }) => {
 
   if (!modelInfo) return null
 
-  const isActive = (arch) => modelInfo.current_model === arch
+  const isActive = (choice) => modelInfo.current_model === choice
 
   return (
     <div className="bg-neutral-100 dark:bg-gray-800 rounded-lg shadow p-6">
@@ -94,62 +95,57 @@ const ModelPanel = ({ onModelSwitch }) => {
       {/* Current Model */}
       <div className="mb-4 text-sm">
         <span className="text-gray-600 dark:text-gray-300">Active:</span>
-        <span className="ml-2 font-medium text-accent1-600">{modelInfo.current_model}</span>
+        <span className="ml-2 font-medium text-accent1-600">{modelInfo.actual_model || modelInfo.current_model}</span>
       </div>
 
-      {/* Toggle Buttons */}
+      {/* Toggle Buttons for best models */}
       <div className="flex gap-2 mb-6">
-        {['parallel', 'multi'].map((arch) => (
+        {['parallel_best', 'multi_best'].map((choice) => (
           <button
-            key={arch}
-            onClick={() => switchTo(arch)}
+            key={choice}
+            onClick={() => switchTo(choice)}
             disabled={loading}
             className={`px-4 py-2 rounded-md text-sm font-medium border ${
-              isActive(arch)
+              isActive(choice)
                 ? 'bg-accent1-600 text-white border-accent1-600'
                 : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-neutral-300 hover:bg-neutral-100'
             }`}
           >
-            {arch.charAt(0).toUpperCase() + arch.slice(1)}
+            {choice === 'parallel_best' ? 'Parallel Best' : 'Multi Best'}
           </button>
         ))}
       </div>
 
-      {/* Stats per MLP (parsed from logs) */}
-      {modelInfo.stats && (
+      {/* Summary stats */}
+      {modelInfo.summary && (
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Stats (from logs)</h4>
-          {['mlp1','mlp2','mlp3'].map((mlp) => (
-            <div key={mlp} className="mb-3">
-              <div className="text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1">{mlp.toUpperCase()}</div>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">Skin Acc</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_acc)}</div>
-                </div>
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">Skin F1</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_skin_f1_macro)}</div>
-                </div>
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">Lesion Acc</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_acc)}</div>
-                </div>
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">Lesion F1</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_lesion_f1_macro)}</div>
-                </div>
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">B/M Acc</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_acc)}</div>
-                </div>
-                <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
-                  <div className="text-gray-600 dark:text-gray-300">B/M F1</div>
-                  <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.stats[mlp]?.test_bm_f1_macro)}</div>
-                </div>
-              </div>
+          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Model Stats</h4>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">Skin Acc</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.skin?.acc)}</div>
             </div>
-          ))}
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">Skin F1</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.skin?.f1)}</div>
+            </div>
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">Lesion Acc</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.lesion?.acc)}</div>
+            </div>
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">Lesion F1</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.lesion?.f1)}</div>
+            </div>
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">B/M Acc</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.bm?.acc)}</div>
+            </div>
+            <div className="bg-neutral-100 dark:bg-gray-700 rounded p-2">
+              <div className="text-gray-600 dark:text-gray-300">B/M F1</div>
+              <div className="font-bold text-accent2-700">{formatPercentage(modelInfo.summary?.bm?.f1)}</div>
+            </div>
+          </div>
         </div>
       )}
     </div>

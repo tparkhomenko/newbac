@@ -1,0 +1,30 @@
+Run ID,Architecture,Dataset Setup,Loss Function,Augmentation,Test Skin Acc,Test Skin F1,Test Lesion Acc,Test Lesion F1,Test BM Acc,Test BM F1,Notes
+exp1_multi_8classes,multi,exp1,base,None,0.9997,0.99528,0.4968,0.26252,0.73205,0.71801,
+exp1_multi_8classes_focal,multi,exp1,focal (gamma=2.0),None,0.99712,0.95772,0.13096,0.15752,0.74981,0.73193,
+exp1_multi_8classes_focal_balanced_mixup,multi,exp1,focal (gamma=2.0),Balanced MixUp (alpha=0.2),0.9841,0.49599,0.52189,0.30303,0.78072,0.74723,
+exp1_multi_8classes_lmf,multi,exp1,"LMF (alpha=0.5, beta=0.5, gamma=2.0)",None,0.9999,0.99842,0.64395,0.23408,0.7648,0.74404,
+exp1_multi_8classes_lmf_balanced_mixup,multi,exp1,"LMF (alpha=0.5, beta=0.5, gamma=2.0)",Balanced MixUp (alpha=0.2),0.9841,0.49599,0.5452,0.25418,0.77276,0.73954,
+exp1_multi_8classes_weighted_ce,multi,exp1,weighted CE,None,0.99801,0.97008,0.51388,0.24424,0.74574,0.72602,
+exp1_multi_8classes_weighted_ce_balanced_mixup,multi,exp1,weighted CE,Balanced MixUp (alpha=0.2),0.9841,0.49599,0.52865,0.3016,0.7809,0.74499,
+exp1_parallel_8classes,parallel,exp1,base,None,0.9995,0.9995,0.64644,0.59435,0.79515,0.78815,
+exp1_parallel_8classes_focal,parallel,exp1,focal (gamma=2.0),None,0.9999,0.9999,0.01762,0.00203,0.79071,0.779,
+exp1_parallel_8classes_focal_balanced_mixup,parallel,exp1,focal (gamma=2.0),Balanced MixUp (alpha=0.2),0.9841,0.97621,0.53381,0.54033,0.68634,0.55868,
+exp1_parallel_8classes_lmf,parallel,exp1,"LMF (alpha=0.5, beta=0.5, gamma=2.0)",None,0.99911,0.9991,0.64537,0.59874,0.79478,0.7898,
+exp1_parallel_8classes_lmf_balanced_mixup,parallel,exp1,"LMF (alpha=0.5, beta=0.5, gamma=2.0)",Balanced MixUp (alpha=0.2),,,,,,,
+exp1_parallel_8classes_weighted_ce,parallel,exp1,weighted CE,None,0.99861,0.99858,0.49502,0.54449,0.79478,0.78944,
+exp1_parallel_8classes_weighted_ce_balanced_mixup,parallel,exp1,weighted CE,Balanced MixUp (alpha=0.2),0.9841,0.97621,0.51797,0.55271,0.68634,0.55868,
+exp1_multi_8classes,multi,exp1,base,None,0.9992,0.9876,0.52446,0.38489,0.74611,0.72785,
+exp1_multi_8classes,multi,exp1,base,None,0.99881,0.98162,0.52232,0.36606,0.73612,0.7209,
+exp1_parallel_8classes,parallel,exp1,base,None,,,,,,,
+exp1_parallel_8classes,parallel,exp1,base,None,,,,,,,
+exp2_multi_8classes,multi,exp2,base,None,0.9962,0.99214,0.34076,0.3062,0.62535,0.62535,
+exp3_multi_8classes,multi,exp3,base,None,,,,,,,
+exp3_multi_8classes,multi,exp3,base,None,0.99438,0.98607,0.40519,0.32813,0.67394,0.67047,
+exp4_multi_8classes,multi,exp4,base,None,0.98963,0.97262,0.34699,0.2916,0.66889,0.66817,
+exp5_multi_8classes,multi,exp5,base,None,0.99876,0.99653,0.43169,0.32019,0.7013,0.6986,
+exp1_parallel_8classes_lmf_balanced_mixup,parallel,exp1,"LMF (alpha=0.5, beta=0.5, gamma=2.0)",Balanced MixUp (alpha=0.2),0.9841,0.9762,0.513,0.555,0.6863,0.5587,Retry run - successful
+2025-09-03T15:55:11,exp6,parallel,exp6_balanced_comparison,exp6_parallel_weightedce_balanced_mixup,1.0,0.32927241962774956,0.5791017216097323,0.9025069637883009,0.34901648059542795,0.5906801007556675,0.9057659208261618,0.8609786693786725,0.33351063829787236,0.293655966602286,0.5791653392800254,0.43051467376363145
+2025-09-04T08:22:49,exp6,parallel,exp6_balanced_partial,exp6_parallel_weightedce_balanced_partial_balanced_mixup,1.0,0.3297291567286797,0.6071920955882353,0.8886965124907247,0.3981709461836089,0.6001523229246002,0.8886965124907247,0.4705343111576742,0.4045022863172705,0.34226869868548,0.6001523229246002,0.37505949547834366
+2025-09-04T08:23:29,exp6,parallel,exp6_balanced_partial,exp6_parallel_weightedce_balanced_partial_mixup_balanced_mixup,1.0,0.3493931202628929,0.6084309671490926,0.8886965124907247,0.4027435807245867,0.6089108910891089,0.8886965124907247,0.4705343111576742,0.4069644741470278,0.3599007847274528,0.6001523229246002,0.37505949547834366
+2025-09-04T11:00:24,exp6,parallel,exp6_tier5_cb_focal,exp6_parallel_cb_focal_deeptrunk_curriculum_balanced_mixup,1.0,0.4099750887793502,0.6070628768303187,0.8886965124907247,0.45550474850510025,0.6001523229246002,0.8886965124907247,0.4705343111576742,0.46676046429827645,0.43618882390589986,0.6001523229246002,0.37505949547834366
+2025-09-04T11:00:27,exp6,parallel,exp6_tier5_cb_focal,exp6_parallel_cb_focal_deeptrunk_curriculum_nomixup,0.9998939948057455,0.3771764528529434,0.7345573235414117,0.9995053178332921,0.39570875835385155,0.741051028179741,0.9995053178332921,0.9987472934970807,0.3978192050650721,0.36387573409569596,0.7418126428027418,0.7291404619813755

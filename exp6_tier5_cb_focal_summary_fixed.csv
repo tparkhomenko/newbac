@@ -1,0 +1,5 @@
+Run ID	Architecture	Dataset Setup	Loss Function	Augmentation	Test Skin Acc	Test Skin F1	Test Lesion Acc	Test Lesion F1	Test BM Acc	Test BM F1	Notes
+exp6_multi_cb_focal_deeptrunk_curriculum_balanced_mixup	multi	exp6_tier5_cb_focal	cb_focal (beta=0.9999, gamma=2.0)	Balanced MixUp (alpha=0.2)	0.88870	0.47053	0.29370	0.09799	0.44288	0.44034	
+exp6_multi_cb_focal_deeptrunk_curriculum_nomixup	multi	exp6_tier5_cb_focal	cb_focal (beta=0.9999, gamma=2.0)	Balanced MixUp (alpha=0.2)	0.99951	0.99875	0.38340	0.33499	0.72848	0.72556	
+exp6_parallel_cb_focal_deeptrunk_curriculum_balanced_mixup	parallel	exp6_tier5_cb_focal	cb_focal (beta=0.9999, gamma=2.0)	Balanced MixUp (alpha=0.2)	0.88870	0.47053	0.46676	0.43619	0.60015	0.37506	
+exp6_parallel_cb_focal_deeptrunk_curriculum_nomixup	parallel	exp6_tier5_cb_focal	cb_focal (beta=0.9999, gamma=2.0)	Balanced MixUp (alpha=0.2)	0.99951	0.99875	0.39782	0.36388	0.74181	0.72914	

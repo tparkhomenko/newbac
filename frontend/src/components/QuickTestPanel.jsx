@@ -181,7 +181,7 @@ const QuickTestPanel = () => {
             <div className="bg-neutral-100 dark:bg-gray-700 rounded-lg p-4">
               {renderConfusionMatrix(
                 testResults.confusion_matrix,
-                ['melanoma', 'nevus', 'seborrheic_keratosis', 'basal_cell_carcinoma', 'actinic_keratosis']
+                testResults.class_names || []
               )}
             </div>
             <p className="mt-2 text-xs text-gray-500 dark:text-gray-300">

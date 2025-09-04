@@ -4,19 +4,35 @@ const PredictionPanel = ({ prediction }) => {
   const { is_skin, lesion_type, malignancy, route_taken, metadata } = prediction
 
   const abbrevToFull = {
+    // Melanocytic lesions
     NV: 'nevus',
     MEL: 'melanoma',
+    
+    // Non-melanocytic carcinomas  
     BCC: 'basal_cell_carcinoma',
+    SCC: 'squamous_cell_carcinoma',
+    
+    // Keratosis lesions
     BKL: 'seborrheic_keratosis',
     AKIEC: 'actinic_keratosis',
-    SCC: 'squamous_cell_carcinoma',
-    VASC: 'vascular_lesion',
+    AK: 'actinic_keratosis',
+    
+    // Other lesions
     DF: 'dermatofibroma',
-    UNKNOWN: 'unknown'
+    VASC: 'vascular',
+    
+    // Special cases
+    UNKNOWN: 'unknown',
+    UNK: 'unknown',
+    NOT_SKIN: 'not_skin',
+    OTHER: 'other'
   }
 
   const gtAbbrev = metadata?.unified_diagnosis || null
   const groundTruth = gtAbbrev ? (abbrevToFull[gtAbbrev] || gtAbbrev) : 'N/A'
+
+  // Check if ground truth indicates NOT_SKIN
+  const isGroundTruthNotSkin = groundTruth === 'not_skin' || gtAbbrev === 'NOT_SKIN'
 
   const ConfidenceBar = ({ value, label, color = 'accent2' }) => (
     <div className="space-y-2">
@@ -111,7 +127,9 @@ const PredictionPanel = ({ prediction }) => {
               <div className="font-medium text-accent1-700">
                 Prediction: {is_skin.label === 'skin' ? 'Skin' : 'Not Skin'} (Confidence: {(is_skin.confidence * 100).toFixed(1)}%)
               </div>
-              <div className="text-gray-700 dark:text-gray-300">Ground Truth: {groundTruth === 'N/A' ? 'N/A' : 'skin'}</div>
+              <div className="text-gray-700 dark:text-gray-300">
+                Ground Truth: {isGroundTruthNotSkin ? 'Not Skin' : (groundTruth === 'N/A' ? 'N/A' : 'Skin')}
+              </div>
             </div>
           </div>
 
@@ -123,14 +141,33 @@ const PredictionPanel = ({ prediction }) => {
         </div>
       </div>
 
-      {/* Lesion Type (only if skin detected) */}
-      {is_skin.label === 'skin' && lesion_type && (
+      {/* Lesion Type (only if skin detected AND ground truth is not NOT_SKIN) */}
+      {is_skin.label === 'skin' && lesion_type && !isGroundTruthNotSkin && (
         <LesionTypeCard lesionType={lesion_type} />
       )}
 
-      {/* Malignancy (only if skin detected) */}
-      {is_skin.label === 'skin' && malignancy && (
+      {/* Malignancy (only if skin detected AND ground truth is not NOT_SKIN) */}
+      {is_skin.label === 'skin' && malignancy && !isGroundTruthNotSkin && (
         <MalignancyCard malignancy={malignancy} />
+      )}
+
+      {/* Show message if ground truth is NOT_SKIN but model predicts skin */}
+      {isGroundTruthNotSkin && is_skin.label === 'skin' && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">Ground Truth Mismatch</h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>Ground truth indicates this is NOT a skin lesion, but the model predicted it as skin. Lesion type and malignancy predictions are hidden.</p>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Pipeline Route */}

@@ -6,7 +6,7 @@ from typing import Dict, Tuple
 class MultiTaskHead(nn.Module):
 
 	def __init__(self, input_dim: int, hidden_dims: Tuple[int, ...], dropout: float,
-	             num_classes_skin: int = 2, num_classes_lesion: int = 5, num_classes_bm: int = 2):
+	             num_classes_skin: int = 2, num_classes_lesion: int = 8, num_classes_bm: int = 2):
 		super().__init__()
 		layers = []
 		current_dim = input_dim

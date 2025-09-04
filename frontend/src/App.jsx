@@ -3,7 +3,8 @@ import ImageUploader from './components/ImageUploader'
 import PredictionPanel from './components/PredictionPanel'
 import MetadataPanel from './components/MetadataPanel'
 import ModelPanel from './components/ModelPanel'
-import QuickTestPanel from './components/QuickTestPanel'
+// Placeholder: Quick Test feature removed from UI per requirement
+// import QuickTestPanel from './components/QuickTestPanel'
 
 function App() {
   const [prediction, setPrediction] = useState(null)
@@ -65,7 +66,7 @@ function App() {
           {/* Left Sidebar - Model Management */}
           <div className="lg:col-span-1 space-y-6">
             <ModelPanel onModelSwitch={handleModelSwitch} />
-            <QuickTestPanel />
+            {/* Placeholder: Quick Test panel hidden per requirement */}
           </div>
 
           {/* Main Content Area */}
@@ -141,7 +142,7 @@ function App() {
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 max-w-sm mx-auto">
                   Upload an image to get AI-powered predictions for skin lesion classification.
-                  Use the left sidebar to manage models and run quick tests.
+                  {/* Placeholder: removed reference to Quick Test from welcome text */}
                 </p>
               </div>
             )}

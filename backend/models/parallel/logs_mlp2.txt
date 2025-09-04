@@ -1,315 +1,0 @@
-INFO:__main__:Using device: cuda
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 train: 2563 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-INFO:datasets.parallel_unified_dataset:Loaded features: train (1642 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_train_incremental.pkl
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 val: 549 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-WARNING:datasets.parallel_unified_dataset:Feature store not found: /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_val.pkl or /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_val_incremental.pkl
-wandb: Currently logged in as: taisiyaparkhomenko (taisiyaparkhomenko-technische-universit-t-graz) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
-wandb: Tracking run with wandb version 0.21.0
-wandb: Run data is saved locally in /home/parkhomenko/Documents/new_project/wandb/run-20250820_153943-6k4xntfc
-wandb: Run `wandb offline` to turn off syncing.
-wandb: Syncing run exp2_parallel_auto
-wandb: ⭐️ View project at https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded
-wandb: 🚀 View run at https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded/runs/6k4xntfc
-Epoch 1 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 1 - train:   2%|▏         | 1/41 [00:00<00:11,  3.58it/s]Epoch 1 - train:  46%|████▋     | 19/41 [00:00<00:00, 62.91it/s]Epoch 1 - train:  98%|█████████▊| 40/41 [00:00<00:00, 108.97it/s]Epoch 1 - train: 100%|██████████| 41/41 [00:00<00:00, 83.59it/s] 
-Epoch 1 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 1 - val: 100%|██████████| 5/5 [00:00<00:00, 258.21it/s]
-INFO:__main__:New best val loss: 2.3680
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153944/best.pt
-Epoch 2 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 2 - train:  56%|█████▌    | 23/41 [00:00<00:00, 222.63it/s]Epoch 2 - train: 100%|██████████| 41/41 [00:00<00:00, 214.19it/s]
-Epoch 2 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 2 - val: 100%|██████████| 5/5 [00:00<00:00, 216.74it/s]
-INFO:__main__:New best val loss: 2.3611
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153945/best.pt
-Epoch 3 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 3 - train:  56%|█████▌    | 23/41 [00:00<00:00, 223.01it/s]Epoch 3 - train: 100%|██████████| 41/41 [00:00<00:00, 230.97it/s]
-Epoch 3 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 3 - val: 100%|██████████| 5/5 [00:00<00:00, 276.10it/s]
-INFO:__main__:New best val loss: 2.3282
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153945/best.pt
-Epoch 4 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 4 - train:  56%|█████▌    | 23/41 [00:00<00:00, 224.70it/s]Epoch 4 - train: 100%|██████████| 41/41 [00:00<00:00, 227.41it/s]
-Epoch 4 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 4 - val: 100%|██████████| 5/5 [00:00<00:00, 247.98it/s]
-INFO:__main__:New best val loss: 2.2962
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153945/best.pt
-Epoch 5 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 5 - train:  63%|██████▎   | 26/41 [00:00<00:00, 250.39it/s]Epoch 5 - train: 100%|██████████| 41/41 [00:00<00:00, 258.55it/s]
-Epoch 5 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 5 - val: 100%|██████████| 5/5 [00:00<00:00, 240.86it/s]
-INFO:__main__:New best val loss: 2.2405
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153946/best.pt
-Epoch 6 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 6 - train:  61%|██████    | 25/41 [00:00<00:00, 241.96it/s]Epoch 6 - train: 100%|██████████| 41/41 [00:00<00:00, 244.98it/s]
-Epoch 6 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 6 - val: 100%|██████████| 5/5 [00:00<00:00, 264.23it/s]
-INFO:__main__:New best val loss: 2.1634
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153946/best.pt
-Epoch 7 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 7 - train:  59%|█████▊    | 24/41 [00:00<00:00, 228.24it/s]Epoch 7 - train: 100%|██████████| 41/41 [00:00<00:00, 240.37it/s]
-Epoch 7 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 7 - val: 100%|██████████| 5/5 [00:00<00:00, 224.14it/s]
-INFO:__main__:New best val loss: 2.1033
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153946/best.pt
-Epoch 8 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 8 - train:  63%|██████▎   | 26/41 [00:00<00:00, 252.93it/s]Epoch 8 - train: 100%|██████████| 41/41 [00:00<00:00, 248.99it/s]
-Epoch 8 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 8 - val: 100%|██████████| 5/5 [00:00<00:00, 261.64it/s]
-INFO:__main__:New best val loss: 2.0356
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153946/best.pt
-Epoch 9 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 9 - train:  59%|█████▊    | 24/41 [00:00<00:00, 234.94it/s]Epoch 9 - train: 100%|██████████| 41/41 [00:00<00:00, 245.73it/s]
-Epoch 9 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 9 - val: 100%|██████████| 5/5 [00:00<00:00, 239.94it/s]
-INFO:__main__:New best val loss: 2.0048
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153947/best.pt
-Epoch 10 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 10 - train:  59%|█████▊    | 24/41 [00:00<00:00, 238.86it/s]Epoch 10 - train: 100%|██████████| 41/41 [00:00<00:00, 234.02it/s]
-Epoch 10 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 10 - val: 100%|██████████| 5/5 [00:00<00:00, 242.67it/s]
-INFO:__main__:New best val loss: 1.9745
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153947/best.pt
-Epoch 11 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 11 - train:  61%|██████    | 25/41 [00:00<00:00, 249.84it/s]Epoch 11 - train: 100%|██████████| 41/41 [00:00<00:00, 244.73it/s]
-Epoch 11 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 11 - val: 100%|██████████| 5/5 [00:00<00:00, 280.55it/s]
-INFO:__main__:New best val loss: 1.9174
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153947/best.pt
-Epoch 12 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 12 - train:  61%|██████    | 25/41 [00:00<00:00, 243.89it/s]Epoch 12 - train: 100%|██████████| 41/41 [00:00<00:00, 248.82it/s]
-Epoch 12 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 12 - val: 100%|██████████| 5/5 [00:00<00:00, 170.40it/s]
-INFO:__main__:New best val loss: 1.8938
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153948/best.pt
-Epoch 13 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 13 - train:  63%|██████▎   | 26/41 [00:00<00:00, 258.06it/s]Epoch 13 - train: 100%|██████████| 41/41 [00:00<00:00, 255.77it/s]
-Epoch 13 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 13 - val: 100%|██████████| 5/5 [00:00<00:00, 277.97it/s]
-INFO:__main__:New best val loss: 1.8759
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153948/best.pt
-Epoch 14 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 14 - train:  63%|██████▎   | 26/41 [00:00<00:00, 251.76it/s]Epoch 14 - train: 100%|██████████| 41/41 [00:00<00:00, 254.53it/s]
-Epoch 14 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 14 - val: 100%|██████████| 5/5 [00:00<00:00, 240.88it/s]
-INFO:__main__:New best val loss: 1.8735
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153948/best.pt
-Epoch 15 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 15 - train:  61%|██████    | 25/41 [00:00<00:00, 242.93it/s]Epoch 15 - train: 100%|██████████| 41/41 [00:00<00:00, 238.98it/s]
-Epoch 15 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 15 - val: 100%|██████████| 5/5 [00:00<00:00, 227.94it/s]
-INFO:__main__:New best val loss: 1.8663
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153949/best.pt
-Epoch 16 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 16 - train:  59%|█████▊    | 24/41 [00:00<00:00, 231.92it/s]Epoch 16 - train: 100%|██████████| 41/41 [00:00<00:00, 229.69it/s]
-Epoch 16 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 16 - val: 100%|██████████| 5/5 [00:00<00:00, 277.81it/s]
-INFO:__main__:New best val loss: 1.8491
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153949/best.pt
-Epoch 17 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 17 - train:  59%|█████▊    | 24/41 [00:00<00:00, 232.02it/s]Epoch 17 - train: 100%|██████████| 41/41 [00:00<00:00, 226.59it/s]
-Epoch 17 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 17 - val: 100%|██████████| 5/5 [00:00<00:00, 222.05it/s]
-INFO:__main__:New best val loss: 1.8429
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153949/best.pt
-Epoch 18 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 18 - train:  61%|██████    | 25/41 [00:00<00:00, 243.19it/s]Epoch 18 - train: 100%|██████████| 41/41 [00:00<00:00, 250.80it/s]
-Epoch 18 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 18 - val: 100%|██████████| 5/5 [00:00<00:00, 282.39it/s]
-INFO:__main__:New best val loss: 1.8318
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153949/best.pt
-Epoch 19 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 19 - train:  59%|█████▊    | 24/41 [00:00<00:00, 238.64it/s]Epoch 19 - train: 100%|██████████| 41/41 [00:00<00:00, 252.37it/s]
-Epoch 19 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 19 - val: 100%|██████████| 5/5 [00:00<00:00, 241.44it/s]
-INFO:__main__:New best val loss: 1.8210
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153950/best.pt
-Epoch 20 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 20 - train:  59%|█████▊    | 24/41 [00:00<00:00, 236.90it/s]Epoch 20 - train: 100%|██████████| 41/41 [00:00<00:00, 244.24it/s]
-Epoch 20 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 20 - val: 100%|██████████| 5/5 [00:00<00:00, 245.59it/s]
-INFO:__main__:New best val loss: 1.8159
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153950/best.pt
-Epoch 21 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 21 - train:  63%|██████▎   | 26/41 [00:00<00:00, 252.38it/s]Epoch 21 - train: 100%|██████████| 41/41 [00:00<00:00, 251.69it/s]
-Epoch 21 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 21 - val: 100%|██████████| 5/5 [00:00<00:00, 277.51it/s]
-INFO:__main__:New best val loss: 1.8141
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153950/best.pt
-Epoch 22 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 22 - train:  63%|██████▎   | 26/41 [00:00<00:00, 254.58it/s]Epoch 22 - train: 100%|██████████| 41/41 [00:00<00:00, 254.81it/s]
-Epoch 22 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 22 - val: 100%|██████████| 5/5 [00:00<00:00, 242.20it/s]
-INFO:__main__:New best val loss: 1.8129
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153951/best.pt
-Epoch 23 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 23 - train:  66%|██████▌   | 27/41 [00:00<00:00, 262.05it/s]Epoch 23 - train: 100%|██████████| 41/41 [00:00<00:00, 257.11it/s]
-Epoch 23 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 23 - val: 100%|██████████| 5/5 [00:00<00:00, 278.16it/s]
-INFO:__main__:New best val loss: 1.8077
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153951/best.pt
-Epoch 24 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 24 - train:  61%|██████    | 25/41 [00:00<00:00, 248.96it/s]Epoch 24 - train: 100%|██████████| 41/41 [00:00<00:00, 253.19it/s]
-Epoch 24 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 24 - val: 100%|██████████| 5/5 [00:00<00:00, 245.77it/s]
-INFO:__main__:New best val loss: 1.8009
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153951/best.pt
-Epoch 25 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 25 - train:  61%|██████    | 25/41 [00:00<00:00, 248.59it/s]Epoch 25 - train: 100%|██████████| 41/41 [00:00<00:00, 246.90it/s]
-Epoch 25 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 25 - val: 100%|██████████| 5/5 [00:00<00:00, 243.27it/s]
-INFO:__main__:New best val loss: 1.7931
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153951/best.pt
-Epoch 26 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 26 - train:  59%|█████▊    | 24/41 [00:00<00:00, 235.34it/s]Epoch 26 - train: 100%|██████████| 41/41 [00:00<00:00, 243.15it/s]
-Epoch 26 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 26 - val: 100%|██████████| 5/5 [00:00<00:00, 283.01it/s]
-INFO:__main__:New best val loss: 1.7880
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153952/best.pt
-Epoch 27 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 27 - train:  61%|██████    | 25/41 [00:00<00:00, 247.35it/s]Epoch 27 - train: 100%|██████████| 41/41 [00:00<00:00, 242.72it/s]
-Epoch 27 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 27 - val: 100%|██████████| 5/5 [00:00<00:00, 239.47it/s]
-INFO:__main__:New best val loss: 1.7815
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153952/best.pt
-Epoch 28 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 28 - train:  61%|██████    | 25/41 [00:00<00:00, 249.04it/s]Epoch 28 - train: 100%|██████████| 41/41 [00:00<00:00, 250.45it/s]
-Epoch 28 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 28 - val: 100%|██████████| 5/5 [00:00<00:00, 275.40it/s]
-Epoch 29 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 29 - train:  56%|█████▌    | 23/41 [00:00<00:00, 219.30it/s]Epoch 29 - train: 100%|██████████| 41/41 [00:00<00:00, 234.00it/s]
-Epoch 29 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 29 - val: 100%|██████████| 5/5 [00:00<00:00, 240.56it/s]
-INFO:__main__:New best val loss: 1.7739
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153953/best.pt
-Epoch 30 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 30 - train:  54%|█████▎    | 22/41 [00:00<00:00, 215.28it/s]Epoch 30 - train: 100%|██████████| 41/41 [00:00<00:00, 226.27it/s]
-Epoch 30 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 30 - val: 100%|██████████| 5/5 [00:00<00:00, 245.44it/s]
-INFO:__main__:New best val loss: 1.7692
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153953/best.pt
-Epoch 31 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 31 - train:  59%|█████▊    | 24/41 [00:00<00:00, 235.61it/s]Epoch 31 - train: 100%|██████████| 41/41 [00:00<00:00, 238.84it/s]
-Epoch 31 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 31 - val: 100%|██████████| 5/5 [00:00<00:00, 279.93it/s]
-Epoch 32 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 32 - train:  54%|█████▎    | 22/41 [00:00<00:00, 214.15it/s]Epoch 32 - train: 100%|██████████| 41/41 [00:00<00:00, 228.71it/s]
-Epoch 32 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 32 - val: 100%|██████████| 5/5 [00:00<00:00, 243.15it/s]
-INFO:__main__:New best val loss: 1.7664
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153954/best.pt
-Epoch 33 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 33 - train:  66%|██████▌   | 27/41 [00:00<00:00, 264.82it/s]Epoch 33 - train: 100%|██████████| 41/41 [00:00<00:00, 258.09it/s]
-Epoch 33 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 33 - val: 100%|██████████| 5/5 [00:00<00:00, 273.61it/s]
-INFO:__main__:New best val loss: 1.7604
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153954/best.pt
-Epoch 34 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 34 - train:  63%|██████▎   | 26/41 [00:00<00:00, 252.63it/s]Epoch 34 - train: 100%|██████████| 41/41 [00:00<00:00, 249.73it/s]
-Epoch 34 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 34 - val: 100%|██████████| 5/5 [00:00<00:00, 241.68it/s]
-Epoch 35 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 35 - train:  61%|██████    | 25/41 [00:00<00:00, 244.02it/s]Epoch 35 - train: 100%|██████████| 41/41 [00:00<00:00, 236.22it/s]
-Epoch 35 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 35 - val: 100%|██████████| 5/5 [00:00<00:00, 245.73it/s]
-INFO:__main__:New best val loss: 1.7595
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153954/best.pt
-Epoch 36 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 36 - train:  63%|██████▎   | 26/41 [00:00<00:00, 254.06it/s]Epoch 36 - train: 100%|██████████| 41/41 [00:00<00:00, 255.93it/s]
-Epoch 36 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 36 - val: 100%|██████████| 5/5 [00:00<00:00, 251.55it/s]
-INFO:__main__:New best val loss: 1.7532
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153955/best.pt
-Epoch 37 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 37 - train:  54%|█████▎    | 22/41 [00:00<00:00, 214.97it/s]Epoch 37 - train: 100%|██████████| 41/41 [00:00<00:00, 224.08it/s]
-Epoch 37 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 37 - val: 100%|██████████| 5/5 [00:00<00:00, 223.46it/s]
-INFO:__main__:New best val loss: 1.7403
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153955/best.pt
-Epoch 38 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 38 - train:  59%|█████▊    | 24/41 [00:00<00:00, 232.03it/s]Epoch 38 - train: 100%|██████████| 41/41 [00:00<00:00, 230.01it/s]
-Epoch 38 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 38 - val: 100%|██████████| 5/5 [00:00<00:00, 286.82it/s]
-Epoch 39 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 39 - train:  54%|█████▎    | 22/41 [00:00<00:00, 211.85it/s]Epoch 39 - train: 100%|██████████| 41/41 [00:00<00:00, 223.49it/s]
-Epoch 39 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 39 - val: 100%|██████████| 5/5 [00:00<00:00, 214.09it/s]
-Epoch 40 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 40 - train:  59%|█████▊    | 24/41 [00:00<00:00, 236.85it/s]Epoch 40 - train: 100%|██████████| 41/41 [00:00<00:00, 237.69it/s]
-Epoch 40 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 40 - val: 100%|██████████| 5/5 [00:00<00:00, 243.43it/s]
-INFO:__main__:New best val loss: 1.7337
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153956/best.pt
-Epoch 41 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 41 - train:  61%|██████    | 25/41 [00:00<00:00, 244.78it/s]Epoch 41 - train: 100%|██████████| 41/41 [00:00<00:00, 241.61it/s]
-Epoch 41 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 41 - val: 100%|██████████| 5/5 [00:00<00:00, 280.11it/s]
-INFO:__main__:New best val loss: 1.7332
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153956/best.pt
-Epoch 42 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 42 - train:  59%|█████▊    | 24/41 [00:00<00:00, 237.97it/s]Epoch 42 - train: 100%|██████████| 41/41 [00:00<00:00, 248.44it/s]
-Epoch 42 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 42 - val: 100%|██████████| 5/5 [00:00<00:00, 245.98it/s]
-INFO:__main__:New best val loss: 1.7332
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153957/best.pt
-Epoch 43 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 43 - train:  66%|██████▌   | 27/41 [00:00<00:00, 261.79it/s]Epoch 43 - train: 100%|██████████| 41/41 [00:00<00:00, 257.20it/s]
-Epoch 43 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 43 - val: 100%|██████████| 5/5 [00:00<00:00, 279.66it/s]
-Epoch 44 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 44 - train:  59%|█████▊    | 24/41 [00:00<00:00, 236.07it/s]Epoch 44 - train: 100%|██████████| 41/41 [00:00<00:00, 247.05it/s]
-Epoch 44 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 44 - val: 100%|██████████| 5/5 [00:00<00:00, 225.78it/s]
-INFO:__main__:New best val loss: 1.7317
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153957/best.pt
-Epoch 45 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 45 - train:  63%|██████▎   | 26/41 [00:00<00:00, 250.54it/s]Epoch 45 - train: 100%|██████████| 41/41 [00:00<00:00, 258.08it/s]
-Epoch 45 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 45 - val: 100%|██████████| 5/5 [00:00<00:00, 247.39it/s]
-INFO:__main__:New best val loss: 1.7209
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153957/best.pt
-Epoch 46 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 46 - train:  61%|██████    | 25/41 [00:00<00:00, 244.84it/s]Epoch 46 - train: 100%|██████████| 41/41 [00:00<00:00, 244.04it/s]
-Epoch 46 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 46 - val: 100%|██████████| 5/5 [00:00<00:00, 275.47it/s]
-Epoch 47 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 47 - train:  59%|█████▊    | 24/41 [00:00<00:00, 234.85it/s]Epoch 47 - train: 100%|██████████| 41/41 [00:00<00:00, 239.94it/s]
-Epoch 47 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 47 - val: 100%|██████████| 5/5 [00:00<00:00, 237.38it/s]
-INFO:__main__:New best val loss: 1.7157
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153958/best.pt
-Epoch 48 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 48 - train:  56%|█████▌    | 23/41 [00:00<00:00, 226.62it/s]Epoch 48 - train: 100%|██████████| 41/41 [00:00<00:00, 234.84it/s]
-Epoch 48 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 48 - val: 100%|██████████| 5/5 [00:00<00:00, 280.98it/s]
-Epoch 49 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 49 - train:  61%|██████    | 25/41 [00:00<00:00, 244.26it/s]Epoch 49 - train: 100%|██████████| 41/41 [00:00<00:00, 249.19it/s]
-Epoch 49 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 49 - val: 100%|██████████| 5/5 [00:00<00:00, 189.12it/s]
-Epoch 50 - train:   0%|          | 0/41 [00:00<?, ?it/s]Epoch 50 - train:  59%|█████▊    | 24/41 [00:00<00:00, 239.95it/s]Epoch 50 - train: 100%|██████████| 41/41 [00:00<00:00, 244.48it/s]
-Epoch 50 - val:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 50 - val: 100%|██████████| 5/5 [00:00<00:00, 239.90it/s]
-INFO:__main__:New best val loss: 1.7149
-INFO:__main__:Saved best checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153959/best.pt
-INFO:__main__:Starting test evaluation...
-INFO:datasets.parallel_unified_dataset:Loading metadata: /home/parkhomenko/Documents/new_project/data/metadata/metadata.csv
-INFO:datasets.parallel_unified_dataset:exp2 test: 526 samples
-INFO:datasets.parallel_unified_dataset:Loaded features: all (67332 items) from /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_all_incremental.pkl
-WARNING:datasets.parallel_unified_dataset:Feature store not found: /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_test.pkl or /home/parkhomenko/Documents/new_project/data/processed/features/sam_features_test_incremental.pkl
-Test:   0%|          | 0/5 [00:00<?, ?it/s]Test: 100%|██████████| 5/5 [00:00<00:00, 268.17it/s]
-INFO:__main__:Test metrics:
-INFO:__main__:  test_loss: 1.7678
-INFO:__main__:  test_skin_acc: 0.9962
-INFO:__main__:  test_skin_f1: 0.9962
-INFO:__main__:  test_skin_precision: 0.9962
-INFO:__main__:  test_skin_recall: 0.9962
-INFO:__main__:  test_lesion_acc: 0.4013
-INFO:__main__:  test_lesion_f1: 0.2835
-INFO:__main__:  test_lesion_precision: 0.3303
-INFO:__main__:  test_lesion_recall: 0.4013
-INFO:__main__:  test_bm_acc: 0.6423
-INFO:__main__:  test_bm_f1: 0.6407
-INFO:__main__:  test_bm_precision: 0.6429
-INFO:__main__:  test_bm_recall: 0.6423
-INFO:__main__:Best train accuracies (across epochs): skin: 0.9887, lesion: 0.3936, bm: 0.6561
-INFO:__main__:Best val accuracies (across epochs): skin: 0.9927, lesion: 0.3947, bm: 0.6737
-INFO:__main__:Saved final checkpoint to: /home/parkhomenko/Documents/new_project/models/exp2_parallel/20250820_153959/final.pt
-wandb: uploading history steps 0-50, summary, console lines 0-204
-wandb:                                                                                
-wandb: 
-wandb: Run history:
-wandb:                  epoch ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇███
-wandb:                     lr ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb:            test_bm_acc ▁
-wandb:             test_bm_f1 ▁
-wandb:      test_bm_precision ▁
-wandb:         test_bm_recall ▁
-wandb:        test_lesion_acc ▁
-wandb:         test_lesion_f1 ▁
-wandb:  test_lesion_precision ▁
-wandb:     test_lesion_recall ▁
-wandb:              test_loss ▁
-wandb:          test_skin_acc ▁
-wandb:           test_skin_f1 ▁
-wandb:    test_skin_precision ▁
-wandb:       test_skin_recall ▁
-wandb:           train_bm_acc ▂▁▂▂▂▄▃▄▆▅▆▆▅▆▆▆▆▆▆▆▆▆▇▇▇█▇▇▇█▇▇▇█▇█████
-wandb:            train_bm_f1 ▃▁▃▃▁▆▄▅▇▆▆▇▆▇▇▇▇▇▇▇▇▇▇██████▇██████████
-wandb:     train_bm_precision ▃▁▃▄▇▅▅▆▆▆▇▆▇▆▆▆▇▇▆▇▇▇▇▇███▇█▇██████████
-wandb:        train_bm_recall ▂▁▂▂▂▄▃▄▆▅▆▆▅▆▆▆▆▆▆▆▇▇▇▇█▇█▇█▇▇▇█▇██████
-wandb:       train_lesion_acc ▁▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▇▆▇▆▇▇▇▇▇▇▇▇███▇█▇█
-wandb:        train_lesion_f1 ▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▂▃▂▃▃▃▄▄▄▅▅▅▅▆▇▇▆█▆█
-wandb: train_lesion_precision ▄▁▁▁▁▁▁▁▁▁▁▁▅▂▂▂▃▂▄▃▅▃█▅▅▃▆▅▆▆▆▅▅▆▆▅▅▆▆▅
-wandb:    train_lesion_recall ▁▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▇▆▇▇▆▇▇▇▇▇▇▇███▇█▇█
-wandb:             train_loss █▅▅▅▅▄▃▃▃▃▂▃▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb:         train_skin_acc ▁▁▁▁▁▂▄▆▆▆▇▇▇▇▇▇▇█▇▇████████████████████
-wandb:          train_skin_f1 ▁▁▁▁▁▃▅▆▇▇▇▇▇▇▇█████████████████████████
-wandb:   train_skin_precision ▁▁▁▁▁▅▆▇▇▇▇█▇███████████████████████████
-wandb:      train_skin_recall ▁▁▁▁▁▂▄▅▆▆▇▇▇▇▇▇▇█▇▇████████████████████
-wandb:             val_bm_acc ▁▁▁▁▁▂▄▃▃▄▅▅▅▅▅▆▆▇▅▆▇▆▇▆█▇▇▆▇▇▇▇▇▇▇█████
-wandb:              val_bm_f1 ▁▁▁▁▁▂▅▄▄▆▆▆▆▆▆▇▇▇▇▇▇█▇██▇█▇▇▇██████████
-wandb:       val_bm_precision ▁▁▁▁▇▇▆▆▇▇▇▇▇▇▇▇▇▇▇█▇█▇████▇████████████
-wandb:          val_bm_recall ▁▁▁▁▄▄▃▃▄▄▅▅▅▆▆▇▅▆▇▇▇▆█▇▇▇▆▇▇▇▇▇▇▇████▇█
-wandb:         val_lesion_acc ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▃▁▂▂▂▂▆▃▃▆▃▃▃▃█
-wandb:          val_lesion_f1 ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▂▃▂▃▃▂▃▆▄▄▄▅▅▇█
-wandb:   val_lesion_precision ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▅▄▄▄▄█▇▆▄▇▄▄▄▄
-wandb:      val_lesion_recall ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▂▃▁▂▂▂▆▃▃▆▃▃▃▃█
-wandb:               val_loss ██▇▇▆▄▄▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▁▁▁▁▁▁▁▁▁▁▁▁▁
-wandb:           val_skin_acc ▁▁▁▁▁▅▅▆▇▇▇▇▇▇██████████████████████████
-wandb:            val_skin_f1 ▁▁▁▁▁▄▆▆▇▇▇▇████████████████████████████
-wandb:     val_skin_precision ▁▁▁▁▅▆▇▇▇███████████████████████████████
-wandb:        val_skin_recall ▁▁▁▁▁▃▅▅▆▇▇▇▇▇▇▇████████████████████████
-wandb: 
-wandb: Run summary:
-wandb:                  epoch 50
-wandb:                     lr 0.0001
-wandb:            test_bm_acc 0.64225
-wandb:             test_bm_f1 0.64073
-wandb:      test_bm_precision 0.64292
-wandb:         test_bm_recall 0.64225
-wandb:        test_lesion_acc 0.40127
-wandb:         test_lesion_f1 0.28354
-wandb:  test_lesion_precision 0.3303
-wandb:     test_lesion_recall 0.40127
-wandb:              test_loss 1.76782
-wandb:          test_skin_acc 0.9962
-wandb:           test_skin_f1 0.99618
-wandb:    test_skin_precision 0.99621
-wandb:       test_skin_recall 0.9962
-wandb:           train_bm_acc 0.6515
-wandb:            train_bm_f1 0.65046
-wandb:     train_bm_precision 0.65138
-wandb:        train_bm_recall 0.6515
-wandb:       train_lesion_acc 0.38577
-wandb:        train_lesion_f1 0.27651
-wandb: train_lesion_precision 0.28425
-wandb:    train_lesion_recall 0.38577
-wandb:             train_loss 2.1285
-wandb:         train_skin_acc 0.98751
-wandb:          train_skin_f1 0.98739
-wandb:   train_skin_precision 0.98743
-wandb:      train_skin_recall 0.98751
-wandb:             val_bm_acc 0.66579
-wandb:              val_bm_f1 0.66262
-wandb:       val_bm_precision 0.66972
-wandb:          val_bm_recall 0.66579
-wandb:         val_lesion_acc 0.39466
-wandb:          val_lesion_f1 0.27789
-wandb:   val_lesion_precision 0.2446
-wandb:      val_lesion_recall 0.39466
-wandb:               val_loss 1.71486
-wandb:           val_skin_acc 0.99089
-wandb:            val_skin_f1 0.99087
-wandb:     val_skin_precision 0.99085
-wandb:        val_skin_recall 0.99089
-wandb: 
-wandb: 🚀 View run exp2_parallel_auto at: https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded/runs/6k4xntfc
-wandb: ⭐️ View project at: https://wandb.ai/taisiyaparkhomenko-technische-universit-t-graz/uploaded
-wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
-wandb: Find logs at: ./wandb/run-20250820_153943-6k4xntfc/logs
-INFO:__main__:Training completed.

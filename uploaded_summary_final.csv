@@ -1,0 +1,14 @@
+Run ID	Architecture	Dataset Setup	Loss Function	Augmentation	Test Skin Acc	Test Skin F1	Test Lesion Acc	Test Lesion F1	Test BM Acc	Test BM F1	Notes
+exp1_multi_8classes	multi	exp1_exp1_8classes	base	None	N/A	N/A	N/A	N/A	N/A	N/A	Run ID: wc4y77sl
+exp1_multi_8classes	multi	exp1_exp1_8classes	base	None	0.99911	0.98609	0.52740	0.25969	0.75796	0.73650	Run ID: 0ysehse0
+exp1_multi_8classes	multi	exp1_exp1_8classes	base	None	0.99970	0.99528	0.49680	0.26252	0.73205	0.71801	Run ID: 4jx3kzx3
+exp1_multi_auto	multi	exp1_auto	auto	None	0.99881	0.98162	0.51674	0.37602	0.74648	0.72808	Run ID: 0aj3zayh
+exp1_parallel_8classes	parallel	exp1_exp1_8classes	base	None	N/A	N/A	N/A	N/A	N/A	N/A	Run ID: 06wk60nk
+exp1_parallel_8classes	parallel	exp1_exp1_8classes	base	None	0.99950	0.99950	0.64644	0.59435	0.79515	0.78815	Run ID: p8qvag5c
+exp1_parallel_auto	parallel	exp1_auto	auto	None	0.99841	0.99837	0.56996	0.52886	0.78775	0.77917	Run ID: 68hescwl
+exp2_multi_8classes	multi	exp2_exp1_8classes	base	None	0.99810	0.99605	0.23753	0.19096	0.65070	0.64948	Run ID: oax62al6
+exp2_multi_auto	multi	exp2_auto	auto	None	0.99810	0.99605	0.35669	0.30580	0.63380	0.63345	Run ID: dsqhl489
+exp2_parallel_auto	parallel	exp2_auto	auto	None	0.99620	0.99618	0.40127	0.28354	0.64225	0.64073	Run ID: 6k4xntfc
+exp3_multi_8classes	multi	exp3_exp1_8classes	base	None	0.99157	0.97933	0.25729	0.22149	0.68157	0.67854	Run ID: 32nh901t
+exp3_multi_auto	multi	exp3_auto	auto	None	0.99298	0.98268	0.37273	0.30972	0.67285	0.67158	Run ID: bkuzcm1c
+exp3_parallel_auto	parallel	exp3_auto	auto	None	0.99368	0.99367	0.49610	0.44433	0.69357	0.69236	Run ID: kq9e9dzo

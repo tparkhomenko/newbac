@@ -49,7 +49,6 @@ new_project
 │   ├── README.md
 │   ├── RESTART_SERVERS.md
 │   ├── __init__.py
-│   ├── all_training_logs.txt
 │   ├── experiments_summary.csv
 │   ├── gen_experiments_csv.py
 │   ├── logs
@@ -68,42 +67,32 @@ new_project
 │   │   │   │       └── confusion_matrix_lesion_val_normalized.png
 │   │   │   ├── exp1_comparison
 │   │   │   │   ├── exp1_weightedce_balanced
-│   │   │   │   │   └── logs_multi_exp1_weightedce_balanced.txt
 │   │   │   │   └── exp1_weightedce_full
-│   │   │   │       └── logs_multi_exp1_weightedce_full.txt
 │   │   │   ├── exp1_tier2_losses
 │   │   │   │   ├── focal_balanced
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_focal_balanced.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── focal_full
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_focal_full.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── focal_mixup_balanced
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_focal_mixup_balanced.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── focal_mixup_full
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_focal_mixup_full.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── weightedce_balanced
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_weightedce_balanced.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── weightedce_full
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_weightedce_full.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   ├── weightedce_mixup_balanced
 │   │   │   │   │   ├── best.pt
-│   │   │   │   │   ├── final.pt
-│   │   │   │   │   └── logs_multi_exp1_weightedce_mixup_balanced.txt
+│   │   │   │   │   └── final.pt
 │   │   │   │   └── weightedce_mixup_full
 │   │   │   │       ├── best.pt
-│   │   │   │       ├── final.pt
-│   │   │   │       └── logs_multi_exp1_weightedce_mixup_full.txt
+│   │   │   │       └── final.pt
 │   │   │   ├── exp6_balanced
 │   │   │   │   └── 20250903_155218
 │   │   │   │       ├── best.pt
@@ -127,24 +116,6 @@ new_project
 │   │   │   │       ├── confusion_matrix_lesion_test.csv
 │   │   │   │       └── final.pt
 │   │   │   ├── logs
-│   │   │   │   ├── logs_mlp1.txt
-│   │   │   │   ├── logs_mlp1_8classes.txt
-│   │   │   │   ├── logs_mlp2.txt
-│   │   │   │   ├── logs_mlp2_8classes.txt
-│   │   │   │   ├── logs_mlp3.txt
-│   │   │   │   ├── logs_mlp3_8classes.txt
-│   │   │   │   ├── logs_multi_exp1_8classes.txt
-│   │   │   │   ├── logs_multi_exp1_8classes_focal.txt
-│   │   │   │   ├── logs_multi_exp1_8classes_focal_balanced_mixup.txt
-│   │   │   │   ├── logs_multi_exp1_8classes_lmf.txt
-│   │   │   │   ├── logs_multi_exp1_8classes_lmf_balanced_mixup.txt
-│   │   │   │   ├── logs_multi_exp1_8classes_weighted_ce.txt
-│   │   │   │   └── logs_multi_exp1_8classes_weighted_ce_balanced_mixup.txt
-│   │   │   ├── logs_multi_exp6_cb_focal_deeptrunk_curriculum.txt
-│   │   │   ├── logs_multi_exp6_cb_focal_deeptrunk_curriculum_nomixup.txt
-│   │   │   ├── logs_multi_exp6_weightedce_balanced_mixup.txt
-│   │   │   ├── logs_multi_exp6_weightedce_balanced_partial.txt
-│   │   │   ├── logs_multi_exp6_weightedce_balanced_partial_mixup.txt
 │   │   │   ├── metrics.csv
 │   │   │   ├── mlp1.pt
 │   │   │   ├── mlp1_focal_balanced_mixup.pt
@@ -161,42 +132,32 @@ new_project
 │   │   └── parallel
 │   │       ├── exp1_comparison
 │   │       │   ├── exp1_weightedce_balanced
-│   │       │   │   └── logs_parallel_exp1_weightedce_balanced.txt
 │   │       │   └── exp1_weightedce_full
-│   │       │       └── logs_parallel_exp1_weightedce_full.txt
 │   │       ├── exp1_tier2_losses
 │   │       │   ├── focal_balanced
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_focal_balanced.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── focal_full
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_focal_full.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── focal_mixup_balanced
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_focal_mixup_balanced.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── focal_mixup_full
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_focal_mixup_full.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── weightedce_balanced
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_weightedce_balanced.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── weightedce_full
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_weightedce_full.txt
+│   │       │   │   └── final.pt
 │   │       │   ├── weightedce_mixup_balanced
 │   │       │   │   ├── best.pt
-│   │       │   │   ├── final.pt
-│   │       │   │   └── logs_parallel_exp1_weightedce_mixup_balanced.txt
+│   │       │   │   └── final.pt
 │   │       │   └── weightedce_mixup_full
 │   │       │       ├── best.pt
-│   │       │       ├── final.pt
-│   │       │       └── logs_parallel_exp1_weightedce_mixup_full.txt
+│   │       │       └── final.pt
 │   │       ├── exp6_balanced
 │   │       │   └── 20250903_155212
 │   │       │       ├── best.pt
@@ -230,22 +191,6 @@ new_project
 │   │       │       ├── confusion_matrix_lesion_test.csv
 │   │       │       └── final.pt
 │   │       ├── logs
-│   │       │   ├── logs_mlp1.txt
-│   │       │   ├── logs_mlp1_8classes.txt
-│   │       │   ├── logs_mlp2.txt
-│   │       │   ├── logs_mlp3.txt
-│   │       │   ├── logs_parallel_exp1_8classes.txt
-│   │       │   ├── logs_parallel_exp1_8classes_focal.txt
-│   │       │   ├── logs_parallel_exp1_8classes_focal_balanced_mixup.txt
-│   │       │   ├── logs_parallel_exp1_8classes_lmf.txt
-│   │       │   ├── logs_parallel_exp1_8classes_lmf_balanced_mixup.txt
-│   │       │   ├── logs_parallel_exp1_8classes_weighted_ce.txt
-│   │       │   └── logs_parallel_exp1_8classes_weighted_ce_balanced_mixup.txt
-│   │       ├── logs_parallel_exp6_cb_focal_deeptrunk_curriculum.txt
-│   │       ├── logs_parallel_exp6_cb_focal_deeptrunk_curriculum_nomixup.txt
-│   │       ├── logs_parallel_exp6_weightedce_balanced_mixup.txt
-│   │       ├── logs_parallel_exp6_weightedce_balanced_partial.txt
-│   │       ├── logs_parallel_exp6_weightedce_balanced_partial_mixup.txt
 │   │       ├── mlp1.pt
 │   │       ├── mlp1_focal_balanced_mixup.pt
 │   │       ├── mlp1_weighted_ce_balanced_mixup.pt
@@ -259,7 +204,6 @@ new_project
 │   │   ├── __init__.py
 │   │   ├── inference.py
 │   │   └── preprocess.py
-│   ├── requirements.txt
 │   └── server.log
 ├── check_balanced_dataset.py
 ├── check_columns.py
@@ -474,7 +418,6 @@ new_project
 ├── download_losses_with_mixup_comparison_logs.py
 ├── download_uploaded_logs.py
 ├── download_wandb_logs.py
-├── dry_run_output.txt
 ├── evaluation
 │   ├── analyze_class_performance.py
 │   ├── auc_curves
@@ -482,12 +425,9 @@ new_project
 │   ├── mask_visualizations
 │   ├── tsne_umap_embeddings
 │   └── visualize_predictions.py
-├── exp1_comparison_all_logs.txt
 ├── exp1_comparison_summary.csv
 ├── exp1_comparison_summary_fixed.csv
-├── exp1_tier2_losses_all_logs.txt
 ├── exp1_tier2_losses_summary.csv
-├── exp1_tier2_losses_wandb_logs.txt
 ├── exp6_balanced_comparison_results.csv
 ├── exp6_balanced_comparison_summary_fixed.csv
 ├── exp6_balanced_partial_summary_fixed.csv
@@ -710,7 +650,6 @@ new_project
 │   │       │   ├── test
 │   │       │   └── val
 │   │       └── metrics.csv
-│   ├── exp1_train_log.csv
 │   ├── exp2_multihead
 │   │   ├── 20250820_092326
 │   │   │   ├── confusion_matrices
@@ -727,7 +666,6 @@ new_project
 │   │       │   ├── test
 │   │       │   └── val
 │   │       └── metrics.csv
-│   ├── exp2_train_log.csv
 │   ├── exp3_multihead
 │   │   ├── 20250820_091728
 │   │   │   ├── confusion_matrices
@@ -749,7 +687,6 @@ new_project
 │   │       │   ├── test
 │   │       │   └── val
 │   │       └── metrics.csv
-│   ├── exp3_train_log.csv
 │   ├── exp4_confusion_matrix.png
 │   ├── exp4_multihead
 │   │   ├── 20250819_170935
@@ -762,19 +699,15 @@ new_project
 │   │       │   ├── test
 │   │       │   └── val
 │   │       └── metrics.csv
-│   ├── exp4_train_log.csv
 │   └── exp5_confusion_matrix.png
-├── loss_comparison_weighted_ce_vs_focal_all_logs.txt
 ├── loss_comparison_weighted_ce_vs_focal_summary.csv
 ├── loss_comparison_weighted_ce_vs_focal_summary_fixed.csv
 ├── losses
 │   ├── __init__.py
 │   └── lmf_loss.py
-├── losses_with_mixup_comparison_all_logs.txt
 ├── losses_with_mixup_comparison_summary.csv
 ├── losses_with_mixup_comparison_summary_fixed.csv
 ├── main.py
-├── missing_in_some_split.txt
 ├── mlp3_stderr.log
 ├── mlp3_stdout.log
 ├── mlp3_training_sequence.log
@@ -1384,45 +1317,13 @@ new_project
 │   ├── multitask_model.py
 │   └── skin_not_skin_head.py
 ├── nohup
-│   ├── exp5_multihead_official.out
-│   ├── exp5_multihead_run.out
-│   ├── exp5_multihead_run_2.out
-│   ├── exp5_multihead_run_3.out
-│   ├── log_mlp1_128_64_16_DO01.out
-│   ├── log_mlp1_256_512_256_DO03.out
-│   ├── log_mlp1_64_16_DO01.out
-│   ├── log_mlp2_augmented_128_64_16_DO01.out
-│   ├── log_mlp2_augmented_256_512_256_DO03.out
-│   ├── log_mlp2_augmented_512_256_DO03.out
-│   ├── log_mlp2_augmented_64_16_DO01.out
-│   ├── log_mlp2_mlp2_augmented_128_64_16_DO01.out
-│   ├── log_mlp2_mlp2_augmented_256_512_256_DO03.out
-│   ├── log_mlp2_mlp2_augmented_64_16_DO01.out
-│   ├── log_mlp2_mlp2_original_128_64_16_DO01.out
-│   ├── log_mlp2_mlp2_original_256_512_256_DO03.out
-│   ├── log_mlp2_mlp2_original_64_16_DO01.out
-│   ├── log_mlp2_original_128_64_16_DO01.out
-│   ├── log_mlp2_original_256_512_256_DO03.out
-│   ├── log_mlp2_original_64_16_DO01.out
-│   ├── log_mlp3_augmented_128_64_16_DO01.out
-│   ├── log_mlp3_augmented_256_512_256_DO03.out
-│   ├── log_mlp3_augmented_64_16_DO01.out
-│   ├── log_mlp3_augmented_full_128_64_16_DO01.out
-│   ├── log_mlp3_augmented_full_256_512_256_DO03.out
-│   ├── log_mlp3_augmented_full_64_16_DO01.out
-│   ├── log_mlp3_original_128_64_16_DO01.out
-│   ├── log_mlp3_original_256_512_256_DO03.out
-│   ├── log_mlp3_original_64_16_DO01.out
 │   ├── train_all_configs.sh
 │   ├── train_all_mlp1.sh
 │   ├── train_all_mlp1_sequential.sh
 │   ├── train_all_mlp2.sh
 │   ├── train_all_mlp2_sequential.sh
 │   ├── train_all_mlp3.sh
-│   ├── train_all_mlp_configs.sh
-│   ├── train_parallel_exp4.out
-│   ├── train_parallel_exp4_.out
-│   └── train_parallel_exp4_20250819114832.out
+│   └── train_all_mlp_configs.sh
 ├── pipeline_protocol.md
 ├── pipeline_protocol_v1.md
 ├── plots
@@ -1528,7 +1429,6 @@ new_project
 │   └── statistics
 ├── run_all_mlp3.sh
 ├── run_mlp3_nohup.sh
-├── runs_with_mixup.log
 ├── sam
 │   └── sam_encoder.py
 └── sample.jpg

@@ -1,5 +1,7 @@
 # 🔬 Skin Lesion Classification Pipeline
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tparkhomenko/newbac)
+
 A deep learning pipeline for skin lesion classification using SAM2 encoder features.
 
 ## 📋 Project Overview

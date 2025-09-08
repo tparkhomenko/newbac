@@ -1,0 +1,282 @@
+%----------------------------------------------------------------------
+% Abstract class 'techrep_ivc' for TECHNICAL REPORTS at
+%
+% Inst. of Computer Graphics and Vision (ICG)
+% Graz University of Technology, Austria
+% Inffeldgasse 16, 8010 Graz, Austria
+% URL: www.icg.tugraz.at
+%
+% created:  13.11.2003 (Pierre Elbischger)
+% modified: 17.07.2012 (Andreas Hartl)
+% modified: 20.06.2017 (Peter M. Roth, pmroth@icg.tugraz.at)
+% modified: 15.09.2017 (Horst Possegger, possegger@icg.tugraz.at)
+% modified: 08.07.2024 (Peter Mohr-Ziak, pmohr@tugraz.at)
+%
+%----------------------------------------------------------------------
+
+%\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{techrep_ivc}
+[2024/07/08 v1.4 Abstract class for TECHNICAL REPORTS/THESES at IVC]
+
+\usepackage[left=25mm,right=25mm,top=25mm,bottom=25mm, bindingoffset=1.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+
+ \ifpdf%                                % if we use pdflatex
+  \pdfoutput=1\relax                   % create PDFs from pdfLaTeX
+  \pdfcompresslevel=9                  % PDF Compression
+  \pdfoptionpdfminorversion=7          % create PDF 1.7
+  \ExecuteOptions{pdftex}
+  \usepackage{graphicx}                % allow us to embed graphics files
+  \DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg} % for pdflatex we expect .pdf, .png, or .jpg files
+\else%                                 % else we use pure latex
+  \ExecuteOptions{dvips}
+  \usepackage{graphicx}                % allow us to embed graphics files
+  \DeclareGraphicsExtensions{.eps}     % for pure latex we expect eps files
+\fi%
+
+\usepackage[plainpages=false,
+            pdfpagelabels, 
+            pagebackref,
+            colorlinks=true,
+            citecolor=blue,
+            linkcolor=blue,   % color of hyperref links
+            urlcolor=red,     % color of page of \url{...}
+            breaklinks=true   % break links if exceeding a single line
+           ]{hyperref}
+           
+\usepackage{amsmath}           
+\usepackage{amssymb}
+\usepackage{ifthen}
+\usepackage{float}
+
+\usepackage{microtype}                 % use micro-typography (slightly more compact, better to read)
+\PassOptionsToPackage{warn}{textcomp}  % to address font issues with \textrightarrow
+\usepackage{textcomp}                  % use better special symbols
+\usepackage{mathptmx}                  % use matching math font
+\usepackage{times}                     % we use Times as the main font
+\renewcommand*\ttdefault{txtt}         % a nicer typewriter font
+\usepackage{cite}                      % needed to automatically sort the references
+\usepackage{tabu}                      % only used for the table example
+\usepackage{booktabs}                  % only used for the table example
+
+
+\usepackage{tabularx}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{color}
+\usepackage{lipsum}
+\usepackage{enumitem}
+\usepackage{balance}       % to better equalize the last page
+\usepackage{color}
+\usepackage{lipsum}
+\usepackage{multirow}
+\usepackage{xspace}
+\usepackage[bottom]{footmisc}
+\newcommand{\update}[1]{#1}
+\newcommand{\todoLipsum}[1]{\textcolor{blue}{\textbf{TODO:} \lipsum[#1] }}
+\newcommand{\todo}[1]{{\textcolor{red}{#1}}}
+\newcommand{\changed}[1]{{\textcolor{black}{#1}}}
+\newcommand{\concat}{\oplus}
+\usepackage{tikz}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{ivcviolet_bright}{RGB}{170, 67, 182}
+\definecolor{ivcviolet_medium}{RGB}{118, 39, 155}
+\definecolor{ivcviolet_dark}  {RGB}{97, 0, 140}
+
+
+\newfloat{repdata}{b}{lod}
+
+%Transfer argument of \title command to \TREP@title
+\renewcommand{\title}[1]{\newcommand{\TREP@title}{#1}}
+
+%Transfer argument of \author command to TeX commands
+%of the form \author@n, with optional labels stored in \authorlabel@n
+\newcounter{author}
+\renewcommand{\author}[2][]
+{
+   \stepcounter{author}
+   \@namedef{author@\theauthor}{#2}
+   \@namedef{authorlabel@\theauthor}{#1}
+}
+
+%Transfer argument of \address command to TeX commands
+%of the form \address@n, with optional labels stored in \addresslabel@n
+\newcounter{address}
+\newcommand{\address}[2][]
+{
+   \stepcounter{address}
+   \@namedef{address@\theaddress}{#2}
+   \@namedef{addresslabel@\theaddress}{#1}
+}
+
+\newcommand{\titlewidth}{13cm}
+\newcommand{\addresswidth}{10cm}
+\newcommand{\abstractwidth}{13cm}
+
+%Transfer argument of \contact commands to \TREP@contact (not used here)
+\newcommand{\contact}[1]{\newcommand{\TREP@contact}{#1}}
+\newcommand{\contactemail}[1]{\newcommand{\TREP@contactemail}{#1}}
+\newcommand{\keywords}[1]{\newcommand{\TREP@keywords}{#1}}
+
+% pmroth: added
+\newcommand{\TREP@type}{Technical Report} \newcommand{\type}[1]{\renewcommand{\TREP@type}{#1}}
+\newcommand{\TREP@advisor}{??} \newcommand{\advisor}[1]{\renewcommand{\TREP@advisor}{#1}}
+
+\newcommand{\TREP@reportnr}{???}   \newcommand{\reportnr}[1]{\renewcommand{\TREP@reportnr}{#1}}
+\newcommand{\TREP@subtitle}{}   \newcommand{\subtitle}[1]{\renewcommand{\TREP@subtitle}{#1}}
+\newcommand{\TREP@repcity}{Graz}   \newcommand{\repcity}[1]{\renewcommand{\TREP@repcity}{#1}}
+\newcommand{\TREP@repdate}{\today} \newcommand{\repdate}[1]{\renewcommand{\TREP@repdate}{#1}}
+
+
+%Define the abstract environment to output all the information collected
+\renewenvironment{abstract}
+{%Commands for the beginning of the abstract environment
+\pagestyle{empty}
+\pagenumbering{roman}
+
+\tikz[remember picture,overlay] \node[opacity=1,inner sep=0pt, anchor=north west, xshift=2cm,yshift=0cm] at (current page.north west){
+%\includegraphics[height=\paperheight]{titlepage.png}
+\begin{tikzpicture}
+\draw[fill=ivcviolet_bright, ivcviolet_bright] (1,0) rectangle (1.033,\paperheight);
+\draw[fill=ivcviolet_medium, ivcviolet_medium] (1.033+0.03,0) rectangle (1.066+0.03,\paperheight);
+\draw[fill=ivcviolet_dark, ivcviolet_dark] (1.066+0.06,0) rectangle (1.099+0.06,\paperheight);
+
+\end{tikzpicture}
+};
+
+
+\begin{center}
+\vspace{1cm}
+\includegraphics[width=0.3\textwidth]{logo/IVC_Logo_small.png}\\[2.5cm]
+
+\centerline{ \TREP@type}
+
+\ifnum\pdf@strcmp{\TREP@type}{Technical Report}=0 %
+  \centerline{ \textit{IVC--TR--\TREP@reportnr}}
+\else
+  \centerline{\textit{Supervisor: \TREP@advisor}}
+\fi
+
+\begin{minipage}{\titlewidth}
+   \vspace{3cm}
+   \begin{center}
+   \begin{large}
+   {\scshape \Large \TREP@title \medskip \\}
+   \ifthenelse{\equal{\TREP@subtitle}{}}{}{ \large \TREP@subtitle \bigskip \\}
+   \end{large}
+   \vspace{1ex}
+   \newcounter{c@author}
+   \ifthenelse{\value{address}=1}
+   {%No address references required if there is only one
+      \@nameuse{author@1}%
+      \stepcounter{c@author}%
+      \whiledo{\value{c@author}<\value{author}}%
+         {\stepcounter{c@author}, \@nameuse{author@\thec@author}}\\%
+   }
+   {%Add address references after the author's name
+      \@nameuse{author@1}${}^{\ref{\@nameuse{authorlabel@1}}}$%
+      \stepcounter{c@author}%
+      \whiledo{\value{c@author}<\value{author}}%
+         {\stepcounter{c@author}, \@nameuse{author@\thec@author}%
+          ${}^{\ref{\@nameuse{authorlabel@\thec@author}}}$%
+      }
+   }
+   \ifthenelse{\isundefined{\TREP@contact}}{}{
+  \ifthenelse{\equal{\TREP@contact}{}}{}{
+    \begin{center}
+    {\scriptsize Contact: \TREP@contact \ifthenelse
+        {
+            \isundefined
+            {\TREP@contactemail}
+        }
+        {}
+        {,\ {\scriptsize \href{mailto:\TREP@contactemail}{{\TREP@contactemail}}}}}
+    \end{center}
+  }
+}
+
+
+   \vspace{5.5cm}
+   \ifthenelse{\value{address}>0}
+   {
+      \ifthenelse{\value{address}=1}
+      {%Output the address without any reference symbols
+         {\slshape\small \@nameuse{address@1}}
+      }
+      {%Output the addresses as an enumerated list
+         \newcounter{c@address}
+         \begin{minipage}{\addresswidth}
+         \begin{list}
+            {{}$^{\arabic{c@address}}$}
+            {\usecounter{c@address}%
+             \setlength{\itemindent}{0cm}%
+             \setlength{\itemsep}{0cm}%
+             \setlength{\labelsep}{0.1in}%
+             \setlength{\labelwidth}{0.2in}%
+             \setlength{\leftmargin}{0.4in}
+             \setlength{\parsep}{0pt}%
+             \setlength{\rightmargin}{\leftmargin}
+             \setlength{\topsep}{2pt}%
+             \slshape\small}
+            \whiledo{\value{c@address}<\value{address}}
+            {
+               \item \label{\@nameuse{addresslabel@\thec@address}}%
+               \@nameuse{address@\thec@address}%
+            }
+         \end{list}
+         \end{minipage}
+      }
+   }
+   {
+      \relax
+   }
+
+   \end{center}
+\end{minipage}
+\end{center}
+
+
+
+
+\begin{repdata}
+\begin{center}
+\begin{minipage}[b]{\titlewidth}
+\vfill
+
+\centerline{ \TREP@repcity, \TREP@repdate}
+
+
+\end{minipage}
+\end{center}
+\end{repdata}
+
+
+
+% insert the abstract
+\newpage
+
+\setlength{\hoffset}{0in}
+
+\begin{center}\begin{minipage}{\abstractwidth}
+\noindent{\large \bf Abstract}\\
+\small \it
+
+}
+{%Commands for the end of the abstract environment
+
+% here appears the abstract
+
+% here appear the keywords
+\ifthenelse{\isundefined{\TREP@keywords}}{}{%
+  \vspace{1cm} \noindent \normalsize \bf Keywords: \small \it \TREP@keywords%
+}
+
+
+\end{minipage}\end{center}
+\vfill
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+}
+%%
+%% End of file

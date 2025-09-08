@@ -1,0 +1,148 @@
+%----------------------------------------------------------------------
+% Template for TECHNICAL REPORTS at Inst. of Visual Computing (IVC), Graz University of Technology, Austria:
+% style file 'techrep_ivc.sty'
+%
+% author:  Pierre Elbischger
+% email:   pierre.elibschger@icg.tu-graz.ac.at
+%
+% created: 13.11.2003
+% revised: 29.04.2017 (Peter M. Roth, pmroth@icg.tugraz.at)
+% revised: 15.09.2017 (Horst Possegger, possegger@icg.tugraz.at)
+% modified: 08.07.2024 (Peter Mohr-Ziak, pmohr@tugraz.at)
+% modified: 19.12.2024 (Peter Mohr-Ziak, pmohr@tugraz.at) IVC Version
+%----------------------------------------------------------------------
+% The template contains a number of LaTeX commands of the form :
+%
+% \command{xyz}
+%
+% In order to complete this template, fill in the blank fields between
+% the curly braces or replace already filled in fields with the
+% requested information.
+%
+% e.g. in order to add a title, replace
+% \title{} with \title{Evidence of Solitons in Tedium Diboride}
+%
+% The \author and \address commands can take an optional label
+% in square brackets of the form :
+%
+% \command[label]{}
+%
+% The text of the abstract should be inserted between the two commands
+% \begin{abstract} and \end{abstract}.
+%
+% Please leave all commands in place even if you don't fill them in.
+
+
+%----------------------------------------------------------------------
+% Do not alter the following two lines
+
+\documentclass[11pt, a4paper]{article}
+\usepackage{techrep_ivc}
+
+ 
+%----------------------------------------------------------------------
+% Include any additional packages here!
+% package 'graphicx' is automatically included depending on the
+%   used compiler (latex, pdflatex), don't include it!!!
+
+\begin{document}
+%----------------------------------------------------------------------
+% Add the following information, which will be shown on the cover sheet
+
+% Uncomment matching document type
+% \type{Technical Report}
+% \type{Seminar/Project Computer Vision}
+% \type{Seminar/Project Computer Graphics}
+% \type{Master Project}
+\type{Bachelor Thesis}
+%\type{Seminar Paper}
+
+% Number of the technical report (if type == Technical Report)
+\reportnr{xxx}
+
+% Name of advisor (if type != Technical Report)
+\advisor{Name of Advisor}
+
+% Title
+\title{This is the Title}
+
+% Subtitle
+\subtitle{This is the subtitle}
+
+% City where the report was created
+\repcity{Graz}
+
+% Date of creation
+\repdate{\today}
+
+% Keywords that appear below the abstract (if required)
+\keywords{Report, Technical report, template, IVC}
+
+% List of authors: List each author using a separate \author{} command. If there 
+% is more than one author address, add a label to each author of the form 
+% \author[label]{name}. This label should be identical to the corresponding 
+% label provided with the \address command. It is not possible to link an author 
+% to more than one address!
+%
+\author[IVC]{Your Name}
+%\author[IVC]{Your Name 2}
+
+% List of addresses:  If there is more than one address, list each using a 
+% separate \address command using a label to link it to the respective author
+% as described above.
+%
+\newcommand{\TUGn}{Graz University of Technology}
+\address[IVC]{Institute of Visual Computing \\ \TUGn, Austria}
+
+
+% Contact author: If \contact is not defined (uncommented) or empty, the contact  
+% information on the title page is suppressed.
+%
+\contact{Your Name}
+\contactemail{youremail@tugraz.at}
+
+%----------------------------------------------------------------------
+% Abstract:
+\begin{abstract}
+
+Replace this text with your abstract. 
+
+\end{abstract}
+%----------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------
+% Main document 
+
+% example figure
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/figure_template.png}
+    \caption{Overview. (a) Always provide a good caption in short, comprehensive sentences. The reader should understand your paper just by looking at the figures and the captions.}
+\label{fig:overview}
+\end{figure*}
+
+\section{Introduction}
+
+Computer graphics, a field that is both diverse and fascinating, has significantly transformed the way we interact with technology today. This paper will explore the fundamental concepts of computer graphics, including rendering, modeling, and animation. We will also discuss the latest advancements in this field and their implications for the future.
+Our goal is to provide a comprehensive overview of computer graphics, making this complex field accessible to all readers, regardless of their technical background.
+
+\section{Related Work}
+Photorealistic rendering of blur has become a topic of great interest. In photography and film production, the blur that is produced from scene elements outside the depth of field often has a specific character and is, in this context, referred to as bokeh~\cite{luo2020bokeh}. Also, don't forget to cite the awesome work of Roe et.al.~\cite{roe17}, which extends previous approaches~\cite{everyman14,smith14}.
+
+
+\section{Method}
+Our system ...
+
+
+
+
+
+%----------------------------------------------------------------------
+% Bibliography/References
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+%----------------------------------------------------------------------
+

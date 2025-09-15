@@ -1,94 +1,115 @@
-lesion_loss_fn: lmf
-focal_gamma: 2.0
-cb_beta: 0.9999
 balanced_mixup:
-  enabled: false
   alpha: 0.2
   enabled: false
-  alpha: 0.2
-odin:
+cb_beta: 0.9999
+curriculum:
+  bm_end: 1.0
+  bm_start: 0.5
+  debug_epochs: 10
+  early_stopping_patience: 5
   enabled: true
-  temperature: 1000.0
-  epsilon: 0.001
-  enabled: false
-  temperature: 1000.0
-  epsilon: 0.001
-  enabled: true
-  temperature: 1000.0
-  epsilon: 0.001
+  epochs: 20
+  learning_rate: 0.001
+  lesion_end: 1.0
+  lesion_start: 0.5
+  metadata_path: /home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv
+  model_save_dir: saved_models/lesion_type
+  train_features_dir: data/processed/features/train_skinonly
+  val_features_dir: data/processed/features/val_skinonly
+  val_metadata_path: /home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv
+  wandb:
+    name: lesion_type_5percent
+    project: skin_lesion_classification
+    tags:
+    - lesion_type
+    - small_subset
+  weight_decay: 0.01
 data:
-  root_dir: /home/parkhomenko/Documents/new_project/data
   datasets:
-    isic2020:
-      train_dir: isic2020/ISIC_2020_Training_JPEG
-      test_dir: isic2020/ISIC_2020_Test_JPEG
-      metadata:
-        train_labels: metadata/ISIC_2020_Training_GroundTruth_v2.csv
-        test_labels: metadata/ISIC_2020_Test_Metadata.csv
-        duplicates: metadata/ISIC_2020_Training_Duplicates.csv
     dtd:
       root_dir: dtd/images
+    isic2020:
+      metadata:
+        duplicates: metadata/ISIC_2020_Training_Duplicates.csv
+        test_labels: metadata/ISIC_2020_Test_Metadata.csv
+        train_labels: metadata/ISIC_2020_Training_GroundTruth_v2.csv
+      test_dir: isic2020/ISIC_2020_Test_JPEG
+      train_dir: isic2020/ISIC_2020_Training_JPEG
   processed:
-    root_dir: /home/parkhomenko/Documents/new_project/data/processed
     features_dir: features
+    root_dir: /home/parkhomenko/Documents/new_project/data/processed
+  root_dir: /home/parkhomenko/Documents/new_project/data
+data_preprocessing:
+  augmentations:
+    flip_horizontal: true
+    rotations:
+    - 90
+    - 180
+    - 270
+  image_size: 512
+evaluation:
+  metrics:
+  - accuracy
+  - f1_score
+  - auroc
+  save_results:
+    auc_curves: true
+    confusion_matrices: true
+    mask_visualizations: true
+    tsne_umap: true
+focal_gamma: 2.0
+lesion_loss_fn: lmf
+models:
+  mlp1:
+    dropout: 0.3
+    hidden_dims:
+    - 512
+    - 256
+    input_dim: 256
+    name: skin_not_skin_head
+    output_dim: 2
+  mlp2:
+    dropout: 0.3
+    hidden_dims:
+    - 512
+    - 256
+    input_dim: 256
+    name: lesion_type_head
+    output_dim: 8
+  mlp3:
+    dropout: 0.3
+    hidden_dims:
+    - 512
+    - 256
+    input_dim: 256
+    name: benign_malignant_head
+    output_dim: 2
+odin:
+  enabled: false
+  epsilon: 0.001
+  temperature: 1000.0
+paths:
+  isic_train: data/isic2020/ISIC_2020_Training_JPEG/train
+  processed: data/processed/isic2020
 sam:
   encoder:
-    type: vit_h
-    pretrained: true
-    freeze: true
     checkpoint_dir: saved_models/sam
     checkpoint_urls:
+      vit_b: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
       vit_h: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
       vit_l: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth
-      vit_b: https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth
+    freeze: true
     image_size: 1024
-  prompting:
-    points_per_image: 2
+    pretrained: true
+    type: vit_h
   mask_filtering:
     max_area_ratio: 0.8
     overlap_threshold: 0.95
     prefer_fewer_blobs: true
-models:
-  mlp1:
-    name: skin_not_skin_head
-    input_dim: 256
-    hidden_dims:
-    - 512
-    - 256
-    output_dim: 2
-    dropout: 0.3
-  mlp2:
-    name: lesion_type_head
-    input_dim: 256
-    hidden_dims:
-    - 512
-    - 256
-    output_dim: 8
-    dropout: 0.3
-  mlp3:
-    name: benign_malignant_head
-    input_dim: 256
-    hidden_dims:
-    - 512
-    - 256
-    output_dim: 2
-    dropout: 0.3
+  prompting:
+    points_per_image: 2
 training:
-  seed: 42
-  device: cuda
-  num_workers: 0
-  pin_memory: true
-  data_fraction: 1
-  max_samples_per_class: 2000
-  class_weights:
-  - 1.5
-  - 1.5
-  - 1.5
-  - 1.2
-  - 1.2
-  - 1.5
-  - 1.2
-  - 1.2
+  batch_size: 16
   class_names:
   - melanoma
   - nevus
@@ -98,60 +119,31 @@ training:
   - actinic_keratosis
   - dermatofibroma
   - vascular
+  class_weights:
+  - 1.5
+  - 1.5
+  - 1.5
+  - 1.2
+  - 1.2
+  - 1.5
+  - 1.2
+  - 1.2
+  data_fraction: 1
+  device: cuda
+  max_samples_per_class: 2000
   model:
+    dropout: 0.3
     hidden_dims:
     - 512
     - 256
-    dropout: 0.3
-  batch_size: 16
   num_epochs: 50
-curriculum:
-  enabled: true
-  lesion_start: 0.5
-  lesion_end: 1.0
-  bm_start: 0.5
-  bm_end: 1.0
-  epochs: 20
-  learning_rate: 0.001
-  weight_decay: 0.01
-  train_features_dir: data/processed/features/train_skinonly
-  val_features_dir: data/processed/features/val_skinonly
-  metadata_path: /home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv
-  val_metadata_path: /home/parkhomenko/Documents/new_project/datasets/metadata/unified_augmented.csv
-  model_save_dir: saved_models/lesion_type
-  wandb:
-    project: skin_lesion_classification
-    name: lesion_type_5percent
-    tags:
-    - lesion_type
-    - small_subset
-  debug_epochs: 10
-  early_stopping_patience: 5
-evaluation:
-  metrics:
-  - accuracy
-  - f1_score
-  - auroc
-  save_results:
-    confusion_matrices: true
-    auc_curves: true
-    mask_visualizations: true
-    tsne_umap: true
+  num_workers: 0
+  pin_memory: true
+  seed: 42
 visualization:
   save_dir: results
   subdirs:
-    confusion_matrices: confusion_matrices
     auc_curves: auc_curves
+    confusion_matrices: confusion_matrices
     mask_visualizations: mask_visualizations
     tsne_umap_embeddings: tsne_umap_embeddings
-data_preprocessing:
-  image_size: 512
-  augmentations:
-    flip_horizontal: true
-    rotations:
-    - 90
-    - 180
-    - 270
-paths:
-  isic_train: data/isic2020/ISIC_2020_Training_JPEG/train
-  processed: data/processed/isic2020

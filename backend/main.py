@@ -91,7 +91,7 @@ def _get_model_dir_for_architecture(architecture: str) -> str:
 # Best model choices mapping
 BEST_MODEL_MAP: Dict[str, str] = {
     # choice -> relative path under models/
-    "parallel_best": os.path.join("parallel", "exp1_parallel_8classes_lmf"),
+    "parallel_best": os.path.join("parallel", "exp1_withodin_train"),
     "multi_best": os.path.join("multi", "exp1_multi_8classes_lmf_balanced_mixup"),
 }
 
@@ -198,7 +198,7 @@ def _read_experiment_stats(run_id: str) -> Optional[Dict[str, Any]]:
 
 def _stats_for_choice(choice: str) -> Dict[str, Any]:
     run_id_map = {
-        "parallel_best": "exp1_parallel_8classes_lmf",
+        "parallel_best": "exp1_withodin_train",
         "multi_best": "exp1_multi_8classes_lmf_balanced_mixup",
     }
     run_id = run_id_map.get(choice, "")

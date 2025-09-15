@@ -17,6 +17,7 @@ from tqdm import tqdm
 import wandb
 import numpy as np
 import yaml
+from sklearn.metrics import roc_auc_score, average_precision_score
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
@@ -24,6 +25,7 @@ sys.path.append(str(project_root))
 from datasets.parallel_unified_dataset import ParallelUnifiedDataset
 from datasets.balanced_mixup import BalancedMixupDataset
 from models.multitask_model import MultiTaskHead
+from utils.odin import compute_odin_scores, compute_msp_scores
 
 
 logging.basicConfig(level=logging.INFO)
@@ -125,7 +127,11 @@ def train_parallel(
 		weight_decay: float = 1e-2,
 		wandb_project: str = 'skin-lesion-classification',
 		wandb_name: str = 'parallel_exp4',
-		log_file: Optional[str] = None
+		log_file: Optional[str] = None,
+		output_base_dir: Optional[str] = None,
+		use_odin_train: bool = False,
+		train_odin_temperature: float = 1000.0,
+		train_odin_epsilon: float = 0.001
 ):
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	
@@ -145,6 +151,7 @@ def train_parallel(
 
 	# Optional Balanced-MixUp
 	balanced_mixup_cfg = {'enabled': False, 'alpha': 0.2}
+	odin_cfg = {'enabled': False, 'temperature': 1000.0, 'epsilon': 0.001}
 	config_path = project_root / 'config.yaml'
 	if config_path.exists():
 		try:
@@ -153,6 +160,10 @@ def train_parallel(
 			bm = cfg.get('balanced_mixup', {}) or {}
 			balanced_mixup_cfg['enabled'] = bool(bm.get('enabled', False))
 			balanced_mixup_cfg['alpha'] = float(bm.get('alpha', 0.2))
+			odin_in = cfg.get('odin', {}) or {}
+			odin_cfg['enabled'] = bool(odin_in.get('enabled', False))
+			odin_cfg['temperature'] = float(odin_in.get('temperature', 1000.0))
+			odin_cfg['epsilon'] = float(odin_in.get('epsilon', 0.001))
 		except Exception as e:
 			print(f"[WARN] Failed to read balanced_mixup from config.yaml: {e}")
 
@@ -274,6 +285,7 @@ def train_parallel(
 		'cb_beta': cb_beta if lesion_loss_fn == 'cb_focal' else None,
 		'balanced_mixup': balanced_mixup_cfg,
 		'curriculum': curriculum_cfg,
+		'odin': odin_cfg,
 	})
 	wandb.watch(model, log='all', log_freq=10)
 
@@ -310,29 +322,60 @@ def train_parallel(
 			masks = {k: v.to(device) for k, v in masks.items()}
 
 			optimizer.zero_grad()
-			with torch.amp.autocast('cuda'):
-				outputs = model(features)
-				# If balanced mixup produces soft lesion labels (float tensor of shape [B, C]),
-				# compute cross-entropy with soft targets for lesion; otherwise use standard path.
-				if balanced_mixup_cfg['enabled'] and isinstance(labels['lesion'], torch.Tensor) and labels['lesion'].dtype.is_floating_point:
-					loss_total = 0.0
-					for task in ('skin', 'lesion', 'bm'):
-						mask = masks[task]
-						valid_idx = mask.nonzero(as_tuple=True)[0]
-						if valid_idx.numel() == 0:
-							continue
-						logits = outputs[task][valid_idx]
-						if task == 'lesion':
-							targets_soft = labels['lesion'][valid_idx]
-							log_probs = torch.log_softmax(logits, dim=1)
-							loss_task = -(targets_soft * log_probs).sum(dim=1).mean()
-						else:
-							targets = labels[task][valid_idx]
-							loss_task = criteria[task](logits, targets)
-						loss_total = loss_total + weights[task] * loss_task
-					loss = loss_total
-				else:
-					loss = compute_loss(outputs, labels, masks, criteria, cur_weights)
+			if not use_odin_train:
+				with torch.amp.autocast('cuda'):
+					outputs = model(features)
+					# MixUp soft-label path
+					if balanced_mixup_cfg['enabled'] and isinstance(labels['lesion'], torch.Tensor) and labels['lesion'].dtype.is_floating_point:
+						loss_total = 0.0
+						for task in ('skin', 'lesion', 'bm'):
+							mask = masks[task]
+							valid_idx = mask.nonzero(as_tuple=True)[0]
+							if valid_idx.numel() == 0:
+								continue
+							logits = outputs[task][valid_idx]
+							if task == 'lesion':
+								targets_soft = labels['lesion'][valid_idx]
+								log_probs = torch.log_softmax(logits, dim=1)
+								loss_task = -(targets_soft * log_probs).sum(dim=1).mean()
+							else:
+								targets = labels[task][valid_idx]
+								loss_task = criteria[task](logits, targets)
+							loss_total = loss_total + weights[task] * loss_task
+						loss = loss_total
+					else:
+						loss = compute_loss(outputs, labels, masks, criteria, cur_weights)
+			else:
+				# ODIN-in-training: compute feature-space perturbation using skin head
+				features.requires_grad_(True)
+				with torch.enable_grad():
+					outputs = model(features)
+					# temperature scaling on skin logits
+					scaled_skin = outputs['skin'] / max(1e-8, float(train_odin_temperature))
+					max_skin_mean = scaled_skin.max(dim=1).values.mean()
+					grad = torch.autograd.grad(max_skin_mean, features, create_graph=True, retain_graph=True)[0]
+				feats_pert = features + float(train_odin_epsilon) * grad.sign()
+				with torch.amp.autocast('cuda'):
+					outputs_pert = model(feats_pert)
+					if balanced_mixup_cfg['enabled'] and isinstance(labels['lesion'], torch.Tensor) and labels['lesion'].dtype.is_floating_point:
+						loss_total = 0.0
+						for task in ('skin', 'lesion', 'bm'):
+							mask = masks[task]
+							valid_idx = mask.nonzero(as_tuple=True)[0]
+							if valid_idx.numel() == 0:
+								continue
+							logits = outputs_pert[task][valid_idx]
+							if task == 'lesion':
+								targets_soft = labels['lesion'][valid_idx]
+								log_probs = torch.log_softmax(logits, dim=1)
+								loss_task = -(targets_soft * log_probs).sum(dim=1).mean()
+							else:
+								targets = labels[task][valid_idx]
+								loss_task = criteria[task](logits, targets)
+							loss_total = loss_total + weights[task] * loss_task
+						loss = loss_total
+					else:
+						loss = compute_loss(outputs_pert, labels, masks, criteria, cur_weights)
 			loss.backward()
 			optimizer.step()
 			train_losses.append(loss.item())
@@ -411,11 +454,78 @@ def train_parallel(
 				val_log[f'val_{task}_acc'] = val_correct[task] / max(1, val_total[task])
 				best_val_acc[task] = max(best_val_acc[task], val_log[f'val_{task}_acc'])
 
+		# ODIN/MSP on validation (MLP1/skin)
+		val_odin_log: Dict[str, float] = {}
+		val_msp_log: Dict[str, float] = {}
+		# Always compute MSP baseline
+		all_msp_scores = []
+		all_msp_skin_targets = []
+		for features, labels, masks, _ in tqdm(val_loader, desc='MSP Val (skin)'):
+			features = features.to(device)
+			labels = {k: v.to(device) for k, v in labels.items()}
+			masks = {k: v.to(device) for k, v in masks.items()}
+			valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+			if valid_idx.numel() == 0:
+				continue
+			batch_feats = features[valid_idx]
+			msp_scores, _ = compute_msp_scores(
+				model=model,
+				features=batch_feats,
+				device=device,
+				head='skin',
+			)
+			all_msp_scores.append(msp_scores.detach().cpu())
+			all_msp_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+		if all_msp_scores:
+			msp_scores_cat = torch.cat(all_msp_scores).numpy()
+			y_true_skin_msp = torch.cat(all_msp_skin_targets).numpy()
+			msp_ood_labels = (y_true_skin_msp == 0).astype(np.int32)
+			try:
+				val_msp_log['val_msp_auroc'] = float(roc_auc_score(msp_ood_labels, msp_scores_cat))
+				val_msp_log['val_msp_aupr'] = float(average_precision_score(msp_ood_labels, msp_scores_cat))
+			except Exception:
+				pass
+		if odin_cfg['enabled']:
+			all_odin_scores = []
+			all_skin_targets = []
+			for features, labels, masks, _ in tqdm(val_loader, desc='ODIN Val (skin)'):
+				features = features.to(device)
+				labels = {k: v.to(device) for k, v in labels.items()}
+				masks = {k: v.to(device) for k, v in masks.items()}
+				valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+				if valid_idx.numel() == 0:
+					continue
+				batch_feats = features[valid_idx]
+				with torch.enable_grad():
+					odin_scores, _ = compute_odin_scores(
+						model=model,
+						features=batch_feats,
+						device=device,
+						head='skin',
+						temperature=odin_cfg['temperature'],
+						epsilon=odin_cfg['epsilon'],
+					)
+				all_odin_scores.append(odin_scores.detach().cpu())
+				all_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+			if all_odin_scores:
+				odin_scores_cat = torch.cat(all_odin_scores).numpy()
+				y_true_skin = torch.cat(all_skin_targets).numpy()
+				ood_labels = (y_true_skin == 0).astype(np.int32)
+				try:
+					val_odin_log['val_odin_auroc'] = float(roc_auc_score(ood_labels, odin_scores_cat))
+					val_odin_log['val_odin_aupr'] = float(average_precision_score(ood_labels, odin_scores_cat))
+				except Exception:
+					pass
+
 		# Step cosine scheduler each epoch
 		scheduler.step()
 
 		# Log to wandb
-		wandb.log({**train_log, **val_log, 'lr': optimizer.param_groups[0]['lr']})
+		if val_msp_log:
+			print(f"MSP (val): AUROC={val_msp_log.get('val_msp_auroc', float('nan')):.5f}, AUPR={val_msp_log.get('val_msp_aupr', float('nan')):.5f}")
+		if val_odin_log:
+			print(f"ODIN (val): AUROC={val_odin_log.get('val_odin_auroc', float('nan')):.5f}, AUPR={val_odin_log.get('val_odin_aupr', float('nan')):.5f}")
+		wandb.log({**train_log, **val_log, **val_msp_log, **val_odin_log, 'lr': optimizer.param_groups[0]['lr']})
 
 		# Track best
 		if 'val_loss' in val_log and val_log['val_loss'] < best_val_loss:
@@ -423,8 +533,9 @@ def train_parallel(
 			logger.info(f"New best val loss: {best_val_loss:.4f}")
 			
 			# Save best checkpoint
-			# For exp6 Tier5 runs, save under backend/models/parallel/exp6_tier5_cb_focal
-			if experiment == 'exp6':
+			if output_base_dir is not None:
+				checkpoint_dir = Path(output_base_dir) / datetime.now().strftime('%Y%m%d_%H%M%S')
+			elif experiment == 'exp6':
 				if 'exp6_tier5_cb_focal' in wandb_project:
 					checkpoint_dir = project_root / 'backend' / 'models' / 'parallel' / 'exp6_tier5_cb_focal' / datetime.now().strftime('%Y%m%d_%H%M%S')
 				else:
@@ -492,6 +603,71 @@ def train_parallel(
 				test_correct[task] += sum(int(p == t) for p, t in zip(pred, trg))
 				test_total[task] += len(trg)
 
+	# ODIN/MSP evaluation for MLP1 (skin) on test split
+	odin_log: Dict[str, float] = {}
+	msp_log: Dict[str, float] = {}
+	# Always compute MSP baseline on test
+	all_msp_scores = []
+	all_msp_skin_targets = []
+	for features, labels, masks, _ in tqdm(test_loader, desc='MSP Test (skin)'):
+		features = features.to(device)
+		labels = {k: v.to(device) for k, v in labels.items()}
+		masks = {k: v.to(device) for k, v in masks.items()}
+		valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+		if valid_idx.numel() == 0:
+			continue
+		batch_feats = features[valid_idx]
+		msp_scores, _ = compute_msp_scores(
+			model=model,
+			features=batch_feats,
+			device=device,
+			head='skin',
+		)
+		all_msp_scores.append(msp_scores.detach().cpu())
+		all_msp_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+	if all_msp_scores:
+		msp_scores_cat = torch.cat(all_msp_scores).numpy()
+		y_true_skin_msp = torch.cat(all_msp_skin_targets).numpy()
+		msp_ood_labels = (y_true_skin_msp == 0).astype(np.int32)
+		try:
+			msp_log['test_msp_auroc'] = float(roc_auc_score(msp_ood_labels, msp_scores_cat))
+			msp_log['test_msp_aupr'] = float(average_precision_score(msp_ood_labels, msp_scores_cat))
+		except Exception:
+			pass
+	if odin_cfg['enabled']:
+		model.eval()
+		all_odin_scores: list = []
+		all_skin_targets: list = []
+		for features, labels, masks, _ in tqdm(test_loader, desc='ODIN Test (skin)'):
+			features = features.to(device)
+			labels = {k: v.to(device) for k, v in labels.items()}
+			masks = {k: v.to(device) for k, v in masks.items()}
+			valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+			if valid_idx.numel() == 0:
+				continue
+			batch_feats = features[valid_idx]
+			with torch.enable_grad():
+				odin_scores, max_probs = compute_odin_scores(
+					model=model,
+					features=batch_feats,
+					device=device,
+					head='skin',
+					temperature=odin_cfg['temperature'],
+					epsilon=odin_cfg['epsilon'],
+				)
+			all_odin_scores.append(odin_scores.detach().cpu())
+			all_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+		if all_odin_scores:
+			odin_scores_cat = torch.cat(all_odin_scores).numpy()
+			y_true_skin = torch.cat(all_skin_targets).numpy()
+			# Treat not-skin (0) as OOD=1, skin (1) as OOD=0 for AUROC/AUPR
+			ood_labels = (y_true_skin == 0).astype(np.int32)
+			try:
+				odin_log['test_skin_ood_auroc'] = float(roc_auc_score(ood_labels, odin_scores_cat))
+				odin_log['test_skin_ood_aupr'] = float(average_precision_score(ood_labels, odin_scores_cat))
+			except Exception:
+				pass
+
 	# Aggregate test metrics
 	test_log = {}
 	if test_losses:
@@ -510,7 +686,11 @@ def train_parallel(
 
 	# Log to wandb and print
 	if test_log:
-		wandb.log(test_log)
+		if msp_log:
+			print(f"MSP (test): AUROC={msp_log.get('test_msp_auroc', float('nan')):.5f}, AUPR={msp_log.get('test_msp_aupr', float('nan')):.5f}")
+		if odin_log:
+			print(f"ODIN (test): AUROC={odin_log.get('test_skin_ood_auroc', float('nan')):.5f}, AUPR={odin_log.get('test_skin_ood_aupr', float('nan')):.5f}")
+		wandb.log({**test_log, **msp_log, **odin_log})
 		logger.info("Test metrics:")
 		for k, v in test_log.items():
 			logger.info(f"  {k}: {v:.4f}")
@@ -561,7 +741,7 @@ def train_parallel(
 		with open(backend_csv, 'a', newline='') as f:
 			w = _csv.writer(f)
 			if write_header:
-				w.writerow(['timestamp','experiment','architecture','wandb_project','wandb_name','best_train_skin_acc','best_train_lesion_acc','best_train_bm_acc','best_val_skin_acc','best_val_lesion_acc','best_val_bm_acc','test_skin_acc','test_skin_f1','test_lesion_acc','test_lesion_f1','test_bm_acc','test_bm_f1'])
+				w.writerow(['timestamp','experiment','architecture','wandb_project','wandb_name','best_train_skin_acc','best_train_lesion_acc','best_train_bm_acc','best_val_skin_acc','best_val_lesion_acc','best_val_bm_acc','test_skin_acc','test_skin_f1','test_lesion_acc','test_lesion_f1','test_bm_acc','test_bm_f1','odin_enabled','odin_temperature','odin_epsilon','val_msp_auroc','val_msp_aupr','test_msp_auroc','test_msp_aupr','val_odin_auroc','val_odin_aupr','test_skin_ood_auroc','test_skin_ood_aupr'])
 			w.writerow([
 				datetime.now().isoformat(timespec='seconds'),
 				experiment,
@@ -580,6 +760,17 @@ def train_parallel(
 				test_log.get('test_lesion_f1',0.0),
 				test_log.get('test_bm_acc',0.0),
 				test_log.get('test_bm_f1',0.0),
+				bool(odin_cfg.get('enabled', False)),
+				float(odin_cfg.get('temperature', 1000.0)),
+				float(odin_cfg.get('epsilon', 0.001)),
+				val_msp_log.get('val_msp_auroc', None) if 'val_msp_log' in locals() else None,
+				val_msp_log.get('val_msp_aupr', None) if 'val_msp_log' in locals() else None,
+				msp_log.get('test_msp_auroc', None) if 'msp_log' in locals() else None,
+				msp_log.get('test_msp_aupr', None) if 'msp_log' in locals() else None,
+				val_odin_log.get('val_odin_auroc', None) if 'val_odin_log' in locals() else None,
+				val_odin_log.get('val_odin_aupr', None) if 'val_odin_log' in locals() else None,
+				odin_log.get('test_skin_ood_auroc', None) if 'odin_log' in locals() else None,
+				odin_log.get('test_skin_ood_aupr', None) if 'odin_log' in locals() else None,
 			])
 	except Exception as _e:
 		logger.warning(f"Failed to append to backend/experiments_summary.csv: {_e}")
@@ -613,6 +804,10 @@ if __name__ == '__main__':
 	parser.add_argument('--bm_weight', type=float, default=1.0)
 	parser.add_argument('--wandb_project', type=str, default='skin-lesion-classification')
 	parser.add_argument('--wandb_name', type=str, default='parallel_exp4')
+	parser.add_argument('--use_odin_train', action='store_true', default=False)
+	parser.add_argument('--train_odin_temperature', type=float, default=1000.0)
+	parser.add_argument('--train_odin_epsilon', type=float, default=0.001)
+	parser.add_argument('--output_base_dir', type=str, default=None)
 	args = parser.parse_args()
 
 	hidden_dims = tuple(int(x) for x in args.hidden_dims.split(',') if x)
@@ -629,6 +824,10 @@ if __name__ == '__main__':
 		bm_weight=args.bm_weight,
 		wandb_project=args.wandb_project,
 		wandb_name=args.wandb_name,
+		output_base_dir=args.output_base_dir,
+		use_odin_train=args.use_odin_train,
+		train_odin_temperature=args.train_odin_temperature,
+		train_odin_epsilon=args.train_odin_epsilon,
 	)
 
 

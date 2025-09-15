@@ -18,6 +18,7 @@ from sklearn.metrics import precision_recall_fscore_support
 from tqdm import tqdm
 import wandb
 import yaml
+from sklearn.metrics import roc_auc_score, average_precision_score
 
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
@@ -25,6 +26,7 @@ sys.path.append(str(project_root))
 from datasets.parallel_unified_dataset import ParallelUnifiedDataset
 from models.multitask_model import MultiTaskHead
 from datasets.balanced_mixup import BalancedMixupDataset
+from utils.odin import compute_odin_scores, compute_msp_scores
 
 
 def ensure_dir(path: Path):
@@ -286,8 +288,9 @@ def train_multihead(
     val_dataset = ParallelUnifiedDataset(experiment=experiment, split='val')
     test_dataset = ParallelUnifiedDataset(experiment=experiment, split='test')
 
-    # Optional Balanced-MixUp
+    # Optional Balanced-MixUp and ODIN
     balanced_mixup_cfg = {'enabled': False, 'alpha': 0.2}
+    odin_cfg = {'enabled': False, 'temperature': 1000.0, 'epsilon': 0.001}
     config_path = project_root / 'config.yaml'
     if config_path.exists():
         try:
@@ -296,6 +299,10 @@ def train_multihead(
             bm = cfg.get('balanced_mixup', {}) or {}
             balanced_mixup_cfg['enabled'] = bool(bm.get('enabled', False))
             balanced_mixup_cfg['alpha'] = float(bm.get('alpha', 0.2))
+            odin_in = cfg.get('odin', {}) or {}
+            odin_cfg['enabled'] = bool(odin_in.get('enabled', False))
+            odin_cfg['temperature'] = float(odin_in.get('temperature', 1000.0))
+            odin_cfg['epsilon'] = float(odin_in.get('epsilon', 0.001))
         except Exception as e:
             print(f"[WARN] Failed to read balanced_mixup from config.yaml: {e}")
     if balanced_mixup_cfg['enabled']:
@@ -410,6 +417,7 @@ def train_multihead(
         'cb_beta': cb_beta if lesion_loss_fn == 'cb_focal' else None,
         'balanced_mixup': balanced_mixup_cfg,
         'curriculum': curriculum_cfg,
+        'odin': odin_cfg,
     })
     wandb.watch(model, log='all', log_freq=10)
 
@@ -574,6 +582,69 @@ def train_multihead(
                 val_log[f'val_{task}_acc'] = 0.0
                 val_log[f'val_{task}_f1_macro'] = 0.0
 
+        # ODIN/MSP on validation (MLP1/skin)
+        val_odin_log: Dict[str, float] = {}
+        val_msp_log: Dict[str, float] = {}
+        # Always compute MSP baseline
+        all_msp_scores: List[torch.Tensor] = []
+        all_msp_skin_targets: List[torch.Tensor] = []
+        for features, labels, masks, _ in tqdm(val_loader, desc='MSP Val (skin)'):
+            features = features.to(device)
+            labels = {k: v.to(device) for k, v in labels.items()}
+            masks = {k: v.to(device) for k, v in masks.items()}
+            valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+            if valid_idx.numel() == 0:
+                continue
+            batch_feats = features[valid_idx]
+            msp_scores, _ = compute_msp_scores(
+                model=model,
+                features=batch_feats,
+                device=device,
+                head='skin',
+            )
+            all_msp_scores.append(msp_scores.detach().cpu())
+            all_msp_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+        if all_msp_scores:
+            msp_scores_cat = torch.cat(all_msp_scores).numpy()
+            y_true_skin_msp = torch.cat(all_msp_skin_targets).numpy()
+            msp_ood_labels = (y_true_skin_msp == 0).astype(np.int32)
+            try:
+                val_msp_log['val_msp_auroc'] = float(roc_auc_score(msp_ood_labels, msp_scores_cat))
+                val_msp_log['val_msp_aupr'] = float(average_precision_score(msp_ood_labels, msp_scores_cat))
+            except Exception:
+                pass
+        if odin_cfg['enabled']:
+            all_odin_scores: List[torch.Tensor] = []
+            all_skin_targets: List[torch.Tensor] = []
+            for features, labels, masks, _ in tqdm(val_loader, desc='ODIN Val (skin)'):
+                features = features.to(device)
+                labels = {k: v.to(device) for k, v in labels.items()}
+                masks = {k: v.to(device) for k, v in masks.items()}
+                valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+                if valid_idx.numel() == 0:
+                    continue
+                batch_feats = features[valid_idx]
+                with torch.enable_grad():
+                    odin_scores, _ = compute_odin_scores(
+                        model=model,
+                        features=batch_feats,
+                        device=device,
+                        head='skin',
+                        temperature=odin_cfg['temperature'],
+                        epsilon=odin_cfg['epsilon'],
+                    )
+                all_odin_scores.append(odin_scores.detach().cpu())
+                all_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+            if all_odin_scores:
+                odin_scores_cat = torch.cat(all_odin_scores).numpy()
+                y_true_skin = torch.cat(all_skin_targets).numpy()
+                ood_labels = (y_true_skin == 0).astype(np.int32)
+                try:
+                    val_odin_log['val_odin_auroc'] = float(roc_auc_score(ood_labels, odin_scores_cat))
+                    val_odin_log['val_odin_aupr'] = float(average_precision_score(ood_labels, odin_scores_cat))
+                except Exception:
+                    pass
+
         # Scheduler step (cosine)
         scheduler.step()
 
@@ -590,7 +661,11 @@ def train_multihead(
                 optimizer.param_groups[0]['lr']
             ])
 
-        wandb.log({**train_log, **val_log, 'lr': optimizer.param_groups[0]['lr']})
+        if val_msp_log:
+            print(f"MSP (val): AUROC={val_msp_log.get('val_msp_auroc', float('nan')):.5f}, AUPR={val_msp_log.get('val_msp_aupr', float('nan')):.5f}")
+        if val_odin_log:
+            print(f"ODIN (val): AUROC={val_odin_log.get('val_odin_auroc', float('nan')):.5f}, AUPR={val_odin_log.get('val_odin_aupr', float('nan')):.5f}")
+        wandb.log({**train_log, **val_log, **val_msp_log, **val_odin_log, 'lr': optimizer.param_groups[0]['lr']})
 
         # Print epoch summary similar to parallel
         print(
@@ -670,6 +745,70 @@ def train_multihead(
                 test_preds[task].extend(pred)
                 test_tgts[task].extend(trg)
 
+    # ODIN/MSP evaluation for MLP1 (skin) on test split
+    odin_log: Dict[str, float] = {}
+    msp_log: Dict[str, float] = {}
+    # Always compute MSP baseline on test
+    all_msp_scores: List[torch.Tensor] = []
+    all_msp_skin_targets: List[torch.Tensor] = []
+    for features, labels, masks, _ in tqdm(test_loader, desc='MSP Test (skin)'):
+        features = features.to(device)
+        labels = {k: v.to(device) for k, v in labels.items()}
+        masks = {k: v.to(device) for k, v in masks.items()}
+        valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+        if valid_idx.numel() == 0:
+            continue
+        batch_feats = features[valid_idx]
+        msp_scores, _ = compute_msp_scores(
+            model=model,
+            features=batch_feats,
+            device=device,
+            head='skin',
+        )
+        all_msp_scores.append(msp_scores.detach().cpu())
+        all_msp_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+    if all_msp_scores:
+        msp_scores_cat = torch.cat(all_msp_scores).numpy()
+        y_true_skin_msp = torch.cat(all_msp_skin_targets).numpy()
+        msp_ood_labels = (y_true_skin_msp == 0).astype(np.int32)
+        try:
+            msp_log['test_msp_auroc'] = float(roc_auc_score(msp_ood_labels, msp_scores_cat))
+            msp_log['test_msp_aupr'] = float(average_precision_score(msp_ood_labels, msp_scores_cat))
+        except Exception:
+            pass
+    if odin_cfg['enabled']:
+        model.eval()
+        all_odin_scores: List[torch.Tensor] = []
+        all_skin_targets: List[torch.Tensor] = []
+        for features, labels, masks, _ in tqdm(test_loader, desc='ODIN Test (skin)'):
+            features = features.to(device)
+            labels = {k: v.to(device) for k, v in labels.items()}
+            masks = {k: v.to(device) for k, v in masks.items()}
+            valid_idx = masks['skin'].nonzero(as_tuple=True)[0]
+            if valid_idx.numel() == 0:
+                continue
+            batch_feats = features[valid_idx]
+            with torch.enable_grad():
+                odin_scores, max_probs = compute_odin_scores(
+                    model=model,
+                    features=batch_feats,
+                    device=device,
+                    head='skin',
+                    temperature=odin_cfg['temperature'],
+                    epsilon=odin_cfg['epsilon'],
+                )
+            all_odin_scores.append(odin_scores.detach().cpu())
+            all_skin_targets.append(labels['skin'][valid_idx].detach().cpu())
+        if all_odin_scores:
+            odin_scores_cat = torch.cat(all_odin_scores).numpy()
+            y_true_skin = torch.cat(all_skin_targets).numpy()
+            ood_labels = (y_true_skin == 0).astype(np.int32)
+            try:
+                odin_log['test_skin_ood_auroc'] = float(roc_auc_score(ood_labels, odin_scores_cat))
+                odin_log['test_skin_ood_aupr'] = float(average_precision_score(ood_labels, odin_scores_cat))
+            except Exception:
+                pass
+
     test_log: Dict[str, float] = {}
     if len(test_losses) > 0:
         test_log['test_loss'] = float(sum(test_losses) / len(test_losses))
@@ -744,7 +883,11 @@ def train_multihead(
     plot_and_save_confusion_matrix(val_tgts['bm'], val_preds['bm'], bm_names, 'Benign vs Malignant (Val)', cm_dir_val / 'confusion_matrix_bm_val_normalized.png')
 
     # Final logs and run-summary style prints
-    wandb.log(test_log)
+    if msp_log:
+        print(f"MSP (test): AUROC={msp_log.get('test_msp_auroc', float('nan')):.5f}, AUPR={msp_log.get('test_msp_aupr', float('nan')):.5f}")
+    if odin_log:
+        print(f"ODIN (test): AUROC={odin_log.get('test_skin_ood_auroc', float('nan')):.5f}, AUPR={odin_log.get('test_skin_ood_aupr', float('nan')):.5f}")
+    wandb.log({**test_log, **msp_log, **odin_log})
     # Print split counts like parallel summary
     try:
         split_stats = compute_split_class_counts(project_root / 'data/metadata/metadata.csv', experiment_col=experiment)
@@ -790,7 +933,7 @@ def train_multihead(
         with open(backend_csv, 'a', newline='') as f:
             writer = csv.writer(f)
             if write_header:
-                writer.writerow(['timestamp','experiment','architecture','wandb_project','wandb_name','best_val_skin_acc','best_val_lesion_acc','best_val_bm_acc','test_skin_acc','test_skin_f1_macro','test_lesion_acc','test_lesion_f1_macro','test_bm_acc','test_bm_f1_macro'])
+                writer.writerow(['timestamp','experiment','architecture','wandb_project','wandb_name','best_val_skin_acc','best_val_lesion_acc','best_val_bm_acc','test_skin_acc','test_skin_f1_macro','test_lesion_acc','test_lesion_f1_macro','test_bm_acc','test_bm_f1_macro','odin_enabled','odin_temperature','odin_epsilon','val_msp_auroc','val_msp_aupr','test_msp_auroc','test_msp_aupr','val_odin_auroc','val_odin_aupr','test_skin_ood_auroc','test_skin_ood_aupr'])
             writer.writerow([
                 datetime.now().isoformat(timespec='seconds'),
                 experiment,
@@ -806,6 +949,17 @@ def train_multihead(
                 test_log.get('test_lesion_f1_macro',0.0),
                 test_log.get('test_bm_acc',0.0),
                 test_log.get('test_bm_f1_macro',0.0),
+                bool(odin_cfg.get('enabled', False)),
+                float(odin_cfg.get('temperature', 1000.0)),
+                float(odin_cfg.get('epsilon', 0.001)),
+                val_msp_log.get('val_msp_auroc', None) if 'val_msp_log' in locals() else None,
+                val_msp_log.get('val_msp_aupr', None) if 'val_msp_log' in locals() else None,
+                msp_log.get('test_msp_auroc', None) if 'msp_log' in locals() else None,
+                msp_log.get('test_msp_aupr', None) if 'msp_log' in locals() else None,
+                val_odin_log.get('val_odin_auroc', None) if 'val_odin_log' in locals() else None,
+                val_odin_log.get('val_odin_aupr', None) if 'val_odin_log' in locals() else None,
+                odin_log.get('test_skin_ood_auroc', None) if 'odin_log' in locals() else None,
+                odin_log.get('test_skin_ood_aupr', None) if 'odin_log' in locals() else None,
             ])
     except Exception as e:
         print(f"[WARN] Failed to append to backend/experiments_summary.csv: {e}")

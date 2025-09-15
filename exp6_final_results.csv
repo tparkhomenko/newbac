@@ -1,5 +1,0 @@
-Run,Architecture,MixUp,Test_Skin_Acc,Test_Skin_F1_Macro,Test_Lesion_Acc,Test_Lesion_F1_Macro,Test_BM_Acc,Test_BM_F1_Macro
-exp6_parallel_weightedce_balanced_partial,Parallel,No,0.88870,0.47053,0.34541,0.20457,0.53922,0.52218
-exp6_parallel_weightedce_balanced_partial_mixup,Parallel,Yes,0.88870,0.47053,0.30601,0.14675,0.61691,0.43999
-exp6_multi_weightedce_balanced_partial,Multi,No,0.88870,0.47053,0.39289,0.34626,0.68888,0.67899
-exp6_multi_weightedce_balanced_partial_mixup,Multi,Yes,0.88870,0.47053,0.37988,0.33486,0.68660,0.67784

@@ -53,208 +53,144 @@
 \end{frame}
 
 
-\section{Introduction}
+\section{Problem Definition \& Motivation}
 
-\begin{frame}{Introduction}
+\begin{frame}{Problem Definition \& Motivation}
   \begin{itemize}
-    \item Two-stage classification pipeline using frozen SAM2 encoder features:
-      \begin{itemize}
-        \item Stage 1: Skin vs Not Skin Classification
-        \item Stage 2: Lesion Group and Malignancy Classification
-      \end{itemize}
-    \item Large-scale dataset combination:
-      \begin{itemize}
-        \item ISIC 2019: 157,610 skin lesion images (augmented from 33,569 original)
-        \item DTD: 28,200 texture images (augmented from 5,640 original)
-      \end{itemize}
-    \item Focus on feature extraction using SAM2's powerful vision encoder
+    \item Skin lesion classification is key for early melanoma detection.
+    \item Datasets are imbalanced: some classes have 20k+, others <500.
+    \item OOD risk: flowers, textures, artifacts misclassified as lesions.
+    \item Goal: Build a robust multi-stage pipeline that handles imbalance and rejects OOD.
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Objectives}
-  \begin{itemize}
-    \item Implement a skin lesion detection pipeline using foundation models
-    \item Explore the applicability of SAM2 for medical imaging
-    \item Reduce labeling costs by automating classification steps
-    \item Combine datasets from different domains for improved robustness
-    \item Evaluate transfer learning capabilities for skin lesion detection
-    \item Design a modular, hierarchical pipeline for multi-stage classification
-  \end{itemize}
+  \vspace{0.5em}
+  \todo[inline]{Add dataset histogram (class imbalance)}
+  \todo[inline]{Add motivating example: lesion vs flower misclassification}
 \end{frame}
 
 
-\section{Methodology}
+\section{Pipeline Design}
 
-\begin{frame}{Pipeline Overview}
+\begin{frame}{Pipeline Design}
   \begin{itemize}
-    \item Two-stage classification using SAM2 encoder features:
+    \item Frozen SAM encoder extracts 256-dim features.
+    \item Three downstream MLPs:
       \begin{itemize}
-        \item Stage 1: Skin vs Not-Skin (MLP1)
-        \item Stage 2: Lesion Group (MLP2) and Malignancy (MLP3)
+        \item MLP1: Skin vs Not-Skin
+        \item MLP2: 8 Lesion classes
+        \item MLP3: Benign vs Malignant
       \end{itemize}
-    \item Feature extraction:
+    \item Compared Parallel vs Multihead setups.
       \begin{itemize}
-        \item SAM2 ViT encoder (frozen)
-        \item 256-dimensional embeddings
-      \end{itemize}
-    \item Linear probing to leverage pre-trained features
-    \item Segmentation masks for visualization
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Datasets}
-  \begin{itemize}
-    \item ISIC 2019 Dataset:
-      \begin{itemize}
-        \item 157,610 augmented images (33,569 original)
-        \item 5 lesion groups:
-          \begin{itemize}
-            \item melanocytic: 106,095 images (21,219 original)
-            \item non-melanocytic carcinoma: 25,455 images (5,091 original)
-            \item keratosis: 22,625 images (4,525 original)
-            \item vascular: 1,785 images (357 original)
-            \item fibrous: 1,650 images (330 original)
-          \end{itemize}
-        \item Malignancy labels: benign (96,705), malignant (60,905)
-      \end{itemize}
-    \item DTD (Describable Textures Dataset):
-      \begin{itemize}
-        \item 28,200 augmented images (5,640 original)
-        \item 47 texture categories
-        \item Used as non-skin examples
+        \item Parallel = independent MLPs
+        \item Multihead = shared trunk + 3 heads
       \end{itemize}
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Data Processing}
-  \begin{itemize}
-    \item Unified preprocessing pipeline:
-      \begin{itemize}
-        \item Resize all images to 1024x1024 (SAM format)
-        \item 5x augmentation per image:
-          \begin{itemize}
-            \item Original
-            \item Horizontal flip
-            \item Rotations (90°, 180°, 270°)
-          \end{itemize}
-      \end{itemize}
-    \item Dataset splits (total 196,045 images):
-      \begin{itemize}
-        \item Train: 137,122 images (117,490 skin / 19,632 non-skin)
-        \item Validation: 29,399 images (25,175 skin / 4,224 non-skin)
-        \item Test: 29,524 images (25,180 skin / 4,344 non-skin)
-      \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Feature Extraction and Linear Probing}
-  \begin{itemize}
-    \item SAM2 Feature Extractor:
-      \begin{itemize}
-        \item Frozen ViT encoder
-        \item 256-dimensional embeddings
-        \item GPU-accelerated batch processing
-      \end{itemize}
-    \item Linear Probing Architecture:
-      \begin{itemize}
-        \item Input: 256-dim SAM features
-        \item Hidden layers: [512, 256] with ReLU \& Dropout(0.3)
-        \item Output: task-specific classes
-      \end{itemize}
-  \end{itemize}
+  \todo[inline]{Diagram: SAM encoder \textrightarrow{} trunk \textrightarrow{} 3 heads vs 3 separate MLPs}
 \end{frame}
 
 
-\section{Results}
+\section{Data Preparation \& Balancing}
 
-\begin{frame}{Segmentation Results}
+\begin{frame}{Data Preparation \& Balancing}
   \begin{itemize}
-    \item Qualitative mask visualization
-    \item SAM2 performance on different skin conditions
-    \item Mask selection effectiveness
+    \item Exp1--5: Original ISIC splits (imbalanced).
+    \item Exp6: Smart balancing strategy:
+      \begin{itemize}
+        \item Cap NV/UNKNOWN at 5k, BCC/MEL at 3k.
+        \item Augment rare classes to 1k.
+      \end{itemize}
+    \item Augmentations: flips, rotations, jitter.
   \end{itemize}
-  \todo[inline]{Add side-by-side comparison of original images and masks}
-\end{frame}
-
-\begin{frame}{Classification Performance}
-  \begin{itemize}
-    \item Skin vs Not-Skin (MLP1): 99.38\% validation accuracy
-      \begin{itemize}
-        \item Balanced dataset: 2,000 samples per class
-        \item FocalLoss with class weights [1.0, 5.93]
-      \end{itemize}
-    \item Lesion Type (MLP2): 65.8\% validation accuracy
-      \begin{itemize}
-        \item Max 2,000 samples per majority class
-        \item F1 scores: 0.59-0.72 across 5 classes
-        \item FocalLoss with class weights [1.5, 1.5, 1.5, 1.2, 1.2]
-      \end{itemize}
-    \item Benign/Malignant (MLP3): 72.55\% validation accuracy
-      \begin{itemize}
-        \item Balanced dataset: 2,000 samples per class
-        \item FocalLoss with gamma=2.0
-      \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Ablation Study Results}
-  \begin{itemize}
-    \item Class imbalance handling (MLP3):
-      \begin{itemize}
-        \item Balanced sampling vs. original distribution
-        \item Balanced (4k samples): 72.55\% accuracy, F1 score 0.7255
-        \item Original (22k samples): 71.29\% accuracy, F1 score 0.7045
-      \end{itemize}
-    \item Training time comparison:
-      \begin{itemize}
-        \item Balanced model: ~1.5 hours
-        \item Original distribution: ~4.5 hours (3x slower)
-      \end{itemize}
-    \item Augmented dataset model still in progress:
-      \begin{itemize}
-        \item 110,470 images (67,990 benign / 42,480 malignant)
-      \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Connection to Objectives}
-  \begin{itemize}
-    \item Foundation model applicability:
-      \begin{itemize}
-        \item SAM2 features effective for medical imaging tasks
-        \item Linear probing demonstrates strong transfer learning capabilities
-      \end{itemize}
-    \item Multi-domain dataset integration:
-      \begin{itemize}
-        \item Successfully combined DTD textures with ISIC skin lesions
-        \item Hierarchical pipeline provides modular classification
-      \end{itemize}
-    \item Automated labeling steps:
-      \begin{itemize}
-        \item 99.38\% accurate skin detection enables efficient filtering
-        \item Modular approach allows targeted fine-tuning
-      \end{itemize}
-  \end{itemize}
+  \vspace{0.5em}
+  \todo[inline]{Table: per-class counts before vs after balancing}
+  \todo[inline]{Images: example augmented lesion}
 \end{frame}
 
 
-\section{Conclusion}
+\section{Loss Functions \& Training}
 
-\begin{frame}{Key Findings \& Future Work}
+\begin{frame}{Loss Functions \& Training Strategies}
   \begin{itemize}
-    \item Key Findings:
-      \begin{itemize}
-        \item SAM2 encoder features highly effective for skin lesion classification
-        \item Linear probing with balanced sampling outperforms larger imbalanced datasets
-        \item Multi-stage pipeline effective for hierarchical classification
-      \end{itemize}
-    \item Future Work:
-      \begin{itemize}
-        \item Investigate prompt point generation using grayscale extrema
-        \item Analyze SAM mask filtering heuristics
-        \item Explore ensemble methods for improved accuracy
-      \end{itemize}
+    \item Weighted Cross-Entropy: Baseline.
+    \item Focal Loss: From literature, but unstable.
+    \item LMF (LDAM + Focal Mix): Improves minority class margins.
+    \item Balanced MixUp: Soft-label augmentation.
   \end{itemize}
+  \vspace{0.5em}
+  \todo[inline]{Equation slide: CE, Focal, LMF side by side}
+  \todo[inline]{Bar chart: lesion macro-F1 by loss type}
+\end{frame}
+
+
+\section{Results \& Key Insights}
+
+\begin{frame}{Results \& Key Insights}
+  \begin{itemize}
+    \item Parallel > Multihead for lesion classification.
+    \item Best lesion: Parallel + LMF (Exp1) $\sim$65\% acc, 0.60 macro-F1.
+    \item Skin detection near-perfect ($\sim$99\%).
+    \item Benign/Malignant stable ($\sim$75--79\% acc).
+  \end{itemize}
+  \todo[inline]{Table: Parallel vs Multihead results}
+  \todo[inline]{Confusion matrix for lesion task highlighting minority errors}
+\end{frame}
+
+
+\section{OOD Detection -- ODIN}
+
+\begin{frame}{OOD Detection with ODIN}
+  \begin{itemize}
+    \item Manual test: flower misclassified as melanoma.
+    \item Implemented ODIN (temperature scaling + input perturbation).
+    \item Evaluated with Places365 dataset as OOD.
+    \item Results: High AUROC/AUPR $\Rightarrow$ better safety.
+  \end{itemize}
+  \todo[inline]{ROC/AUPR curves comparing ODIN vs baseline}
+  \todo[inline]{Diagram: ODIN workflow on top of MLP1}
+\end{frame}
+
+
+\section{Extra Experiment: Cropped Lesion Masks}
+
+\begin{frame}{Extra Experiment: Cropped Lesion Masks}
+  \begin{itemize}
+    \item From S2R2: Segment to Recognize (Janou\v{s}kov\'a et al.).
+    \item Motivation: Remove background noise (skin tone, artifacts, rulers).
+    \item Plan: Train with SAM-cropped lesion patches.
+    \item Status: Not done yet $\rightarrow$ future extension.
+  \end{itemize}
+  \todo[inline]{Image: original vs cropped lesion mask overlay}
+\end{frame}
+
+
+\section{Best Model (So Far)}
+
+\begin{frame}{Best Model (So Far)}
+  \begin{itemize}
+    \item Parallel + LMF (Exp1) is best so far:
+      \begin{itemize}
+        \item Skin: 0.999 / 0.999
+        \item Lesion: 0.645 / 0.599
+        \item Benign/Malignant: 0.795 / 0.790
+      \end{itemize}
+    \item Strong balance across tasks compared to others.
+  \end{itemize}
+  \todo[inline]{Table: summary of best model metrics}
+\end{frame}
+
+
+\section{Future Directions}
+
+\begin{frame}{Future Directions}
+  \begin{itemize}
+    \item Use MedSAM / UniSeg for medical segmentation features.
+    \item Test cropped vs full images.
+    \item Ensemble models (Parallel + Multihead).
+    \item Try higher resolutions (512 vs 1024).
+    \item Semi-supervised learning with unlabeled dermoscopy.
+    \item Stronger OOD rejection (energy-based, Mahalanobis).
+  \end{itemize}
+  \todo[inline]{Bullet slide: future research directions with icons}
 \end{frame}
 
 \begin{frame}{Thank You}

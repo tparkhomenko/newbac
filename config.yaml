@@ -86,8 +86,11 @@ models:
     output_dim: 2
 odin:
   enabled: false
+<<<<<<< Updated upstream
   epsilon: 0.001
   temperature: 1000.0
+=======
+>>>>>>> Stashed changes
 paths:
   isic_train: data/isic2020/ISIC_2020_Training_JPEG/train
   processed: data/processed/isic2020

@@ -404,7 +404,7 @@ def train_parallel(
 			preds = train_metrics[task]['preds']
 			tgts = train_metrics[task]['targets']
 			if len(preds) > 0:
-				train_log[f'train_{task}_f1'] = f1_score(tgts, preds, average='macro')
+				train_log[f'train_{task}_f1'] = f1_score(tgts, preds, average='weighted')
 				train_log[f'train_{task}_precision'] = precision_score(tgts, preds, average='weighted', zero_division=0)
 				train_log[f'train_{task}_recall'] = recall_score(tgts, preds, average='weighted', zero_division=0)
 				train_log[f'train_{task}_acc'] = train_correct[task] / max(1, train_total[task])
@@ -679,8 +679,8 @@ def train_parallel(
 			# Accuracy
 			acc = (sum(int(p == t) for p, t in zip(preds, tgts)) / len(preds)) if preds else 0.0
 			test_log[f'test_{task}_acc'] = acc
-			# F1 / Precision / Recall (macro F1)
-			test_log[f'test_{task}_f1'] = f1_score(tgts, preds, average='macro')
+			# F1 / Precision / Recall (weighted F1)
+			test_log[f'test_{task}_f1'] = f1_score(tgts, preds, average='weighted')
 			test_log[f'test_{task}_precision'] = precision_score(tgts, preds, average='weighted', zero_division=0)
 			test_log[f'test_{task}_recall'] = recall_score(tgts, preds, average='weighted', zero_division=0)
 

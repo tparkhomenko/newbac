@@ -457,7 +457,7 @@ def train_multihead(
         for task in ('skin', 'lesion', 'bm'):
             if len(y_true[task]) > 0:
                 metrics[task]['acc'] = accuracy_score(y_true[task], y_pred[task])
-                metrics[task]['f1_macro'] = f1_score(y_true[task], y_pred[task], average='macro')
+                metrics[task]['f1_macro'] = f1_score(y_true[task], y_pred[task], average='weighted')
             else:
                 metrics[task]['acc'] = 0.0
                 metrics[task]['f1_macro'] = 0.0
@@ -577,7 +577,7 @@ def train_multihead(
             tgts = val_tgts[task]
             if len(preds) > 0:
                 val_log[f'val_{task}_acc'] = accuracy_score(tgts, preds)
-                val_log[f'val_{task}_f1_macro'] = f1_score(tgts, preds, average='macro')
+                val_log[f'val_{task}_f1_macro'] = f1_score(tgts, preds, average='weighted')
             else:
                 val_log[f'val_{task}_acc'] = 0.0
                 val_log[f'val_{task}_f1_macro'] = 0.0
@@ -817,7 +817,7 @@ def train_multihead(
         tgts = test_tgts[task]
         if len(preds) > 0:
             test_log[f'test_{task}_acc'] = accuracy_score(tgts, preds)
-            test_log[f'test_{task}_f1_macro'] = f1_score(tgts, preds, average='macro')
+            test_log[f'test_{task}_f1_macro'] = f1_score(tgts, preds, average='weighted')
         else:
             test_log[f'test_{task}_acc'] = 0.0
             test_log[f'test_{task}_f1_macro'] = 0.0

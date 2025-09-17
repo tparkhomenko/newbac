@@ -6,7 +6,8 @@ from typing import Dict, Tuple
 class MultiTaskHead(nn.Module):
 
 	def __init__(self, input_dim: int, hidden_dims: Tuple[int, ...], dropout: float,
-	             num_classes_skin: int = 2, num_classes_lesion: int = 8, num_classes_bm: int = 2):
+	             num_classes_skin: int = 2, num_classes_lesion: int = 8, num_classes_bm: int = 2,
+	             num_classes_final: int | None = None):
 		super().__init__()
 		layers = []
 		current_dim = input_dim
@@ -19,13 +20,17 @@ class MultiTaskHead(nn.Module):
 		self.head_skin = nn.Linear(current_dim, num_classes_skin)
 		self.head_lesion = nn.Linear(current_dim, num_classes_lesion)
 		self.head_bm = nn.Linear(current_dim, num_classes_bm)
+		self.head_final = nn.Linear(current_dim, num_classes_final) if num_classes_final is not None else None
 
 	def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
 		shared = self.trunk(x)
-		return {
+		out: Dict[str, torch.Tensor] = {
 			'skin': self.head_skin(shared),
 			'lesion': self.head_lesion(shared),
 			'bm': self.head_bm(shared)
 		}
+		if self.head_final is not None:
+			out['final'] = self.head_final(shared)
+		return out
 
 

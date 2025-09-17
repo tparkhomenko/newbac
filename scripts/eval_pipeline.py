@@ -30,6 +30,7 @@ def load_model(ckpt_path: Path, device: torch.device) -> torch.nn.Module:
 		num_classes_skin=2,
 		num_classes_lesion=8,
 		num_classes_bm=2,
+		num_classes_final=11,  # Add final head for exp_finalmulticlass
 	).to(device)
 	model.load_state_dict(ckpt['model_state_dict'])
 	model.eval()

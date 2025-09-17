@@ -45,9 +45,21 @@
 % package 'graphicx' is automatically included depending on the
 %   used compiler (latex, pdflatex), don't include it!!!
 
+% --- added by thesis scaffolding ---
+\makeatletter
+\@ifundefined{todo}{}{\let\ivc@todo\todo \let\todo\relax}
+\makeatother
+\usepackage{todonotes}
+\newcommand{\ivctodo}[2]{\todo[color=#1!30,inline]{#2}}
+% --- end added ---
+
 \begin{document}
 %----------------------------------------------------------------------
 % Add the following information, which will be shown on the cover sheet
+
+\ivctodo{blue}{thesis outline}
+\ivctodo{green}{figures/tables}
+\ivctodo{purple}{thesis content}
 
 % Uncomment matching document type
 % \type{Technical Report}
@@ -104,8 +116,21 @@
 %----------------------------------------------------------------------
 % Abstract:
 \begin{abstract}
-
-Replace this text with your abstract. 
+\ivctodo{purple}{Abstract plan:\\
+- Problem \& gap: Reliable dermoscopic classification is challenging due to severe class imbalance and the presence of out-of-distribution (OOD) inputs that can silently break models.\\
+- Approach: Study a multi-stage pipeline (MLP1: skin vs non-skin -> MLP2: 8-class lesion type -> MLP3: benign vs malignant) and a direct final multi-class variant that predicts combined lesion x malignancy labels from the same frozen SAM features via MLP heads; OOD scoring is evaluated with MSP and ODIN.\\
+- Data: In-distribution: ISIC 2018--2020 with unified metadata and train/val/test splits. External OOD: Places365 / DTD (textures) (far-OOD) to probe robustness.\\
+- Evaluation: Headwise metrics (accuracy, weighted-F1), task-aware pipeline metrics (end-to-end accuracy/F1), confusion matrices; OOD metrics AUROC/AUPR for MSP/ODIN.\\
+- Results (Exp1): Skin: >97\% F1 (stable). Lesion: $\sim$51--64\% accuracy, weighted-F1 $\approx$ 0.48--0.60 (macro-F1 much lower due to rare classes). Benign/Malignant: $\sim$77--79\% accuracy, F1 $\sim$0.75--0.79. Task-aware pipeline: $\sim$30\% overall accuracy/F1 due to error propagation. OOD: MSP/ODIN separate ISIC vs Places strongly (AUROC $\approx$ 0.98); ODIN-in-training yields no consistent gain.\\
+- Takeaways: The direct final multi-class model matches the multi-stage pipeline while avoiding cascading errors; robustness benefits mainly come from simple MSP/ODIN scoring in far-OOD, not from training-time ODIN. Remaining gaps are driven by minority classes and near-OOD; background-removed inputs and harder OOD benchmarks are promising next steps.\\
+- Keywords: Skin lesion classification; multi-task learning; out-of-distribution detection; SAM features; ISIC.}
+\ivctodo{blue}{Abstract: One paragraph summary of\\
+- Problem: difficulty of reliable skin lesion classification, risk of OOD.\\
+- Approach: multi-stage classifier pipeline (skin detection -> lesion classification -> malignancy).\\
+- Methods: SAM2 encoder features, MLP heads, dataset curation (ISIC, DermNet, DTD).\\
+- Results: validation/test metrics, OOD performance, main findings.\\
+- Contribution: task-aware design, background removal, OOD experiments.}
+\ivctodo{green}{Abstract: No figures/tables. Text-only summary.}
 
 \end{abstract}
 %----------------------------------------------------------------------
@@ -123,16 +148,146 @@ Replace this text with your abstract.
 \end{figure*}
 
 \section{Introduction}
-
-Computer graphics, a field that is both diverse and fascinating, has significantly transformed the way we interact with technology today. This paper will explore the fundamental concepts of computer graphics, including rendering, modeling, and animation. We will also discuss the latest advancements in this field and their implications for the future.
-Our goal is to provide a comprehensive overview of computer graphics, making this complex field accessible to all readers, regardless of their technical background.
+\ivctodo{blue}{Introduction: Motivation (medical relevance of skin cancer detection).\\
+Problem statement: class imbalance, OOD, visual similarity.\\
+Research questions:\\
+\quad\,\textbullet\; Can multi-stage classification improve reliability?\\
+\quad\,\textbullet\; How does task-aware evaluation compare to independent heads?\\
+\quad\,\textbullet\; What is the effect of background removal?\\
+\quad\,\textbullet\; How robust are models to OOD?\\
+Contributions: bullet list.\\
+Thesis structure: one sentence per chapter.}
+\ivctodo{green}{Introduction figures:\\
+- Figure 1: Conceptual diagram of multi-stage pipeline (skin -> lesion -> bm).\\
+- Figure 2: Example images showing skin vs. not-skin (illustrative).}
+\ivctodo{purple}{Introduction — bullet outline (ready-to-expand):\\
+\textbf{Clinical context \& motivation}\\
+- Skin cancer is common and impactful; early, reliable triage from dermoscopy images is critical.\\
+- Automated support is attractive but must be reliable under real-world variability (devices, lighting, anatomy).\\
+\textbf{Problem framing}\\
+- Lesion diagnosis is inherently hierarchical: (1) plausibility check (skin vs. not-skin), (2) lesion type recognition (8 classes), (3) benign vs. malignant risk.\\
+- Most ML systems treat this as a single flat task, ignoring hierarchy and error propagation.\\
+\textbf{Core challenges}\\
+- Severe class imbalance (few SCC/DF/VASC vs. many NV/MEL); majority classes dominate metrics.\\
+- Near-OOD \& label noise: non-skin or off-modality images mislabeled as skin; subtle domain shifts.\\
+- Cascading errors in pipelines: early mistakes (skin/lesion) invalidate downstream decisions (BM).\\
+- Calibration \& OOD detection: high confidence on wrong inputs is unsafe.\\
+\textbf{Goal of this work}\\
+- Design \& evaluate a dermoscopy classifier that respects hierarchical diagnosis and is robust to OOD and imbalance.\\
+\textbf{Research questions (RQs)}\\
+- RQ1: Does a multi-stage pipeline (skin -> lesion -> BM) improve reliability vs. independent heads?\\
+- RQ2: Can a direct final multi-class model match/surpass the pipeline while avoiding error cascades?\\
+- RQ3: How do MSP \& ODIN perform for OOD detection here, and does ODIN-in-training help?\\
+- RQ4: What is the effect of dataset strategies (background removal, oversampling) on minorities \& pipeline?\\
+- RQ5: Which evaluation protocol (headwise vs. task-aware/pipeline) better reflects clinical use?\\
+\textbf{Approach (high-level)}\\
+- Use frozen SAM features as a backbone; train light MLP heads on top.\\
+- Two modelings: (i) multi-stage (MLP1 skin, MLP2 lesion, MLP3 BM) and (ii) final multi-class (combined lesion x BM).\\
+- Reliability via OOD scoring (MSP, ODIN) and task-aware evaluation mirroring clinical flow.\\
+\textbf{Data \& splits (summary)}\\
+- Unified ISIC 2018--2020 dermoscopy with single metadata (train/val/test).\\
+- External sets (Places/DTD) for far-OOD stress tests.\\
+- Features cached from the frozen backbone for fast, reproducible runs.\\
+\textbf{Evaluation plan}\\
+- Headwise: accuracy \& weighted-F1 for skin/lesion/BM, plus confusion matrices.\\
+- Task-aware pipeline: end-to-end accuracy/F1 on composed labels; pipeline confusion matrix.\\
+- OOD: AUROC/AUPR for MSP/ODIN; qualitative failure modes.\\
+\textbf{Contributions}\\
+- Unified, reproducible pipeline for hierarchical dermoscopy on SAM features.\\
+- Task-aware evaluation exposing error propagation vs. headwise scores.\\
+- Direct final multi-class simplifying inference while matching pipeline performance.\\
+- Comprehensive OOD study (MSP/ODIN), incl. ODIN-in-training vs. test-time-only.\\
+- Ablations: oversampling, mixup, background-removed inputs; thorough confusion diagnostics.\\
+\textbf{Scope \& limitations}\\
+- Dermoscopy still images; frozen features (no end-to-end finetuning).\\
+- Far-OOD separation is easier; near-OOD and minority lesions remain challenging.\\
+- Clinical deployment issues (calibration, thresholds, human-in-the-loop) discussed but not fully solved.\\
+\textbf{Chapter roadmap}\\
+- \S2 Related Work: lesion classification, multi-task/hierarchical ML, OOD.\\
+- \S3 Method: data, features, architectures (pipeline vs final multi-class), training \& metrics.\\
+- \S4 Experiments: baselines, ablations, OOD protocols.\\
+- \S5 Results: quantitative tables, confusion matrices, ROC curves.\\
+- \S6 Discussion: insights, limitations, failure modes, implications.\\
+- \S7 Conclusion: answers to RQs, key takeaways, future work.}
 
 \section{Related Work}
-Photorealistic rendering of blur has become a topic of great interest. In photography and film production, the blur that is produced from scene elements outside the depth of field often has a specific character and is, in this context, referred to as bokeh~\cite{luo2020bokeh}. Also, don't forget to cite the awesome work of Roe et.al.~\cite{roe17}, which extends previous approaches~\cite{everyman14,smith14}.
-
+\ivctodo{blue}{Related Work: medical imaging and skin lesion classification (CNN, transformers).\\
+SAM2 and segmentation-based preprocessing.\\
+Multi-task and hierarchical classification in ML.\\
+OOD detection approaches (MSP, ODIN).\\
+Data augmentation and balancing in medical ML.\\
+Positioning: where this thesis fits.}
+\ivctodo{green}{Related Work tables/figures:\\
+- Table 1: Comparison of existing approaches (method, dataset, accuracy, OOD).\\
+- Optional figure: Positioning schematic (Venn: Segmentation, Multi-task, OOD).}
 
 \section{Method}
-Our system ...
+\ivctodo{blue}{Datasets: ISIC 2018/2019/2020, DermNet, SD-198, DTD, ImageNet subset. Unified metadata (mapping diagnosis -> unified\_diagnosis). Preprocessing: cleaning, resizing, background removal. Train/val/test splits (70/15/15).\\
+Feature extraction: SAM2 encoder as frozen feature extractor; feature dimensions; caching to .pkl.\\
+Model architectures: parallel multi-head model (skin/lesion/bm); task-aware pipeline evaluation logic; final multi-class ablation (11-class).\\
+Training setup: losses (LMF, CE), task weights; oversampling vs natural; mixup and augmentations; optimizer, LR scheduler, epochs.\\
+Evaluation setup: headwise metrics (accuracy, weighted F1); task-aware metrics (pipeline accuracy/F1); confusion matrices; OOD detection (MSP, ODIN).}
+\ivctodo{green}{Method figures/tables:\\
+- Table 2: Dataset overview (images, classes, split sizes).\\
+- Figure 3: Sample images per dataset (grid with labels).\\
+- Figure 4: Class distribution histograms (lesion, benign/malignant).\\
+- Figure 5: Image size/aspect ratio distribution.\\
+- Figure 6: SAM2 encoder -> feature vector diagram.\\
+- Figure 7: Background removal example (before/after).\\
+- Figure 8: Parallel multi-head model block diagram.\\
+- Figure 9: Task-aware pipeline flowchart (skin -> lesion -> bm).\\
+- Figure 10: Final multi-class model (11-class head).\\
+- Table 3: Hyperparameters (optimizer, LR, batch, epochs, loss weights).\\
+- Figure 11 (optional): Training curriculum schedule.\\
+- Figure 12: Headwise vs. task-aware evaluation scheme.\\
+- Table 4: Metrics overview (accuracy, weighted F1, AUROC, AUPR).}
+
+\section{Experiments}
+\ivctodo{blue}{Baseline: parallel model with weighted F1.\\
+Ablations: background removed vs original; final multi-class vs task-aware pipeline; oversampling vs no oversampling; mixup vs no mixup.\\
+OOD experiments: MSP and ODIN; performance on DTD / ImageNet.\\
+Task-aware evaluation: compare with headwise metrics; pipeline confusion matrices.}
+\ivctodo{green}{Experiments figures/tables:\\
+- Table 5: Baseline results (skin/lesion/bm acc \& F1).\
+- Table 6: Ablation results (bg removal, multi-class, oversampling, mixup).\\
+- Figure 13: Bar chart of lesion F1 across ablations.\\
+- Table 7: OOD AUROC/AUPR for MSP and ODIN (skin vs. not-skin OOD).\\
+- Figure 14: ROC curves MSP vs. ODIN.\\
+- Table 8: Headwise vs. task-aware performance.\\
+- Figure 15: Pipeline-level confusion matrix.}
+
+\section{Results}
+\ivctodo{blue}{Present per-experiment metrics in tables. Confusion matrices (lesion head and pipeline). OOD AUROC/AUPR comparisons.\\
+Highlight: best configuration; trade-offs between simplicity (final multi-class) and interpretability (task-aware pipeline); oversampling impact (negative). Link results to research questions.}
+\ivctodo{green}{Results figures/tables:\\
+- Figure 16: Lesion confusion matrix (parallel multi-head).\\
+- Figure 17: Lesion confusion matrix (final multi-class).\\
+- Figure 18: Pipeline confusion matrix (task-aware).\\
+- Figure 19: Training/validation accuracy and loss curves.\\
+- Figure 20: OOD AUROC curve.\\
+- Table 9: Summary of all models (baseline, ablations, OOD).}
+
+\section{Discussion}
+\ivctodo{blue}{Interpretation: why certain methods helped/hurt.\\
+Limitations: dataset biases; SAM2 frozen features; OOD labeling reliability.\\
+Practical implications for medical usage.\\
+Future work: trainable segmentation; larger datasets; clinical deployment with uncertainty estimation.}
+\ivctodo{green}{Discussion figures/tables:\\
+- Figure 21: Error analysis examples (misclassified images with predicted vs. GT).\\
+- Table 10: Common confusion pairs (e.g., NV vs. MEL).}
+
+\section{Conclusion}
+\ivctodo{blue}{Recap problem, approach, contributions. Main findings (weighted F1 better, oversampling harmful, task-aware adds interpretability). Final statement on feasibility of multi-stage lesion classification.}
+\ivctodo{green}{Conclusion: No figures/tables (optionally restate Figure 1 pipeline).}
+
+\appendix
+\section{Appendix (optional)}
+\ivctodo{blue}{Additional confusion matrices. Detailed dataset stats. Training logs / configs.}
+\ivctodo{green}{Appendix figures/tables:\\
+- Table A1: Full class counts per dataset and split.\\
+- Figure A1: Additional confusion matrices (per dataset, per head).\\
+- Figure A2: Extended ROC curves (all OOD datasets).\\
+- Table A2: Full hyperparameter search log.}
 
 
 

@@ -11,7 +11,7 @@ from datetime import datetime
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 from sklearn.metrics import f1_score, precision_score, recall_score, confusion_matrix
 from tqdm import tqdm
 import wandb
@@ -95,11 +95,15 @@ class CBFocalLoss(nn.Module):
         loss = -alpha_t * ((1 - pt) ** self.gamma) * log_probs.gather(1, targets.view(-1, 1)).squeeze(1)
         return loss.mean()
 
+
 def compute_loss(outputs: Dict[str, torch.Tensor], labels: Dict[str, torch.Tensor], masks: Dict[str, torch.Tensor],
 				criteria: Dict[str, nn.Module], task_weights: Dict[str, float]) -> torch.Tensor:
 	"""Compute weighted sum of per-task losses with masks."""
 	loss_total = 0.0
-	for task in ('skin', 'lesion', 'bm'):
+	# Iterate only over available task outputs
+	for task in outputs.keys():
+		if task not in masks or task not in labels:
+			continue
 		mask = masks[task]  # [B]
 		if mask.sum() == 0:
 			continue
@@ -109,8 +113,9 @@ def compute_loss(outputs: Dict[str, torch.Tensor], labels: Dict[str, torch.Tenso
 			continue
 		logits = outputs[task][valid_idx]
 		targets = labels[task][valid_idx]
-		loss = criteria[task](logits, targets)
-		loss_total = loss_total + task_weights[task] * loss
+		if task in criteria and task in task_weights:
+			loss = criteria[task](logits, targets)
+			loss_total = loss_total + task_weights[task] * loss
 	return loss_total
 
 
@@ -131,7 +136,8 @@ def train_parallel(
 		output_base_dir: Optional[str] = None,
 		use_odin_train: bool = False,
 		train_odin_temperature: float = 1000.0,
-		train_odin_epsilon: float = 0.001
+		train_odin_epsilon: float = 0.001,
+		oversample_lesion: bool = False
 ):
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	
@@ -145,9 +151,14 @@ def train_parallel(
 	
 	logger.info(f"Using device: {device}")
 
+	# Map experiment name for dataset usage
+	dataset_experiment = experiment
+	if experiment == 'exp1_parallel_lmf':
+		dataset_experiment = 'exp1'
+
 	# Datasets and loaders
-	train_dataset = ParallelUnifiedDataset(experiment=experiment, split='train')
-	val_dataset = ParallelUnifiedDataset(experiment=experiment, split='val')
+	train_dataset = ParallelUnifiedDataset(experiment=dataset_experiment, split='train')
+	val_dataset = ParallelUnifiedDataset(experiment=dataset_experiment, split='val')
 
 	# Optional Balanced-MixUp
 	balanced_mixup_cfg = {'enabled': False, 'alpha': 0.2}
@@ -176,13 +187,15 @@ def train_parallel(
 	val_loader = DataLoader(val_dataset, batch_size=batch_size*2, shuffle=False, num_workers=0, pin_memory=True)
 
 	# Model - ensure lesion head has 8 classes for fine-grained classification (no NOT_SKIN)
+	num_classes_final = train_dataset.num_final_classes if hasattr(train_dataset, 'num_final_classes') else None
 	model = MultiTaskHead(
 		input_dim=256, 
 		hidden_dims=tuple(hidden_dims), 
 		dropout=dropout,
 		num_classes_skin=2,
 		num_classes_lesion=8,  # 8 fine-grained lesion classes (no NOT_SKIN)
-		num_classes_bm=2
+		num_classes_bm=2,
+		num_classes_final=num_classes_final
 	)
 	model = model.to(device)
 
@@ -260,7 +273,11 @@ def train_parallel(
 		'lesion': lesion_criterion,
 		'bm': nn.CrossEntropyLoss(),
 	}
+	if num_classes_final is not None:
+		criteria['final'] = nn.CrossEntropyLoss()
 	weights = {'skin': skin_weight, 'lesion': lesion_weight, 'bm': bm_weight}
+	if num_classes_final is not None:
+		weights['final'] = 1.0
 
 	# Optimizer & scheduler (cosine)
 	optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -298,6 +315,23 @@ def train_parallel(
 	best_val_loss = math.inf
 	best_train_acc = {'skin': 0.0, 'lesion': 0.0, 'bm': 0.0}
 	best_val_acc = {'skin': 0.0, 'lesion': 0.0, 'bm': 0.0}
+	# Build oversampling sampler if requested
+	if oversample_lesion:
+		from collections import Counter
+		target_task = 'final' if (hasattr(train_dataset, 'num_final_classes') and train_dataset.num_final_classes is not None and dataset_experiment == 'exp_finalmulticlass') else 'lesion'
+		labels_list = []
+		for i in range(len(train_dataset)):
+			_, lbls, msk, _ = train_dataset[i]
+			if msk.get(target_task, torch.tensor(1.0)).item() == 1:
+				labels_list.append(int(lbls[target_task].item()))
+			else:
+				labels_list.append(-1)
+		counts = Counter([x for x in labels_list if x >= 0])
+		weights_per_class = {c: (1.0 / max(1, counts[c])) for c in counts}
+		sample_weights = [weights_per_class.get(x, 0.0) for x in labels_list]
+		sampler = WeightedRandomSampler(sample_weights, num_samples=len(sample_weights), replacement=True)
+		train_loader = DataLoader(train_dataset, batch_size=batch_size, sampler=sampler, shuffle=False, num_workers=0, pin_memory=True)
+
 	for epoch in range(1, epochs+1):
 		# Curriculum task weighting
 		epoch_idx = epoch - 1
@@ -564,7 +598,8 @@ def train_parallel(
 	# Test evaluation (always run)
 	# -----------------------------
 	logger.info("Starting test evaluation...")
-	test_dataset = ParallelUnifiedDataset(experiment=experiment, split='test')
+	# Use normalized dataset experiment name for test as well
+	test_dataset = ParallelUnifiedDataset(experiment=dataset_experiment, split='test')
 	if len(test_dataset) == 0:
 		logger.warning("No samples in test split for this experiment. Skipping test evaluation.")
 		wandb.finish()
